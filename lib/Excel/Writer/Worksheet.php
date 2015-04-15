@@ -2534,8 +2534,8 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     {
         $y       = $panes[0];
         $x       = $panes[1];
-        $rwTop   = $panes[2];
-        $colLeft = $panes[3];
+        $rwTop   = isset($panes[2]) ? $panes[2] : null;
+        $colLeft = isset($panes[3]) ? $panes[3] : null;
         if (count($panes) > 4) { // if Active pane was received
             $pnnAct = $panes[4];
         } else {

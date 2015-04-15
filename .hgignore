@@ -1,6 +1,7 @@
 syntax: glob
 
 # Specifiche di progetto
+code-coverage/
 data/
 tmp/
 vendor/

@@ -7,4 +7,14 @@
     <testsuite name="Excel">
         <directory>./tests/ExcelTest</directory>
     </testsuite>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./lib</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html" target="./code-coverage" charset="UTF-8" highlight="true" lowUpperBound="60" highLowerBound="80" />
+    </logging>
 </phpunit>
