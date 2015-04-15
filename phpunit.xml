@@ -1,0 +1,10 @@
+<phpunit
+    bootstrap="./tests/bootstrap.php"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    colors="true"
+>
+    <testsuite name="Excel">
+        <directory>./tests/ExcelTest</directory>
+    </testsuite>
+</phpunit>
