@@ -138,7 +138,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $this->Excel_Writer_BIFFwriter();
 
         $this->_filename         = $filename;
-        $this->_parser           = new Excel_Writer_Parser($this->_byte_order, $this->_BIFF_version);
+        $this->_parser           = new Excel_Writer_Parser($this->_byte_order);
         $this->_1904             = 0;
         $this->_activesheet      = 0;
         $this->_firstsheet       = 0;
@@ -147,7 +147,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $this->_fileclosed       = 0;
         $this->_biffsize         = 0;
         $this->_sheetname        = 'Sheet';
-        $this->_tmp_format       = new Excel_Writer_Format($this->_BIFF_version);
+        $this->_tmp_format       = new Excel_Writer_Format();
         $this->_worksheets       = array();
         $this->_sheetnames       = array();
         $this->_formats          = array();
@@ -211,42 +211,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Sets the BIFF version.
-    * This method exists just to access experimental functionality
-    * from BIFF8. It will be deprecated !
-    * Only possible value is 8 (Excel 97/2000).
-    * For any other value it fails silently.
-    *
-    * @access public
-    * @param integer $version The BIFF version
-    */
-    function setVersion($version)
-    {
-        if ($version == 8) { // only accept version 8
-            $version = 0x0600;
-            $this->_BIFF_version = $version;
-            // change BIFFwriter limit for CONTINUE records
-            $this->_limit = 8228;
-            $this->_tmp_format->_BIFF_version = $version;
-            $this->_url_format->_BIFF_version = $version;
-            $this->_parser->_BIFF_version = $version;
-            $this->_codepage = 0x04B0;
-
-            $total_worksheets = count($this->_worksheets);
-            // change version for all worksheets too
-            for ($i = 0; $i < $total_worksheets; $i++) {
-                $this->_worksheets[$i]->_BIFF_version = $version;
-            }
-
-            $total_formats = count($this->_formats);
-            // change version for all formats too
-            for ($i = 0; $i < $total_formats; $i++) {
-                $this->_formats[$i]->_BIFF_version = $version;
-            }
-        }
-    }
-
-    /**
     * Set the country identifier for the workbook
     *
     * @access public
@@ -278,15 +242,8 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         }
 
         // Check that sheetname is <= 31 chars (Excel limit before BIFF8).
-        if ($this->_BIFF_version != 0x0600)
-        {
-            if (strlen($name) > 31) {
-                return $this->raiseError("Sheetname $name must be <= 31 chars");
-            }
-        } else {
-            if(function_exists('iconv')) {
-                $name = iconv('UTF-8','UTF-16LE',$name);
-            }
+        if (strlen($name) > 31) {
+            return $this->raiseError("Sheetname $name must be <= 31 chars");
         }
 
         // Check that the worksheet name doesn't already exist: a fatal Excel error.
@@ -297,7 +254,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             }
         }
 
-        $worksheet = new Excel_Writer_Worksheet($this->_BIFF_version,
+        $worksheet = new Excel_Writer_Worksheet(
                                    $name, $index,
                                    $this->_activesheet, $this->_firstsheet,
                                    $this->_str_total, $this->_str_unique,
@@ -320,24 +277,10 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     */
     function &addFormat($properties = array())
     {
-        $format = new Excel_Writer_Format($this->_BIFF_version, $this->_xf_index, $properties);
+        $format = new Excel_Writer_Format($this->_xf_index, $properties);
         $this->_xf_index += 1;
         $this->_formats[] = &$format;
         return $format;
-    }
-
-    /**
-     * Create new validator.
-     *
-     * @access public
-     * @return &Excel_Writer_Validator reference to a Validator
-     */
-    function &addValidator()
-    {
-        include_once 'Spreadsheet/Excel/Writer/Validator.php';
-        /* FIXME: check for successful inclusion*/
-        $valid = new Excel_Writer_Validator($this->_parser);
-        return $valid;
     }
 
     /**
@@ -476,16 +419,9 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         // Add Workbook globals
         $this->_storeBof(0x0005);
         $this->_storeCodepage();
-        if ($this->_BIFF_version == 0x0600) {
-            $this->_storeWindow1();
-        }
-        if ($this->_BIFF_version == 0x0500) {
-            $this->_storeExterns();    // For print area and repeat rows
-        }
+        $this->_storeExterns();    // For print area and repeat rows
         $this->_storeNames();      // For print area and repeat rows
-        if ($this->_BIFF_version == 0x0500) {
-            $this->_storeWindow1();
-        }
+        $this->_storeWindow1();
         $this->_storeDatemode();
         $this->_storeAllFonts();
         $this->_storeAllNumFormats();
@@ -501,14 +437,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
 
         if ($this->_country_code != -1) {
             $this->_storeCountry();
-        }
-
-        if ($this->_BIFF_version == 0x0600) {
-            //$this->_storeSupbookInternal();
-            /* TODO: store external SUPBOOK records and XCT and CRN records
-            in case of external references for BIFF8 */
-            //$this->_storeExternsheetBiff8();
-            $this->_storeSharedStringsTable();
         }
 
         // End Workbook globals
@@ -530,11 +458,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     */
     function _storeExcel_OLEFile()
     {
-        if($this->_BIFF_version == 0x0600) {
-            $Excel_OLE = new Excel_OLE_PPS_File(Excel_OLE::Asc2Ucs('Workbook'));
-        } else {
-            $Excel_OLE = new Excel_OLE_PPS_File(Excel_OLE::Asc2Ucs('Book'));
-        }
+        $Excel_OLE = new Excel_OLE_PPS_File(Excel_OLE::Asc2Ucs('Book'));
         if ($this->_tmp_dir != '') {
             $Excel_OLE->setTempDir($this->_tmp_dir);
         }
@@ -570,24 +494,10 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     */
     function _calcSheetOffsets()
     {
-        if ($this->_BIFF_version == 0x0600) {
-            $boundsheet_length = 12;  // fixed length for a BOUNDSHEET record
-        } else {
-            $boundsheet_length = 11;
-        }
+        $boundsheet_length = 11;
         $EOF               = 4;
         $offset            = $this->_datasize;
 
-        if ($this->_BIFF_version == 0x0600) {
-            // add the length of the SST
-            /* TODO: check this works for a lot of strings (> 8224 bytes) */
-            $offset += $this->_calculateSharedStringsSizes();
-            if ($this->_country_code != -1) {
-                $offset += 8; // adding COUNTRY record
-            }
-            // add the lenght of SUPBOOK, EXTERNSHEET and NAME records
-            //$offset += 8; // FIXME: calculate real value when storing the records
-        }
         $total_worksheets = count($this->_worksheets);
         // add the length of the BOUNDSHEET records
         for ($i = 0; $i < $total_worksheets; $i++) {
@@ -887,25 +797,14 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     function _storeBoundsheet($sheetname,$offset)
     {
         $record    = 0x0085;                    // Record identifier
-        if ($this->_BIFF_version == 0x0600) {
-            $length    = 0x08 + strlen($sheetname); // Number of bytes to follow
-        } else {
-            $length = 0x07 + strlen($sheetname); // Number of bytes to follow
-        }
-
+        $length = 0x07 + strlen($sheetname); // Number of bytes to follow
+        
         $grbit     = 0x0000;                    // Visibility and sheet type
-        if ($this->_BIFF_version == 0x0600) {
-            $cch       = mb_strlen($sheetname,'UTF-16LE'); // Length of sheet name
-        } else {
-            $cch       = strlen($sheetname);        // Length of sheet name
-        }
-
+        $cch       = strlen($sheetname);        // Length of sheet name
+        
         $header    = pack("vv",  $record, $length);
-        if ($this->_BIFF_version == 0x0600) {
-            $data      = pack("VvCC", $offset, $grbit, $cch, 0x1);
-        } else {
-            $data      = pack("VvC", $offset, $grbit, $cch);
-        }
+        $data      = pack("VvC", $offset, $grbit, $cch);
+        
         $this->_append($header.$data.$sheetname);
     }
 
@@ -977,32 +876,16 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     {
         $record    = 0x041E;                      // Record identifier
 
-        if ($this->_BIFF_version == 0x0600) {
-            $length    = 5 + strlen($format);      // Number of bytes to follow
-            $encoding = 0x0;
-        } elseif ($this->_BIFF_version == 0x0500) {
-            $length    = 3 + strlen($format);      // Number of bytes to follow
-        }
+        $length    = 3 + strlen($format);      // Number of bytes to follow
+        
+        $encoding = 0;
+        $cch  = strlen($format);             // Length of format string
 
-        if ( $this->_BIFF_version == 0x0600 && function_exists('iconv') ) {     // Encode format String
-            if (mb_detect_encoding($format, 'auto') !== 'UTF-16LE'){
-                $format = iconv(mb_detect_encoding($format, 'auto'),'UTF-16LE',$format);
-            }
-            $encoding = 1;
-            $cch = function_exists('mb_strlen') ? mb_strlen($format, 'UTF-16LE') : (strlen($format) / 2);
-        } else {
-            $encoding = 0;
-            $cch  = strlen($format);             // Length of format string
-        }
         $length = strlen($format);
 
-        if ($this->_BIFF_version == 0x0600) {
-            $header    = pack("vv", $record, 5 + $length);
-            $data      = pack("vvC", $ifmt, $cch, $encoding);
-        } elseif ($this->_BIFF_version == 0x0500) {
-            $header    = pack("vv", $record, 3 + $length);
-            $data      = pack("vC", $ifmt, $cch);
-        }
+        $header    = pack("vv", $record, 3 + $length);
+        $data      = pack("vC", $ifmt, $cch);
+
         $this->_append($header . $data . $format);
     }
 

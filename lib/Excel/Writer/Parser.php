@@ -134,21 +134,14 @@ class Excel_Writer_Parser extends Excel_PEAR
     var $_references;
 
     /**
-    * The BIFF version for the workbook
-    * @var integer
-    */
-    var $_BIFF_version;
-
-    /**
     * The class constructor
     *
     * @param integer $byte_order The byte order (Little endian or Big endian) of the architecture
                                  (optional). 1 => big endian, 0 (default) little endian.
     */
-    function Excel_Writer_Parser($byte_order, $biff_version)
+    function Excel_Writer_Parser($byte_order)
     {
         $this->_current_char  = 0;
-        $this->_BIFF_version  = $biff_version;
         $this->_current_token = '';       // The token we are working on.
         $this->_formula       = '';       // The formula to parse.
         $this->_lookahead     = '';       // The character ahead of the current char.
@@ -605,12 +598,7 @@ class Excel_Writer_Parser extends Excel_PEAR
             return $this->raiseError("String is too long");
         }
 
-        if ($this->_BIFF_version == 0x0500) {
-            return pack("CC", $this->ptg['ptgStr'], strlen($string)).$string;
-        } elseif ($this->_BIFF_version == 0x0600) {
-            $encoding = 0;   // TODO: Unicode support
-            return pack("CCC", $this->ptg['ptgStr'], strlen($string), $encoding).$string;
-        }
+        return pack("CC", $this->ptg['ptgStr'], strlen($string)).$string;
     }
 
     /**
@@ -700,16 +688,9 @@ class Excel_Writer_Parser extends Excel_PEAR
         list($ext_ref, $range) = explode('!', $token);
 
         // Convert the external reference part (different for BIFF8)
-        if ($this->_BIFF_version == 0x0500) {
-            $ext_ref = $this->_packExtRef($ext_ref);
-            if (Excel_PEAR::isError($ext_ref)) {
-                return $ext_ref;
-            }
-        } elseif ($this->_BIFF_version == 0x0600) {
-             $ext_ref = $this->_getRefIndex($ext_ref);
-             if (Excel_PEAR::isError($ext_ref)) {
-                 return $ext_ref;
-             }
+        $ext_ref = $this->_packExtRef($ext_ref);
+        if (Excel_PEAR::isError($ext_ref)) {
+            return $ext_ref;
         }
 
         // Split the range into 2 cell refs
@@ -797,16 +778,9 @@ class Excel_Writer_Parser extends Excel_PEAR
         list($ext_ref, $cell) = explode('!', $cell);
 
         // Convert the external reference part (different for BIFF8)
-        if ($this->_BIFF_version == 0x0500) {
-            $ext_ref = $this->_packExtRef($ext_ref);
-            if (Excel_PEAR::isError($ext_ref)) {
-                return $ext_ref;
-            }
-        } elseif ($this->_BIFF_version == 0x0600) {
-            $ext_ref = $this->_getRefIndex($ext_ref);
-            if (Excel_PEAR::isError($ext_ref)) {
-                return $ext_ref;
-            }
+        $ext_ref = $this->_packExtRef($ext_ref);
+        if (Excel_PEAR::isError($ext_ref)) {
+            return $ext_ref;
         }
 
         // Convert the cell reference part
@@ -982,15 +956,10 @@ class Excel_Writer_Parser extends Excel_PEAR
         }
 
         // Set the high bits to indicate if row or col are relative.
-        if ($this->_BIFF_version == 0x0500) {
-            $row    |= $col_rel << 14;
-            $row    |= $row_rel << 15;
-            $col     = pack('C', $col);
-        } elseif ($this->_BIFF_version == 0x0600) {
-            $col    |= $col_rel << 14;
-            $col    |= $row_rel << 15;
-            $col     = pack('v', $col);
-        }
+        $row    |= $col_rel << 14;
+        $row    |= $row_rel << 15;
+        $col     = pack('C', $col);
+
         $row     = pack('v', $row);
 
         return array($row, $col);
@@ -1025,17 +994,10 @@ class Excel_Writer_Parser extends Excel_PEAR
         }
 
         // Set the high bits to indicate if rows are relative.
-        if ($this->_BIFF_version == 0x0500) {
-            $row1    |= $row1_rel << 14; // FIXME: probably a bug
-            $row2    |= $row2_rel << 15;
-            $col1     = pack('C', $col1);
-            $col2     = pack('C', $col2);
-        } elseif ($this->_BIFF_version == 0x0600) {
-            $col1    |= $row1_rel << 15;
-            $col2    |= $row2_rel << 15;
-            $col1     = pack('v', $col1);
-            $col2     = pack('v', $col2);
-        }
+        $row1    |= $row1_rel << 14; // FIXME: probably a bug
+        $row2    |= $row2_rel << 15;
+        $col1     = pack('C', $col1);
+        $col2     = pack('C', $col2);
         $row1     = pack('v', $row1);
         $row2     = pack('v', $row2);
 
@@ -1189,7 +1151,7 @@ class Excel_Writer_Parser extends Excel_PEAR
             default:
                 // if it's a reference
                 if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?[0-9]+$/',$token) and
-                   !preg_match("/[0-9]/",$this->_lookahead) and 
+                   !preg_match("/[0-9]/",$this->_lookahead) and
                    ($this->_lookahead != ':') and ($this->_lookahead != '.') and
                    ($this->_lookahead != '!'))
                 {
@@ -1210,13 +1172,13 @@ class Excel_Writer_Parser extends Excel_PEAR
                     return $token;
                 }
                 // if it's a range (A1:A2)
-                elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and 
+                elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and
                        !preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
                 // if it's a range (A1..A2)
-                elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and 
+                elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and
                        !preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
@@ -1234,7 +1196,7 @@ class Excel_Writer_Parser extends Excel_PEAR
                     return $token;
                 }
                 // If it's a number (check that it's not a sheet name or range)
-                elseif (is_numeric($token) and 
+                elseif (is_numeric($token) and
                         (!is_numeric($token.$this->_lookahead) or ($this->_lookahead == '')) and
                         ($this->_lookahead != '!') and ($this->_lookahead != ':'))
                 {
@@ -1483,7 +1445,7 @@ class Excel_Writer_Parser extends Excel_PEAR
             return $result;
         }
         // if it's a range
-        elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$this->_current_token) or 
+        elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$this->_current_token) or
                 preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$this->_current_token))
         {
             $result = $this->_current_token;

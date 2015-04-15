@@ -215,10 +215,9 @@ class Excel_Writer_Format extends Excel_PEAR
     * @param integer $index the XF index for the format.
     * @param array   $properties array with properties to be set on initialization.
     */
-    function Excel_Writer_Format($BIFF_version, $index = 0, $properties =  array())
+    function Excel_Writer_Format($index = 0, $properties =  array())
     {
         $this->_xf_index       = $index;
-        $this->_BIFF_version   = $BIFF_version;
         $this->font_index      = 0;
         $this->_font_name      = 'Arial';
         $this->_size           = 10;
@@ -319,88 +318,42 @@ class Excel_Writer_Format extends Excel_PEAR
         }
 
         $record         = 0x00E0;              // Record identifier
-        if ($this->_BIFF_version == 0x0500) {
-            $length         = 0x0010;              // Number of bytes to follow
-        }
-        if ($this->_BIFF_version == 0x0600) {
-            $length         = 0x0014;
-        }
-
+        $length         = 0x0010;              // Number of bytes to follow
+        
         $ifnt           = $this->font_index;   // Index to FONT record
         $ifmt           = $this->_num_format;  // Index to FORMAT record
-        if ($this->_BIFF_version == 0x0500) {
-            $align          = $this->_text_h_align;       // Alignment
-            $align         |= $this->_text_wrap     << 3;
-            $align         |= $this->_text_v_align  << 4;
-            $align         |= $this->_text_justlast << 7;
-            $align         |= $this->_rotation      << 8;
-            $align         |= $atr_num                << 10;
-            $align         |= $atr_fnt                << 11;
-            $align         |= $atr_alc                << 12;
-            $align         |= $atr_bdr                << 13;
-            $align         |= $atr_pat                << 14;
-            $align         |= $atr_prot               << 15;
 
-            $icv            = $this->_fg_color;       // fg and bg pattern colors
-            $icv           |= $this->_bg_color      << 7;
+        $align          = $this->_text_h_align;       // Alignment
+        $align         |= $this->_text_wrap     << 3;
+        $align         |= $this->_text_v_align  << 4;
+        $align         |= $this->_text_justlast << 7;
+        $align         |= $this->_rotation      << 8;
+        $align         |= $atr_num                << 10;
+        $align         |= $atr_fnt                << 11;
+        $align         |= $atr_alc                << 12;
+        $align         |= $atr_bdr                << 13;
+        $align         |= $atr_pat                << 14;
+        $align         |= $atr_prot               << 15;
 
-            $fill           = $this->_pattern;        // Fill and border line style
-            $fill          |= $this->_bottom        << 6;
-            $fill          |= $this->_bottom_color  << 9;
+        $icv            = $this->_fg_color;       // fg and bg pattern colors
+        $icv           |= $this->_bg_color      << 7;
 
-            $border1        = $this->_top;            // Border line style and color
-            $border1       |= $this->_left          << 3;
-            $border1       |= $this->_right         << 6;
-            $border1       |= $this->_top_color     << 9;
+        $fill           = $this->_pattern;        // Fill and border line style
+        $fill          |= $this->_bottom        << 6;
+        $fill          |= $this->_bottom_color  << 9;
 
-            $border2        = $this->_left_color;     // Border color
-            $border2       |= $this->_right_color   << 7;
+        $border1        = $this->_top;            // Border line style and color
+        $border1       |= $this->_left          << 3;
+        $border1       |= $this->_right         << 6;
+        $border1       |= $this->_top_color     << 9;
 
-            $header      = pack("vv",       $record, $length);
-            $data        = pack("vvvvvvvv", $ifnt, $ifmt, $style, $align,
-                                            $icv, $fill,
-                                            $border1, $border2);
-        } elseif ($this->_BIFF_version == 0x0600) {
-            $align          = $this->_text_h_align;       // Alignment
-            $align         |= $this->_text_wrap     << 3;
-            $align         |= $this->_text_v_align  << 4;
-            $align         |= $this->_text_justlast << 7;
+        $border2        = $this->_left_color;     // Border color
+        $border2       |= $this->_right_color   << 7;
 
-            $used_attrib    = $atr_num              << 2;
-            $used_attrib   |= $atr_fnt              << 3;
-            $used_attrib   |= $atr_alc              << 4;
-            $used_attrib   |= $atr_bdr              << 5;
-            $used_attrib   |= $atr_pat              << 6;
-            $used_attrib   |= $atr_prot             << 7;
-
-            $icv            = $this->_fg_color;      // fg and bg pattern colors
-            $icv           |= $this->_bg_color      << 7;
-
-            $border1        = $this->_left;          // Border line style and color
-            $border1       |= $this->_right         << 4;
-            $border1       |= $this->_top           << 8;
-            $border1       |= $this->_bottom        << 12;
-            $border1       |= $this->_left_color    << 16;
-            $border1       |= $this->_right_color   << 23;
-            $diag_tl_to_rb = 0; // FIXME: add method
-            $diag_tr_to_lb = 0; // FIXME: add method
-            $border1       |= $diag_tl_to_rb        << 30;
-            $border1       |= $diag_tr_to_lb        << 31;
-
-            $border2        = $this->_top_color;    // Border color
-            $border2       |= $this->_bottom_color   << 7;
-            $border2       |= $this->_diag_color     << 14;
-            $border2       |= $this->_diag           << 21;
-            $border2       |= $this->_pattern        << 26;
-
-            $header      = pack("vv",       $record, $length);
-
-            $rotation      = $this->_rotation;
-            $biff8_options = 0x00;
-            $data  = pack("vvvC", $ifnt, $ifmt, $style, $align);
-            $data .= pack("CCC", $rotation, $biff8_options, $used_attrib);
-            $data .= pack("VVv", $border1, $border2, $icv);
-        }
+        $header      = pack("vv",       $record, $length);
+        $data        = pack("vvvvvvvv", $ifnt, $ifmt, $style, $align,
+                                        $icv, $fill,
+                                        $border1, $border2);
 
         return($header . $data);
     }
@@ -423,11 +376,7 @@ class Excel_Writer_Format extends Excel_PEAR
 
         $cch        = strlen($this->_font_name); // Length of font name
         $record     = 0x31;                      // Record identifier
-        if ($this->_BIFF_version == 0x0500) {
-            $length     = 0x0F + $cch;            // Record length
-        } elseif ($this->_BIFF_version == 0x0600) {
-            $length     = 0x10 + $cch;
-        }
+        $length     = 0x0F + $cch;            // Record length
         $reserved   = 0x00;                // Reserved
         $grbit      = 0x00;                // Font attributes
         if ($this->_italic) {
@@ -444,15 +393,10 @@ class Excel_Writer_Format extends Excel_PEAR
         }
 
         $header  = pack("vv",         $record, $length);
-        if ($this->_BIFF_version == 0x0500) {
-            $data    = pack("vvvvvCCCCC", $dyHeight, $grbit, $icv, $bls,
-                                          $sss, $uls, $bFamily,
-                                          $bCharSet, $reserved, $cch);
-        } elseif ($this->_BIFF_version == 0x0600) {
-            $data    = pack("vvvvvCCCCCC", $dyHeight, $grbit, $icv, $bls,
-                                           $sss, $uls, $bFamily,
-                                           $bCharSet, $reserved, $cch, $encoding);
-        }
+        $data    = pack("vvvvvCCCCC", $dyHeight, $grbit, $icv, $bls,
+                                      $sss, $uls, $bFamily,
+                                      $bCharSet, $reserved, $cch);
+
         return($header . $data . $this->_font_name);
     }
 
@@ -551,54 +495,8 @@ class Excel_Writer_Format extends Excel_PEAR
     */
     function setAlign($location)
     {
-        if (preg_match("/\d/",$location)) {
-            return;                      // Ignore numbers
-        }
-
-        $location = strtolower($location);
-
-        if ($location == 'left') {
-            $this->_text_h_align = 1;
-        }
-        if ($location == 'centre') {
-            $this->_text_h_align = 2;
-        }
-        if ($location == 'center') {
-            $this->_text_h_align = 2;
-        }
-        if ($location == 'right') {
-            $this->_text_h_align = 3;
-        }
-        if ($location == 'fill') {
-            $this->_text_h_align = 4;
-        }
-        if ($location == 'justify') {
-            $this->_text_h_align = 5;
-        }
-        if ($location == 'merge') {
-            $this->_text_h_align = 6;
-        }
-        if ($location == 'equal_space') { // For T.K.
-            $this->_text_h_align = 7;
-        }
-        if ($location == 'top') {
-            $this->_text_v_align = 0;
-        }
-        if ($location == 'vcentre') {
-            $this->_text_v_align = 1;
-        }
-        if ($location == 'vcenter') {
-            $this->_text_v_align = 1;
-        }
-        if ($location == 'bottom') {
-            $this->_text_v_align = 2;
-        }
-        if ($location == 'vjustify') {
-            $this->_text_v_align = 3;
-        }
-        if ($location == 'vequal_space') { // For T.K.
-            $this->_text_v_align = 4;
-        }
+        $this->setHAlign($location);
+        $this->setVAlign($location);
     }
 
     /**
@@ -609,35 +507,20 @@ class Excel_Writer_Format extends Excel_PEAR
     */
     function setHAlign($location)
     {
-        if (preg_match("/\d/",$location)) {
-            return;                      // Ignore numbers
-        }
-    
-        $location = strtolower($location);
-    
-        if ($location == 'left') {
-            $this->_text_h_align = 1;
-        }
-        if ($location == 'centre') {
-            $this->_text_h_align = 2;
-        }
-        if ($location == 'center') {
-            $this->_text_h_align = 2;
-        }
-        if ($location == 'right') {
-            $this->_text_h_align = 3;
-        }
-        if ($location == 'fill') {
-            $this->_text_h_align = 4;
-        }
-        if ($location == 'justify') {
-            $this->_text_h_align = 5;
-        }
-        if ($location == 'merge') {
-            $this->_text_h_align = 6;
-        }
-        if ($location == 'equal_space') { // For T.K.
-            $this->_text_h_align = 7;
+        $location = strtolower((string) $location);
+
+        $map = array(
+            'left'          => 1,
+            'centre'        => 2,
+            'center'        => 2,
+            'right'         => 3,
+            'fill'          => 4,
+            'justify'       => 5,
+            'merge'         => 6,
+            'equal_space'   => 7,
+        );
+        if (isset($map[$location])) {
+            $this->_text_h_align = $map[$location];
         }
     }
 
@@ -649,29 +532,18 @@ class Excel_Writer_Format extends Excel_PEAR
     */
     function setVAlign($location)
     {
-        if (preg_match("/\d/",$location)) {
-            return;                      // Ignore numbers
-        }
-    
-        $location = strtolower($location);
- 
-        if ($location == 'top') {
-            $this->_text_v_align = 0;
-        }
-        if ($location == 'vcentre') {
-            $this->_text_v_align = 1;
-        }
-        if ($location == 'vcenter') {
-            $this->_text_v_align = 1;
-        }
-        if ($location == 'bottom') {
-            $this->_text_v_align = 2;
-        }
-        if ($location == 'vjustify') {
-            $this->_text_v_align = 3;
-        }
-        if ($location == 'vequal_space') { // For T.K.
-            $this->_text_v_align = 4;
+        $location = strtolower((string) $location);
+
+        $map = array(
+            'top'           => 0,
+            'vcentre'       => 1,
+            'vcenter'       => 1,
+            'bottom'        => 2,
+            'vjustify'      => 3,
+            'vequal_space'  => 4,
+        );
+        if (isset($map[$location])) {
+            $this->_text_v_align = $map[$location];
         }
     }
 
@@ -697,19 +569,12 @@ class Excel_Writer_Format extends Excel_PEAR
     */
     function setBold($weight = 1)
     {
+        $bold = 400;
         if ($weight == 1) {
-            $weight = 0x2BC;  // Bold text
+            $bold = 700;
         }
-        if ($weight == 0) {
-            $weight = 0x190;  // Normal text
-        }
-        if ($weight <  0x064) {
-            $weight = 0x190;  // Lower bound
-        }
-        if ($weight >  0x3E8) {
-            $weight = 0x190;  // Upper bound
-        }
-        $this->_bold = $weight;
+
+        $this->_bold = $bold;
     }
 
 
@@ -949,6 +814,7 @@ class Excel_Writer_Format extends Excel_PEAR
     * @param integer $angle The rotation angle for the text (clockwise). Possible
                             values are: 0, 90, 270 and -1 for stacking top-to-bottom.
     */
+    /*
     function setTextRotation($angle)
     {
         switch ($angle)
@@ -957,25 +823,13 @@ class Excel_Writer_Format extends Excel_PEAR
                 $this->_rotation = 0;
                 break;
             case 90:
-                if ($this->_BIFF_version == 0x0500) {
                 $this->_rotation = 3;
-                } elseif ($this->_BIFF_version == 0x0600) {
-                    $this->_rotation = 180;
-                }
                 break;
             case 270:
-                if ($this->_BIFF_version == 0x0500) {
                 $this->_rotation = 2;
-                } elseif ($this->_BIFF_version == 0x0600) {
-                    $this->_rotation = 90;
-                }
                 break;
             case -1:
-                if ($this->_BIFF_version == 0x0500) {
                 $this->_rotation = 1;
-                } elseif ($this->_BIFF_version == 0x0600) {
-                    $this->_rotation = 255;
-                }
                 break;
             default :
                 return $this->raiseError("Invalid value for angle.".
@@ -985,6 +839,7 @@ class Excel_Writer_Format extends Excel_PEAR
                 break;
         }
     }
+    */
 
     /**
     * Sets the numeric format.

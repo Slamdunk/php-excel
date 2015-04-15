@@ -9,7 +9,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
         $vfs = vfs\vfsStream::setup('root', 0770);
         $filename = vfs\vfsStream::url('root/test.xls');
         
-        $filename = __DIR__ . '/stock.xls';
+        $filename = TMP_PATH . '/stock.xls';
         
         Excel_OLE::$gmmktime = gmmktime('01','01','01','01','01','2000');
 
@@ -26,9 +26,11 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
         $sheet->setColumn(1, 1, 20);
 
         $header = $xls->addFormat();
+        $header->setColor('yellow');
         $header->setBold();
         $header->setSize(15);
         $header->setAlign('center');
+        $header->setBgColor(61);
 
         $sheet->write(1, 1, 'LCR', $header);
 
@@ -36,7 +38,16 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         $sheet->writeString(2, 1, '0123');
         
-        // $format2 = $xls->addFormat();
+        $format2 = $xls->addFormat();
+        $format2->setColor('red');
+        $format2->setItalic();
+        $format2->setBorder(2);
+        $format2->setBorderColor('lime');
+        $format2->setNumFormat('#,##0.00');
+        $format2->setFgColor(62);
+        $format2->setAlign('top');
+        
+        $sheet->write(3, 2, '95000', $format2);
         
         $xls->close();
 
