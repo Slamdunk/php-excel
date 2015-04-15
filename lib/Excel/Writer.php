@@ -50,7 +50,7 @@ class Excel_Writer extends Excel_Writer_Workbook
     function rowcolToCell($row, $col)
     {
         if ($col > 255) { //maximum column value exceeded
-            return new PEAR_Error("Maximum column value exceeded: $col");
+            return new Excel_PEAR_Error("Maximum column value exceeded: $col");
         }
 
         $int = (int)($col / 26);

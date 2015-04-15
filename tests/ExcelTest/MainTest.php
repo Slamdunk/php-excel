@@ -51,6 +51,6 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
         
         $xls->close();
 
-        $this->assertSame('d2551ceac5226138770322d59cdb3719337c54fb', hash('sha1', file_get_contents($filename)));
+        $this->assertSame('e388a682417769036b8b910a981957e590475f53', hash('sha1', file_get_contents($filename)));
     }
 }
