@@ -1,4 +1,15 @@
 {
+    "name": "tessarotto/excel",
+    "type": "application",
+    "description": "Old faster PHPExcel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Filippo Tessarotto",
+            "email": "zoeslam@gmail.com",
+            "role": "Developer"
+        }
+    ],
     "autoload": {
         "psr-0": { "Excel_": "lib/" }
     },
