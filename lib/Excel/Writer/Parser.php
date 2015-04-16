@@ -83,7 +83,7 @@ define('SPREADSHEET_EXCEL_WRITER_CONCAT', "&");
 * @package  Excel_Writer
 */
 
-class Excel_Writer_Parser extends Excel_PEAR
+class Excel_Writer_Parser
 {
     /**
     * The index of the character we are currently looking at
@@ -560,7 +560,7 @@ class Excel_Writer_Parser extends Excel_PEAR
             return '';
         }
         // TODO: use real error codes
-        return $this->raiseError("Unknown token $token");
+        throw new Excel_Exception_RuntimeException("Unknown token $token");
     }
 
     /**
@@ -595,7 +595,7 @@ class Excel_Writer_Parser extends Excel_PEAR
         // chop away beggining and ending quotes
         $string = substr($string, 1, strlen($string) - 2);
         if (strlen($string) > 255) {
-            return $this->raiseError("String is too long");
+            throw new Excel_Exception_RuntimeException("String is too long");
         }
 
         return pack("CC", $this->ptg['ptgStr'], strlen($string)).$string;
@@ -648,14 +648,8 @@ class Excel_Writer_Parser extends Excel_PEAR
 
         // Convert the cell references
         $cell_array1 = $this->_cellToPackedRowcol($cell1);
-        if (Excel_PEAR::isError($cell_array1)) {
-            return $cell_array1;
-        }
         list($row1, $col1) = $cell_array1;
         $cell_array2 = $this->_cellToPackedRowcol($cell2);
-        if (Excel_PEAR::isError($cell_array2)) {
-            return $cell_array2;
-        }
         list($row2, $col2) = $cell_array2;
 
         // The ptg value depends on the class of the ptg.
@@ -689,9 +683,6 @@ class Excel_Writer_Parser extends Excel_PEAR
 
         // Convert the external reference part (different for BIFF8)
         $ext_ref = $this->_packExtRef($ext_ref);
-        if (Excel_PEAR::isError($ext_ref)) {
-            return $ext_ref;
-        }
 
         // Split the range into 2 cell refs
         list($cell1, $cell2) = explode(':', $range);
@@ -699,20 +690,11 @@ class Excel_Writer_Parser extends Excel_PEAR
         // Convert the cell references
         if (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?(\d+)$/", $cell1)) {
             $cell_array1 = $this->_cellToPackedRowcol($cell1);
-            if (Excel_PEAR::isError($cell_array1)) {
-                return $cell_array1;
-            }
             list($row1, $col1) = $cell_array1;
             $cell_array2 = $this->_cellToPackedRowcol($cell2);
-            if (Excel_PEAR::isError($cell_array2)) {
-                return $cell_array2;
-            }
             list($row2, $col2) = $cell_array2;
         } else { // It's a rows range (like 26:27)
              $cells_array = $this->_rangeToPackedRange($cell1.':'.$cell2);
-             if (Excel_PEAR::isError($cells_array)) {
-                 return $cells_array;
-             }
              list($row1, $col1, $row2, $col2) = $cells_array;
         }
 
@@ -743,9 +725,6 @@ class Excel_Writer_Parser extends Excel_PEAR
 
         // Convert the cell reference
         $cell_array = $this->_cellToPackedRowcol($cell);
-        if (Excel_PEAR::isError($cell_array)) {
-            return $cell_array;
-        }
         list($row, $col) = $cell_array;
 
         // The ptg value depends on the class of the ptg.
@@ -757,7 +736,7 @@ class Excel_Writer_Parser extends Excel_PEAR
             $ptgRef = pack("C", $this->ptg['ptgRefA']);
         } else {
             // TODO: use real error codes
-            return $this->raiseError("Unknown class $class");
+            throw new Excel_Exception_RuntimeException("Unknown class $class");
         }
         return $ptgRef.$row.$col;
     }
@@ -779,9 +758,6 @@ class Excel_Writer_Parser extends Excel_PEAR
 
         // Convert the external reference part (different for BIFF8)
         $ext_ref = $this->_packExtRef($ext_ref);
-        if (Excel_PEAR::isError($ext_ref)) {
-            return $ext_ref;
-        }
 
         // Convert the cell reference part
         list($row, $col) = $this->_cellToPackedRowcol($cell);
@@ -819,11 +795,11 @@ class Excel_Writer_Parser extends Excel_PEAR
 
             $sheet1 = $this->_getSheetIndex($sheet_name1);
             if ($sheet1 == -1) {
-                return $this->raiseError("Unknown sheet name $sheet_name1 in formula");
+                throw new Excel_Exception_RuntimeException("Unknown sheet name $sheet_name1 in formula");
             }
             $sheet2 = $this->_getSheetIndex($sheet_name2);
             if ($sheet2 == -1) {
-                return $this->raiseError("Unknown sheet name $sheet_name2 in formula");
+                throw new Excel_Exception_RuntimeException("Unknown sheet name $sheet_name2 in formula");
             }
 
             // Reverse max and min sheet numbers if necessary
@@ -833,7 +809,7 @@ class Excel_Writer_Parser extends Excel_PEAR
         } else { // Single sheet name only.
             $sheet1 = $this->_getSheetIndex($ext_ref);
             if ($sheet1 == -1) {
-                return $this->raiseError("Unknown sheet name $ext_ref in formula");
+                throw new Excel_Exception_RuntimeException("Unknown sheet name $ext_ref in formula");
             }
             $sheet2 = $sheet1;
         }
@@ -865,11 +841,11 @@ class Excel_Writer_Parser extends Excel_PEAR
 
             $sheet1 = $this->_getSheetIndex($sheet_name1);
             if ($sheet1 == -1) {
-                return $this->raiseError("Unknown sheet name $sheet_name1 in formula");
+                throw new Excel_Exception_RuntimeException("Unknown sheet name $sheet_name1 in formula");
             }
             $sheet2 = $this->_getSheetIndex($sheet_name2);
             if ($sheet2 == -1) {
-                return $this->raiseError("Unknown sheet name $sheet_name2 in formula");
+                throw new Excel_Exception_RuntimeException("Unknown sheet name $sheet_name2 in formula");
             }
 
             // Reverse max and min sheet numbers if necessary
@@ -879,7 +855,7 @@ class Excel_Writer_Parser extends Excel_PEAR
         } else { // Single sheet name only.
             $sheet1 = $this->_getSheetIndex($ext_ref);
             if ($sheet1 == -1) {
-                return $this->raiseError("Unknown sheet name $ext_ref in formula");
+                throw new Excel_Exception_RuntimeException("Unknown sheet name $ext_ref in formula");
             }
             $sheet2 = $sheet1;
         }
@@ -948,11 +924,11 @@ class Excel_Writer_Parser extends Excel_PEAR
         $cell = strtoupper($cell);
         list($row, $col, $row_rel, $col_rel) = $this->_cellToRowcol($cell);
         if ($col >= 256) {
-            return $this->raiseError("Column in: $cell greater than 255");
+            throw new Excel_Exception_RuntimeException("Column in: $cell greater than 255");
         }
         // FIXME: change for BIFF8
         if ($row >= 16384) {
-            return $this->raiseError("Row in: $cell greater than 16384 ");
+            throw new Excel_Exception_RuntimeException("Row in: $cell greater than 16384 ");
         }
 
         // Set the high bits to indicate if row or col are relative.
@@ -990,7 +966,7 @@ class Excel_Writer_Parser extends Excel_PEAR
 
         // FIXME: this changes for BIFF8
         if (($row1 >= 16384) or ($row2 >= 16384)) {
-            return $this->raiseError("Row in: $range greater than 16384 ");
+            throw new Excel_Exception_RuntimeException("Row in: $range greater than 16384 ");
         }
 
         // Set the high bits to indicate if rows are relative.
@@ -1231,9 +1207,6 @@ class Excel_Writer_Parser extends Excel_PEAR
         $this->_lookahead    = $formula{1};
         $this->_advance();
         $this->_parse_tree   = $this->_condition();
-        if (Excel_PEAR::isError($this->_parse_tree)) {
-            return $this->_parse_tree;
-        }
         return true;
     }
 
@@ -1247,57 +1220,33 @@ class Excel_Writer_Parser extends Excel_PEAR
     function _condition()
     {
         $result = $this->_expression();
-        if (Excel_PEAR::isError($result)) {
-            return $result;
-        }
         if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_LT) {
             $this->_advance();
             $result2 = $this->_expression();
-            if (Excel_PEAR::isError($result2)) {
-                return $result2;
-            }
             $result = $this->_createTree('ptgLT', $result, $result2);
         } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_GT) {
             $this->_advance();
             $result2 = $this->_expression();
-            if (Excel_PEAR::isError($result2)) {
-                return $result2;
-            }
             $result = $this->_createTree('ptgGT', $result, $result2);
         } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_LE) {
             $this->_advance();
             $result2 = $this->_expression();
-            if (Excel_PEAR::isError($result2)) {
-                return $result2;
-            }
             $result = $this->_createTree('ptgLE', $result, $result2);
         } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_GE) {
             $this->_advance();
             $result2 = $this->_expression();
-            if (Excel_PEAR::isError($result2)) {
-                return $result2;
-            }
             $result = $this->_createTree('ptgGE', $result, $result2);
         } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_EQ) {
             $this->_advance();
             $result2 = $this->_expression();
-            if (Excel_PEAR::isError($result2)) {
-                return $result2;
-            }
             $result = $this->_createTree('ptgEQ', $result, $result2);
         } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_NE) {
             $this->_advance();
             $result2 = $this->_expression();
-            if (Excel_PEAR::isError($result2)) {
-                return $result2;
-            }
             $result = $this->_createTree('ptgNE', $result, $result2);
         } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_CONCAT) {
             $this->_advance();
             $result2 = $this->_expression();
-            if (Excel_PEAR::isError($result2)) {
-                return $result2;
-        }
             $result = $this->_createTree('ptgConcat', $result, $result2);
         }
         return $result;
@@ -1327,25 +1276,16 @@ class Excel_Writer_Parser extends Excel_PEAR
             return $result;
         }
         $result = $this->_term();
-        if (Excel_PEAR::isError($result)) {
-            return $result;
-        }
         while (($this->_current_token == SPREADSHEET_EXCEL_WRITER_ADD) or
                ($this->_current_token == SPREADSHEET_EXCEL_WRITER_SUB)) {
         /**/
             if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_ADD) {
                 $this->_advance();
                 $result2 = $this->_term();
-                if (Excel_PEAR::isError($result2)) {
-                    return $result2;
-                }
                 $result = $this->_createTree('ptgAdd', $result, $result2);
             } else {
                 $this->_advance();
                 $result2 = $this->_term();
-                if (Excel_PEAR::isError($result2)) {
-                    return $result2;
-                }
                 $result = $this->_createTree('ptgSub', $result, $result2);
             }
         }
@@ -1376,25 +1316,16 @@ class Excel_Writer_Parser extends Excel_PEAR
     function _term()
     {
         $result = $this->_fact();
-        if (Excel_PEAR::isError($result)) {
-            return $result;
-        }
         while (($this->_current_token == SPREADSHEET_EXCEL_WRITER_MUL) or
                ($this->_current_token == SPREADSHEET_EXCEL_WRITER_DIV)) {
         /**/
             if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_MUL) {
                 $this->_advance();
                 $result2 = $this->_fact();
-                if (Excel_PEAR::isError($result2)) {
-                    return $result2;
-                }
                 $result = $this->_createTree('ptgMul', $result, $result2);
             } else {
                 $this->_advance();
                 $result2 = $this->_fact();
-                if (Excel_PEAR::isError($result2)) {
-                    return $result2;
-                }
                 $result = $this->_createTree('ptgDiv', $result, $result2);
             }
         }
@@ -1418,7 +1349,7 @@ class Excel_Writer_Parser extends Excel_PEAR
             $this->_advance();         // eat the "("
             $result = $this->_parenthesizedExpression();
             if ($this->_current_token != SPREADSHEET_EXCEL_WRITER_CLOSE) {
-                return $this->raiseError("')' token expected.");
+                throw new Excel_Exception_RuntimeException("')' token expected.");
             }
             $this->_advance();         // eat the ")"
             return $result;
@@ -1509,26 +1440,20 @@ class Excel_Writer_Parser extends Excel_PEAR
                                       "function $function, arg #{$num_args}");
                 }
                 $result2 = $this->_condition();
-                if (Excel_PEAR::isError($result2)) {
-                    return $result2;
-                }
                 $result = $this->_createTree('arg', $result, $result2);
             } else { // first argument
                 $result2 = $this->_condition();
-                if (Excel_PEAR::isError($result2)) {
-                    return $result2;
-                }
                 $result = $this->_createTree('arg', '', $result2);
             }
             $num_args++;
         }
         if (!isset($this->_functions[$function])) {
-            return $this->raiseError("Function $function() doesn't exist");
+            throw new Excel_Exception_RuntimeException("Function $function() doesn't exist");
         }
         $args = $this->_functions[$function][1];
         // If fixed number of args eg. TIME($i,$j,$k). Check that the number of args is valid.
         if (($args >= 0) and ($args != $num_args)) {
-            return $this->raiseError("Incorrect number of arguments in function $function() ");
+            throw new Excel_Exception_RuntimeException("Incorrect number of arguments in function $function() ");
         }
 
         $result = $this->_createTree($function, $result, $num_args);
@@ -1586,28 +1511,16 @@ class Excel_Writer_Parser extends Excel_PEAR
         }
         if (is_array($tree['left'])) {
             $converted_tree = $this->toReversePolish($tree['left']);
-            if (Excel_PEAR::isError($converted_tree)) {
-                return $converted_tree;
-            }
             $polish .= $converted_tree;
         } elseif ($tree['left'] != '') { // It's a final node
             $converted_tree = $this->_convert($tree['left']);
-            if (Excel_PEAR::isError($converted_tree)) {
-                return $converted_tree;
-            }
             $polish .= $converted_tree;
         }
         if (is_array($tree['right'])) {
             $converted_tree = $this->toReversePolish($tree['right']);
-            if (Excel_PEAR::isError($converted_tree)) {
-                return $converted_tree;
-            }
             $polish .= $converted_tree;
         } elseif ($tree['right'] != '') { // It's a final node
             $converted_tree = $this->_convert($tree['right']);
-            if (Excel_PEAR::isError($converted_tree)) {
-                return $converted_tree;
-            }
             $polish .= $converted_tree;
         }
         // if it's a function convert it here (so we can set it's arguments)
@@ -1623,16 +1536,10 @@ class Excel_Writer_Parser extends Excel_PEAR
             } else {
                 $left_tree = '';
             }
-            if (Excel_PEAR::isError($left_tree)) {
-                return $left_tree;
-            }
             // add it's left subtree and return.
             return $left_tree.$this->_convertFunction($tree['value'], $tree['right']);
         } else {
             $converted_tree = $this->_convert($tree['value']);
-            if (Excel_PEAR::isError($converted_tree)) {
-                return $converted_tree;
-            }
         }
         $polish .= $converted_tree;
         return $polish;

@@ -7,7 +7,7 @@
 * @category Structures
 * @package  Excel_OLE
 */
-class Excel_OLE_PPS extends Excel_PEAR
+class Excel_OLE_PPS
 {
     /**
     * The PPS index

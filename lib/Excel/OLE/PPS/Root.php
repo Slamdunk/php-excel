@@ -82,12 +82,12 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
             $this->_tmp_filename = tempnam($this->_tmp_dir, "Excel_OLE_PPS_Root");
             $this->_FILEH_ = @fopen($this->_tmp_filename,"w+b");
             if ($this->_FILEH_ == false) {
-                return $this->raiseError("Can't create temporary file.");
+                throw new Excel_Exception_RuntimeException("Can't create temporary file " . $this->_tmp_filename);
             }
         } else {
             $this->_FILEH_ = @fopen($filename, "wb");
             if ($this->_FILEH_ == false) {
-                return $this->raiseError("Can't open $filename. It may be in use or protected.");
+                throw new Excel_Exception_RuntimeException("Can't open $filename. It may be in use or protected.");
             }
         }
         // Make an array of PPS's (for Save)

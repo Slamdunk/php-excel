@@ -1,0 +1,4 @@
+<?php
+
+class Excel_Exception_InvalidArgumentException extends InvalidArgumentException implements Excel_Exception_ExceptionInterface
+{}

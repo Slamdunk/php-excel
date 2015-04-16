@@ -25,7 +25,7 @@ $GLOBALS['_Excel_OLE_INSTANCES'] = array();
 * @author   Xavier Noguer <xnoguer@php.net>
 * @author   Christian Schmidt <schmidt@php.net>
 */
-class Excel_OLE extends Excel_PEAR
+class Excel_OLE
 {
 
     /**
@@ -103,18 +103,18 @@ class Excel_OLE extends Excel_PEAR
     {
         $fh = @fopen($file, "r");
         if (!$fh) {
-            return $this->raiseError("Can't open file $file");
+            throw new Excel_Exception_RuntimeException("Can't open file $file");
         }
         $this->_file_handle = $fh;
 
         $signature = fread($fh, 8);
         if ("\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1" != $signature) {
-            return $this->raiseError("File doesn't seem to be an Excel_OLE container.");
+            throw new Excel_Exception_RuntimeException("File doesn't seem to be an Excel_OLE container.");
         }
         fseek($fh, 28);
         if (fread($fh, 2) != "\xFE\xFF") {
             // This shouldn't be a problem in practice
-            return $this->raiseError("Only Little-Endian encoding is supported.");
+            throw new Excel_Exception_RuntimeException("Only Little-Endian encoding is supported.");
         }
         // Size of blocks and short blocks in bytes
         $this->bigBlockSize   = pow(2, $this->_readInt2($fh));

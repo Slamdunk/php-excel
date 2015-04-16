@@ -17,7 +17,7 @@
 * @package  Excel_Writer
 */
 
-class Excel_Writer_BIFFwriter extends Excel_PEAR
+class Excel_Writer_BIFFwriter
 {
     /**
     * The BIFF/Excel version (5).

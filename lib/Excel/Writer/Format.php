@@ -8,7 +8,7 @@
 * @package  Excel_Writer
 */
 
-class Excel_Writer_Format extends Excel_PEAR
+class Excel_Writer_Format
 {
     /**
     * The index given by the workbook when creating a new format.

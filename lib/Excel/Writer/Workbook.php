@@ -177,9 +177,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             return true;
         }
         $res = $this->_storeWorkbook();
-        if ($this->isError($res)) {
-            return $this->raiseError($res->getMessage());
-        }
+
         $this->_fileclosed = 1;
         return true;
     }
@@ -243,14 +241,14 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
 
         // Check that sheetname is <= 31 chars (Excel limit before BIFF8).
         if (strlen($name) > 31) {
-            return $this->raiseError("Sheetname $name must be <= 31 chars");
+            throw new Excel_Exception_RuntimeException("Sheetname $name must be <= 31 chars");
         }
 
         // Check that the worksheet name doesn't already exist: a fatal Excel error.
         $total_worksheets = count($this->_worksheets);
         for ($i = 0; $i < $total_worksheets; $i++) {
             if ($this->_worksheets[$i]->getName() == $name) {
-                return $this->raiseError("Worksheet '$name' already exists");
+                throw new Excel_Exception_RuntimeException("Worksheet '$name' already exists");
             }
         }
 
@@ -303,7 +301,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         // Check that the colour index is the right range
         if ($index < 8 or $index > 64) {
             // TODO: assign real error codes
-            return $this->raiseError("Color index $index outside range: 8 <= index <= 64");
+            throw new Excel_Exception_RuntimeException("Color index $index outside range: 8 <= index <= 64");
         }
 
         // Check that the colour components are in the right range
@@ -311,7 +309,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             ($green < 0 or $green > 255) ||
             ($blue  < 0 or $blue  > 255))
         {
-            return $this->raiseError("Color component outside range: 0 <= color <= 255");
+            throw new Excel_Exception_RuntimeException("Color component outside range: 0 <= color <= 255");
         }
 
         $index -= 8; // Adjust colour index (wingless dragonfly)
@@ -444,9 +442,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
 
         // Store the workbook in an Excel_OLE container
         $res = $this->_storeExcel_OLEFile();
-        if ($this->isError($res)) {
-            return $this->raiseError($res->getMessage());
-        }
+
         return true;
     }
 
@@ -463,9 +459,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             $Excel_OLE->setTempDir($this->_tmp_dir);
         }
         $res = $Excel_OLE->init();
-        if ($this->isError($res)) {
-            return $this->raiseError("Excel_OLE Error: ".$res->getMessage());
-        }
+
         $Excel_OLE->append($this->_data);
 
         $total_worksheets = count($this->_worksheets);
@@ -481,9 +475,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         }
 
         $res = $root->save($this->_filename);
-        if ($this->isError($res)) {
-            return $this->raiseError("Excel_OLE Error: ".$res->getMessage());
-        }
+
         return true;
     }
 

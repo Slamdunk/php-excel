@@ -65,7 +65,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
         $this->_tmp_filename = tempnam($this->_tmp_dir, "Excel_OLE_PPS_File");
         $fh = @fopen($this->_tmp_filename, "w+b");
         if ($fh == false) {
-            return $this->raiseError("Can't create temporary file");
+            throw new Excel_Exception_RuntimeException("Can't create temporary file: " . $this->_tmp_filename);
         }
         $this->_PPS_FILE = $fh;
         if ($this->_PPS_FILE) {
