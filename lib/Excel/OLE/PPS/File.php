@@ -14,7 +14,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
      *
      * @var string
      */
-    public $_tmp_dir;
+    private $_tmp_dir;
 
     /**
      * The constructor

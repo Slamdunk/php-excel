@@ -31,56 +31,56 @@ class Excel_Writer_Parser
      *
      * @var integer
      */
-    public $_current_char;
+    private $_current_char;
 
     /**
      * The token we are working on.
      *
      * @var string
      */
-    public $_current_token;
+    private $_current_token;
 
     /**
      * The formula to parse
      *
      * @var string
      */
-    public $_formula;
+    private $_formula;
 
     /**
      * The character ahead of the current char
      *
      * @var string
      */
-    public $_lookahead;
+    private $_lookahead;
 
     /**
      * The parse tree to be generated
      *
      * @var string
      */
-    public $_parse_tree;
+    private $_parse_tree;
 
     /**
      * The byte order. 1 => big endian, 0 => little endian.
      *
      * @var integer
      */
-    public $_byte_order;
+    private $_byte_order;
 
     /**
      * Array of external sheets
      *
      * @var array
      */
-    public $_ext_sheets;
+    private $_ext_sheets;
 
     /**
      * Array of sheet references in the form of REF structures
      *
      * @var array
      */
-    public $_references;
+    private $_references;
 
     /**
      * The class constructor
@@ -105,7 +105,7 @@ class Excel_Writer_Parser
      *
      * @access private
      */
-    public function _initializeHashes()
+    private function _initializeHashes()
     {
         // The Excel ptg indices
         $this->ptg = array(
@@ -459,7 +459,7 @@ class Excel_Writer_Parser
      * @return mixed the converted token on success. Excel_PEAR_Error if the token
      *               is not recognized
      */
-    public function _convert($token)
+    private function _convert($token)
     {
         if (preg_match("/^\"[^\"]{0,255}\"$/", $token)) {
             return $this->_convertString($token);
@@ -520,7 +520,7 @@ class Excel_Writer_Parser
      *
      * @param mixed $num an integer or double for conversion to its ptg value
      */
-    public function _convertNumber($num)
+    private function _convertNumber($num)
     {
         // Integer in the range 0..2**16-1
         if ((preg_match("/^\d+$/", $num)) and ($num <= 65535)) {
@@ -544,7 +544,7 @@ class Excel_Writer_Parser
      * @return mixed the converted token on success. Excel_PEAR_Error if the string
      *               is longer than 255 characters.
      */
-    public function _convertString($string)
+    private function _convertString($string)
     {
         // chop away beggining and ending quotes
         $string = substr($string, 1, strlen($string) - 2);
@@ -566,7 +566,7 @@ class Excel_Writer_Parser
      *
      * @return string The packed ptg for the function
      */
-    public function _convertFunction($token, $num_args)
+    private function _convertFunction($token, $num_args)
     {
         $args     = $this->_functions[$token][1];
         $volatile = $this->_functions[$token][3];
@@ -588,7 +588,7 @@ class Excel_Writer_Parser
      *
      * @param string $range An Excel range in the A1:A2 or A1..A2 format.
      */
-    public function _convertRange2d($range, $class = 0)
+    private function _convertRange2d($range, $class = 0)
     {
 
         // TODO: possible class value 0,1,2 check Formula.pm
@@ -634,7 +634,7 @@ class Excel_Writer_Parser
      *
      * @return mixed The packed ptgArea3d token on success, Excel_PEAR_Error on failure.
      */
-    public function _convertRange3d($token)
+    private function _convertRange3d($token)
     {
         $class = 2; // as far as I know, this is magick.
 
@@ -681,7 +681,7 @@ class Excel_Writer_Parser
      *
      * @return string The cell in packed() format with the corresponding ptg
      */
-    public function _convertRef2d($cell)
+    private function _convertRef2d($cell)
     {
         $class = 2; // as far as I know, this is magick.
 
@@ -714,7 +714,7 @@ class Excel_Writer_Parser
      *
      * @return mixed The packed ptgRef3d token on success, Excel_PEAR_Error on failure.
      */
-    public function _convertRef3d($cell)
+    private function _convertRef3d($cell)
     {
         $class = 2; // as far as I know, this is magick.
 
@@ -751,7 +751,7 @@ class Excel_Writer_Parser
      *
      * @return string The reference index in packed() format
      */
-    public function _packExtRef($ext_ref)
+    private function _packExtRef($ext_ref)
     {
         $ext_ref = preg_replace("/^'/", '', $ext_ref); // Remove leading  ' if any.
         $ext_ref = preg_replace("/'$/", '', $ext_ref); // Remove trailing ' if any.
@@ -799,7 +799,7 @@ class Excel_Writer_Parser
      * @return mixed The reference index in packed() format on success,
      *               Excel_PEAR_Error on failure
      */
-    public function _getRefIndex($ext_ref)
+    private function _getRefIndex($ext_ref)
     {
         $ext_ref = preg_replace("/^'/", '', $ext_ref); // Remove leading  ' if any.
         $ext_ref = preg_replace("/'$/", '', $ext_ref); // Remove trailing ' if any.
@@ -858,7 +858,7 @@ class Excel_Writer_Parser
      *
      * @return integer The sheet index, -1 if the sheet was not found
      */
-    public function _getSheetIndex($sheet_name)
+    private function _getSheetIndex($sheet_name)
     {
         if (! isset($this->_ext_sheets[$sheet_name])) {
             return -1;
@@ -893,7 +893,7 @@ class Excel_Writer_Parser
      *
      * @return array Array containing the row and column in packed() format
      */
-    public function _cellToPackedRowcol($cell)
+    private function _cellToPackedRowcol($cell)
     {
         $cell = strtoupper($cell);
         list($row, $col, $row_rel, $col_rel) = $this->_cellToRowcol($cell);
@@ -925,7 +925,7 @@ class Excel_Writer_Parser
      *
      * @return array Array containing (row1,col1,row2,col2) in packed() format
      */
-    public function _rangeToPackedRange($range)
+    private function _rangeToPackedRange($range)
     {
         preg_match('/(\$)?(\d+)\:(\$)?(\d+)/', $range, $match);
         // return absolute rows if there is a $ in the ref
@@ -967,7 +967,7 @@ class Excel_Writer_Parser
      *
      * @return array
      */
-    public function _cellToRowcol($cell)
+    private function _cellToRowcol($cell)
     {
         preg_match('/(\$)?([A-I]?[A-Z])(\$)?(\d+)/',$cell,$match);
         // return absolute column if there is a $ in the ref
@@ -997,7 +997,7 @@ class Excel_Writer_Parser
      *
      * @access private
      */
-    public function _advance()
+    private function _advance()
     {
         $i = $this->_current_char;
         $formula_length = strlen($this->_formula);
@@ -1050,7 +1050,7 @@ class Excel_Writer_Parser
      *
      * @return mixed The checked token or false on failure
      */
-    public function _match($token)
+    private function _match($token)
     {
         switch($token) {
             case self::SPREADSHEET_EXCEL_WRITER_ADD:
@@ -1205,7 +1205,7 @@ class Excel_Writer_Parser
      *
      * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
      */
-    public function _condition()
+    private function _condition()
     {
         $result = $this->_expression();
         if ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_LT) {
@@ -1251,7 +1251,7 @@ class Excel_Writer_Parser
      *
      * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
      */
-    public function _expression()
+    private function _expression()
     {
         // If it's a string return a string node
         if (preg_match("/^\"[^\"]{0,255}\"$/", $this->_current_token)) {
@@ -1295,7 +1295,7 @@ class Excel_Writer_Parser
      *
      * @return array The parsed ptg'd tree
      */
-    public function _parenthesizedExpression()
+    private function _parenthesizedExpression()
     {
         $result = $this->_createTree('ptgParen', $this->_expression(), '');
 
@@ -1310,7 +1310,7 @@ class Excel_Writer_Parser
      *
      * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
      */
-    public function _term()
+    private function _term()
     {
         $result = $this->_fact();
         while (($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_MUL) or
@@ -1342,7 +1342,7 @@ class Excel_Writer_Parser
      *
      * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
      */
-    public function _fact()
+    private function _fact()
     {
         if ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_OPEN) {
             $this->_advance();         // eat the "("
@@ -1433,7 +1433,7 @@ class Excel_Writer_Parser
      *
      * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
      */
-    public function _func()
+    private function _func()
     {
         $num_args = 0; // number of arguments received
         $function = strtoupper($this->_current_token);
@@ -1484,7 +1484,7 @@ class Excel_Writer_Parser
      *
      * @return array A tree
      */
-    public function _createTree($value, $left, $right)
+    private function _createTree($value, $left, $right)
     {
         return array('value' => $value, 'left' => $left, 'right' => $right);
     }

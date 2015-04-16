@@ -15,7 +15,7 @@ class Excel_Writer_Format
      *
      * @var integer
      */
-    public $_xf_index;
+    private $_xf_index;
 
     /**
      * Index to the FONT record.
@@ -29,217 +29,217 @@ class Excel_Writer_Format
      *
      * @var string
      */
-    public $_font_name;
+    private $_font_name;
 
     /**
      * Height of font (1/20 of a point)
      *
      * @var integer
      */
-    public $_size;
+    private $_size;
 
     /**
      * Bold style
      *
      * @var integer
      */
-    public $_bold;
+    private $_bold;
 
     /**
      * Bit specifiying if the font is italic.
      *
      * @var integer
      */
-    public $_italic;
+    private $_italic;
 
     /**
      * Index to the cell's color
      *
      * @var integer
      */
-    public $_color;
+    private $_color;
 
     /**
      * The text underline property
      *
      * @var integer
      */
-    public $_underline;
+    private $_underline;
 
     /**
      * Bit specifiying if the font has strikeout.
      *
      * @var integer
      */
-    public $_font_strikeout;
+    private $_font_strikeout;
 
     /**
      * Bit specifiying if the font has outline.
      *
      * @var integer
      */
-    public $_font_outline;
+    private $_font_outline;
 
     /**
      * Bit specifiying if the font has shadow.
      *
      * @var integer
      */
-    public $_font_shadow;
+    private $_font_shadow;
 
     /**
      * 2 bytes specifiying the script type for the font.
      *
      * @var integer
      */
-    public $_font_script;
+    private $_font_script;
 
     /**
      * Byte specifiying the font family.
      *
      * @var integer
      */
-    public $_font_family;
+    private $_font_family;
 
     /**
      * Byte specifiying the font charset.
      *
      * @var integer
      */
-    public $_font_charset;
+    private $_font_charset;
 
     /**
      * An index (2 bytes) to a FORMAT record (number format).
      *
      * @var integer
      */
-    public $_num_format;
+    private $_num_format;
 
     /**
      * Bit specifying if formulas are hidden.
      *
      * @var integer
      */
-    public $_hidden;
+    private $_hidden;
 
     /**
      * Bit specifying if the cell is locked.
      *
      * @var integer
      */
-    public $_locked;
+    private $_locked;
 
     /**
      * The three bits specifying the text horizontal alignment.
      *
      * @var integer
      */
-    public $_text_h_align;
+    private $_text_h_align;
 
     /**
      * Bit specifying if the text is wrapped at the right border.
      *
      * @var integer
      */
-    public $_text_wrap;
+    private $_text_wrap;
 
     /**
      * The three bits specifying the text vertical alignment.
      *
      * @var integer
      */
-    public $_text_v_align;
+    private $_text_v_align;
 
     /**
      * 1 bit, apparently not used.
      *
      * @var integer
      */
-    public $_text_justlast;
+    private $_text_justlast;
 
     /**
      * The two bits specifying the text rotation.
      *
      * @var integer
      */
-    public $_rotation;
+    private $_rotation;
 
     /**
      * The cell's foreground color.
      *
      * @var integer
      */
-    public $_fg_color;
+    private $_fg_color;
 
     /**
      * The cell's background color.
      *
      * @var integer
      */
-    public $_bg_color;
+    private $_bg_color;
 
     /**
      * The cell's background fill pattern.
      *
      * @var integer
      */
-    public $_pattern;
+    private $_pattern;
 
     /**
      * Style of the bottom border of the cell
      *
      * @var integer
      */
-    public $_bottom;
+    private $_bottom;
 
     /**
      * Color of the bottom border of the cell.
      *
      * @var integer
      */
-    public $_bottom_color;
+    private $_bottom_color;
 
     /**
      * Style of the top border of the cell
      *
      * @var integer
      */
-    public $_top;
+    private $_top;
 
     /**
      * Color of the top border of the cell.
      *
      * @var integer
      */
-    public $_top_color;
+    private $_top_color;
 
     /**
      * Style of the left border of the cell
      *
      * @var integer
      */
-    public $_left;
+    private $_left;
 
     /**
      * Color of the left border of the cell.
      *
      * @var integer
      */
-    public $_left_color;
+    private $_left_color;
 
     /**
      * Style of the right border of the cell
      *
      * @var integer
      */
-    public $_right;
+    private $_right;
 
     /**
      * Color of the right border of the cell.
      *
      * @var integer
      */
-    public $_right_color;
+    private $_right_color;
 
     /**
      * Constructor
@@ -476,28 +476,28 @@ class Excel_Writer_Format
      *
      * @return integer The color index
      */
-    public function _getColor($name_color = '')
+    private function _getColor($name_color = '')
     {
         $colors = array(
-                          'aqua'    => 0x07,
-                          'cyan'    => 0x07,
-                          'black'   => 0x00,
-                          'blue'    => 0x04,
-                          'brown'   => 0x10,
-                          'magenta' => 0x06,
-                          'fuchsia' => 0x06,
-                          'gray'    => 0x17,
-                          'grey'    => 0x17,
-                          'green'   => 0x11,
-                          'lime'    => 0x03,
-                          'navy'    => 0x12,
-                          'orange'  => 0x35,
-                          'purple'  => 0x14,
-                          'red'     => 0x02,
-                          'silver'  => 0x16,
-                          'white'   => 0x01,
-                          'yellow'  => 0x05
-                       );
+            'aqua'    => 0x07,
+            'cyan'    => 0x07,
+            'black'   => 0x00,
+            'blue'    => 0x04,
+            'brown'   => 0x10,
+            'magenta' => 0x06,
+            'fuchsia' => 0x06,
+            'gray'    => 0x17,
+            'grey'    => 0x17,
+            'green'   => 0x11,
+            'lime'    => 0x03,
+            'navy'    => 0x12,
+            'orange'  => 0x35,
+            'purple'  => 0x14,
+            'red'     => 0x02,
+            'silver'  => 0x16,
+            'white'   => 0x01,
+            'yellow'  => 0x05,
+        );
 
         // Return the default color, 0x7FFF, if undef,
         if ($name_color === '') {
@@ -899,6 +899,11 @@ class Excel_Writer_Format
     public function setNumFormat($num_format)
     {
         $this->_num_format = $num_format;
+    }
+
+    public function getNumFormat()
+    {
+        return $this->_num_format;
     }
 
     /**
