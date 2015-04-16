@@ -160,7 +160,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         $iSlCnt = floor($this->_BIG_BLOCK_SIZE / Excel_OLE_LONG_INT_SIZE);
         $iSBDcnt = floor($iSBcnt / $iSlCnt) + (($iSBcnt % $iSlCnt) ? 1 : 0);
         $iBBcnt +=  (floor($iSmallLen / $this->_BIG_BLOCK_SIZE) +
-                      (( $iSmallLen % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
+                      (($iSmallLen % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
         $iCnt = count($raList);
         $iBdCnt = $this->_BIG_BLOCK_SIZE / Excel_OLE_PPS_SIZE;
         $iPPScnt = (floor($iCnt/$iBdCnt) + (($iCnt % $iBdCnt) ? 1 : 0));

@@ -203,13 +203,13 @@ class Excel_OLE_PPS
      */
     public static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
     {
-      if ( ! is_array($to_save) || (count($to_save) == 0) ) {
+      if (! is_array($to_save) || (count($to_save) == 0)) {
         return 0xFFFFFFFF;
       }
-      elseif( count($to_save) == 1 ) {
+      elseif(count($to_save) == 1) {
         $cnt = count($raList);
         // If the first entry, it's the root... Don't clone it!
-        $raList[$cnt] = ( $depth == 0 ) ? $to_save[0] : clone $to_save[0];
+        $raList[$cnt] = ($depth == 0) ? $to_save[0] : clone $to_save[0];
         $raList[$cnt]->No = $cnt;
         $raList[$cnt]->PrevPps = 0xFFFFFFFF;
         $raList[$cnt]->NextPps = 0xFFFFFFFF;
@@ -224,7 +224,7 @@ class Excel_OLE_PPS
 
         $cnt   = count($raList);
         // If the first entry, it's the root... Don't clone it!
-        $raList[$cnt] = ( $depth == 0 ) ? $to_save[$iPos] : clone $to_save[$iPos];
+        $raList[$cnt] = ($depth == 0) ? $to_save[$iPos] : clone $to_save[$iPos];
         $raList[$cnt]->No = $cnt;
         $raList[$cnt]->PrevPps = self::_savePpsSetPnt($raList, $aPrev, $depth++);
         $raList[$cnt]->NextPps = self::_savePpsSetPnt($raList, $aNext, $depth++);

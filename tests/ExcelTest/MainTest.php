@@ -15,9 +15,9 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         $xls = new Excel_Writer($filename);
 
-        $xls->setCustomColor( 60, hexdec( '7f' ), hexdec( '7f' ), hexdec( '7f' ) );
-        $xls->setCustomColor( 61, hexdec( 'e8' ), hexdec( 'e8' ), hexdec( 'e8' ) );
-        $xls->setCustomColor( 62, hexdec( 'cc' ), hexdec( 'cc' ), hexdec( 'cc' ) );
+        $xls->setCustomColor(60, hexdec('7f'), hexdec('7f'), hexdec('7f'));
+        $xls->setCustomColor(61, hexdec('e8'), hexdec('e8'), hexdec('e8'));
+        $xls->setCustomColor(62, hexdec('cc'), hexdec('cc'), hexdec('cc'));
 
         $sheet = $xls->addWorksheet('FoglioCustom');
         $sheet->setLandscape();

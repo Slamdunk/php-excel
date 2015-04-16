@@ -662,8 +662,8 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         $this->_storeEof();
 
-        if ( $this->_tmp_file != '' ) {
-          if ( $this->_filehandle ) {
+        if ($this->_tmp_file != '') {
+          if ($this->_filehandle) {
             fclose($this->_filehandle);
             $this->_filehandle = '';
           }
@@ -2263,15 +2263,15 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $dir_long       = $dir_long . "\0";
 
         // Pack the lengths of the dir strings
-        $dir_short_len = pack("V", strlen($dir_short)      );
-        $dir_long_len  = pack("V", strlen($dir_long)       );
+        $dir_short_len = pack("V", strlen($dir_short));
+        $dir_long_len  = pack("V", strlen($dir_long));
         $stream_len    = pack("V", 0);//strlen($dir_long) + 0x06);
 
         // Pack the undocumented parts of the hyperlink stream
-        $unknown1 = pack("H*",'D0C9EA79F9BACE118C8200AA004BA90B02000000'       );
-        $unknown2 = pack("H*",'0303000000000000C000000000000046'               );
+        $unknown1 = pack("H*",'D0C9EA79F9BACE118C8200AA004BA90B02000000');
+        $unknown2 = pack("H*",'0303000000000000C000000000000046');
         $unknown3 = pack("H*",'FFFFADDE000000000000000000000000000000000000000');
-        $unknown4 = pack("v",  0x03                                            );
+        $unknown4 = pack("v",  0x03);
 
         // Pack the main data stream
         $data        = pack("vvvv", $row1, $row2, $col1, $col2) .
