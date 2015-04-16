@@ -1,355 +1,413 @@
 <?php
 
 /**
-* Class for generating Excel Spreadsheets
-*
-* @author   Xavier Noguer <xnoguer@rezebra.com>
-* @category FileFormats
-* @package  Excel_Writer
-*/
+ * Class for generating Excel Spreadsheets
+ *
+ * @author   Xavier Noguer <xnoguer@rezebra.com>
+ *
+ * @category FileFormats
+ */
 
 class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 {
     /**
-    * Name of the Worksheet
-    * @var string
-    */
+     * Name of the Worksheet
+     *
+     * @var string
+     */
     public $name;
 
     /**
-    * Index for the Worksheet
-    * @var integer
-    */
+     * Index for the Worksheet
+     *
+     * @var integer
+     */
     public $index;
 
     /**
-    * Reference to the (default) Format object for URLs
-    * @var object Format
-    */
+     * Reference to the (default) Format object for URLs
+     *
+     * @var object Format
+     */
     public $_url_format;
 
     /**
-    * Reference to the parser used for parsing formulas
-    * @var object Format
-    */
+     * Reference to the parser used for parsing formulas
+     *
+     * @var object Format
+     */
     public $_parser;
 
     /**
-    * Filehandle to the temporary file for storing data
-    * @var resource
-    */
+     * Filehandle to the temporary file for storing data
+     *
+     * @var resource
+     */
     public $_filehandle;
 
     /**
-    * Boolean indicating if we are using a temporary file for storing data
-    * @var bool
-    */
+     * Boolean indicating if we are using a temporary file for storing data
+     *
+     * @var bool
+     */
     public $_using_tmpfile;
 
     /**
-    * Maximum number of rows for an Excel spreadsheet (BIFF5)
-    * @var integer
-    */
+     * Maximum number of rows for an Excel spreadsheet (BIFF5)
+     *
+     * @var integer
+     */
     public $_xls_rowmax;
 
     /**
-    * Maximum number of columns for an Excel spreadsheet (BIFF5)
-    * @var integer
-    */
+     * Maximum number of columns for an Excel spreadsheet (BIFF5)
+     *
+     * @var integer
+     */
     public $_xls_colmax;
 
     /**
-    * Maximum number of characters for a string (LABEL record in BIFF5)
-    * @var integer
-    */
+     * Maximum number of characters for a string (LABEL record in BIFF5)
+     *
+     * @var integer
+     */
     public $_xls_strmax;
 
     /**
-    * First row for the DIMENSIONS record
-    * @var integer
-    * @see _storeDimensions()
-    */
+     * First row for the DIMENSIONS record
+     *
+     * @var integer
+     *
+     * @see _storeDimensions()
+     */
     public $_dim_rowmin;
 
     /**
-    * Last row for the DIMENSIONS record
-    * @var integer
-    * @see _storeDimensions()
-    */
+     * Last row for the DIMENSIONS record
+     *
+     * @var integer
+     *
+     * @see _storeDimensions()
+     */
     public $_dim_rowmax;
 
     /**
-    * First column for the DIMENSIONS record
-    * @var integer
-    * @see _storeDimensions()
-    */
+     * First column for the DIMENSIONS record
+     *
+     * @var integer
+     *
+     * @see _storeDimensions()
+     */
     public $_dim_colmin;
 
     /**
-    * Last column for the DIMENSIONS record
-    * @var integer
-    * @see _storeDimensions()
-    */
+     * Last column for the DIMENSIONS record
+     *
+     * @var integer
+     *
+     * @see _storeDimensions()
+     */
     public $_dim_colmax;
 
     /**
-    * Array containing format information for columns
-    * @var array
-    */
+     * Array containing format information for columns
+     *
+     * @var array
+     */
     public $_colinfo;
 
     /**
-    * Array containing the selected area for the worksheet
-    * @var array
-    */
+     * Array containing the selected area for the worksheet
+     *
+     * @var array
+     */
     public $_selection;
 
     /**
-    * Array containing the panes for the worksheet
-    * @var array
-    */
+     * Array containing the panes for the worksheet
+     *
+     * @var array
+     */
     public $_panes;
 
     /**
-    * The active pane for the worksheet
-    * @var integer
-    */
+     * The active pane for the worksheet
+     *
+     * @var integer
+     */
     public $_active_pane;
 
     /**
-    * Bit specifying if panes are frozen
-    * @var integer
-    */
+     * Bit specifying if panes are frozen
+     *
+     * @var integer
+     */
     public $_frozen;
 
     /**
-    * Bit specifying if the worksheet is selected
-    * @var integer
-    */
+     * Bit specifying if the worksheet is selected
+     *
+     * @var integer
+     */
     public $selected;
 
     /**
-    * The paper size (for printing) (DOCUMENT!!!)
-    * @var integer
-    */
+     * The paper size (for printing) (DOCUMENT!!!)
+     *
+     * @var integer
+     */
     public $_paper_size;
 
     /**
-    * Bit specifying paper orientation (for printing). 0 => landscape, 1 => portrait
-    * @var integer
-    */
+     * Bit specifying paper orientation (for printing). 0 => landscape, 1 => portrait
+     *
+     * @var integer
+     */
     public $_orientation;
 
     /**
-    * The page header caption
-    * @var string
-    */
+     * The page header caption
+     *
+     * @var string
+     */
     public $_header;
 
     /**
-    * The page footer caption
-    * @var string
-    */
+     * The page footer caption
+     *
+     * @var string
+     */
     public $_footer;
 
     /**
-    * The horizontal centering value for the page
-    * @var integer
-    */
+     * The horizontal centering value for the page
+     *
+     * @var integer
+     */
     public $_hcenter;
 
     /**
-    * The vertical centering value for the page
-    * @var integer
-    */
+     * The vertical centering value for the page
+     *
+     * @var integer
+     */
     public $_vcenter;
 
     /**
-    * The margin for the header
-    * @var float
-    */
+     * The margin for the header
+     *
+     * @var float
+     */
     public $_margin_head;
 
     /**
-    * The margin for the footer
-    * @var float
-    */
+     * The margin for the footer
+     *
+     * @var float
+     */
     public $_margin_foot;
 
     /**
-    * The left margin for the worksheet in inches
-    * @var float
-    */
+     * The left margin for the worksheet in inches
+     *
+     * @var float
+     */
     public $_margin_left;
 
     /**
-    * The right margin for the worksheet in inches
-    * @var float
-    */
+     * The right margin for the worksheet in inches
+     *
+     * @var float
+     */
     public $_margin_right;
 
     /**
-    * The top margin for the worksheet in inches
-    * @var float
-    */
+     * The top margin for the worksheet in inches
+     *
+     * @var float
+     */
     public $_margin_top;
 
     /**
-    * The bottom margin for the worksheet in inches
-    * @var float
-    */
+     * The bottom margin for the worksheet in inches
+     *
+     * @var float
+     */
     public $_margin_bottom;
 
     /**
-    * First row to reapeat on each printed page
-    * @var integer
-    */
+     * First row to reapeat on each printed page
+     *
+     * @var integer
+     */
     public $title_rowmin;
 
     /**
-    * Last row to reapeat on each printed page
-    * @var integer
-    */
+     * Last row to reapeat on each printed page
+     *
+     * @var integer
+     */
     public $title_rowmax;
 
     /**
-    * First column to reapeat on each printed page
-    * @var integer
-    */
+     * First column to reapeat on each printed page
+     *
+     * @var integer
+     */
     public $title_colmin;
 
     /**
-    * First row of the area to print
-    * @var integer
-    */
+     * First row of the area to print
+     *
+     * @var integer
+     */
     public $print_rowmin;
 
     /**
-    * Last row to of the area to print
-    * @var integer
-    */
+     * Last row to of the area to print
+     *
+     * @var integer
+     */
     public $print_rowmax;
 
     /**
-    * First column of the area to print
-    * @var integer
-    */
+     * First column of the area to print
+     *
+     * @var integer
+     */
     public $print_colmin;
 
     /**
-    * Last column of the area to print
-    * @var integer
-    */
+     * Last column of the area to print
+     *
+     * @var integer
+     */
     public $print_colmax;
 
     /**
-    * Whether to display RightToLeft.
-    * @var integer
-    */
+     * Whether to display RightToLeft.
+     *
+     * @var integer
+     */
     public $_Arabic;
 
     /**
-    * Whether to use outline.
-    * @var integer
-    */
+     * Whether to use outline.
+     *
+     * @var integer
+     */
     public $_outline_on;
 
     /**
-    * Auto outline styles.
-    * @var bool
-    */
+     * Auto outline styles.
+     *
+     * @var bool
+     */
     public $_outline_style;
 
     /**
-    * Whether to have outline summary below.
-    * @var bool
-    */
+     * Whether to have outline summary below.
+     *
+     * @var bool
+     */
     public $_outline_below;
 
     /**
-    * Whether to have outline summary at the right.
-    * @var bool
-    */
+     * Whether to have outline summary at the right.
+     *
+     * @var bool
+     */
     public $_outline_right;
 
     /**
-    * Outline row level.
-    * @var integer
-    */
+     * Outline row level.
+     *
+     * @var integer
+     */
     public $_outline_row_level;
 
     /**
-    * Whether to fit to page when printing or not.
-    * @var bool
-    */
+     * Whether to fit to page when printing or not.
+     *
+     * @var bool
+     */
     public $_fit_page;
 
     /**
-    * Number of pages to fit wide
-    * @var integer
-    */
+     * Number of pages to fit wide
+     *
+     * @var integer
+     */
     public $_fit_width;
 
     /**
-    * Number of pages to fit high
-    * @var integer
-    */
+     * Number of pages to fit high
+     *
+     * @var integer
+     */
     public $_fit_height;
 
     /**
-    * Reference to the total number of strings in the workbook
-    * @var integer
-    */
+     * Reference to the total number of strings in the workbook
+     *
+     * @var integer
+     */
     public $_str_total;
 
     /**
-    * Reference to the number of unique strings in the workbook
-    * @var integer
-    */
+     * Reference to the number of unique strings in the workbook
+     *
+     * @var integer
+     */
     public $_str_unique;
 
     /**
-    * Reference to the array containing all the unique strings in the workbook
-    * @var array
-    */
+     * Reference to the array containing all the unique strings in the workbook
+     *
+     * @var array
+     */
     public $_str_table;
 
     /**
      * Number of merged cell ranges in actual record
-     * @var int $_merged_cells_counter
+     *
+     * @var int
      */
     public $_merged_cells_counter = 0;
 
     /**
      * Number of actual mergedcells record
-     * @var int $_merged_cells_record
+     *
+     * @var int
      */
     public $_merged_cells_record = 0;
 
     /**
-    * Merged cell ranges
-    * @var array
-    */
+     * Merged cell ranges
+     *
+     * @var array
+     */
     public $_merged_ranges;
 
     /**
-    * Charset encoding currently used when calling writeString()
-    * @var string
-    */
+     * Charset encoding currently used when calling writeString()
+     *
+     * @var string
+     */
     public $_input_encoding;
 
     /**
-    * Constructor
-    *
-    * @param string  $name         The name of the new worksheet
-    * @param integer $index        The index of the new worksheet
-    * @param mixed   &$activesheet The current activesheet of the workbook we belong to
-    * @param mixed   &$firstsheet  The first worksheet in the workbook we belong to
-    * @param mixed   &$url_format  The default format for hyperlinks
-    * @param mixed   &$parser      The formula parser created for the Workbook
-    * @param string  $tmp_dir      The path to the directory for temporary files
-    * @access private
-    */
+     * Constructor
+     *
+     * @param string  $name         The name of the new worksheet
+     * @param integer $index        The index of the new worksheet
+     * @param mixed   &$activesheet The current activesheet of the workbook we belong to
+     * @param mixed   &$firstsheet  The first worksheet in the workbook we belong to
+     * @param mixed   &$url_format  The default format for hyperlinks
+     * @param mixed   &$parser      The formula parser created for the Workbook
+     * @param string  $tmp_dir      The path to the directory for temporary files
+     * @access private
+     */
     public function Excel_Writer_Worksheet($name,
                                                 $index, &$activesheet,
                                                 &$firstsheet, &$str_total,
@@ -453,12 +511,12 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Open a tmp file to store the majority of the Worksheet data. If this fails,
-    * for example due to write permissions, store the data in memory. This can be
-    * slow for large files.
-    *
-    * @access private
-    */
+     * Open a tmp file to store the majority of the Worksheet data. If this fails,
+     * for example due to write permissions, store the data in memory. This can be
+     * slow for large files.
+     *
+     * @access private
+     */
     public function _initialize()
     {
         if ($this->_using_tmpfile == false) {
@@ -492,14 +550,16 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Add data to the beginning of the workbook (note the reverse order)
-    * and to the end of the workbook.
-    *
-    * @access public
-    * @see Excel_Writer_Workbook::storeWorkbook()
-    * @param array $sheetnames The array of sheetnames from the Workbook this
-    *                          worksheet belongs to
-    */
+     * Add data to the beginning of the workbook (note the reverse order)
+     * and to the end of the workbook.
+     *
+     * @access public
+     *
+     * @see Excel_Writer_Workbook::storeWorkbook()
+     *
+     * @param array $sheetnames The array of sheetnames from the Workbook this
+     *                          worksheet belongs to
+     */
     public function close($sheetnames)
     {
         $num_sheets = count($sheetnames);
@@ -614,23 +674,24 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Retrieve the worksheet name.
-    * This is usefull when creating worksheets without a name.
-    *
-    * @access public
-    * @return string The worksheet's name
-    */
+     * Retrieve the worksheet name.
+     * This is usefull when creating worksheets without a name.
+     *
+     * @access public
+     *
+     * @return string The worksheet's name
+     */
     public function getName()
     {
         return $this->name;
     }
 
     /**
-    * Retrieves data from memory in one chunk, or from disk in $buffer
-    * sized chunks.
-    *
-    * @return string The data
-    */
+     * Retrieves data from memory in one chunk, or from disk in $buffer
+     * sized chunks.
+     *
+     * @return string The data
+     */
     public function getData()
     {
         $buffer = 4096;
@@ -658,14 +719,15 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Sets a merged cell range
-    *
-    * @access public
-    * @param integer $first_row First row of the area to merge
-    * @param integer $first_col First column of the area to merge
-    * @param integer $last_row  Last row of the area to merge
-    * @param integer $last_col  Last column of the area to merge
-    */
+     * Sets a merged cell range
+     *
+     * @access public
+     *
+     * @param integer $first_row First row of the area to merge
+     * @param integer $first_col First column of the area to merge
+     * @param integer $last_row  Last row of the area to merge
+     * @param integer $last_col  Last column of the area to merge
+     */
     public function setMerge($first_row, $first_col, $last_row, $last_col)
     {
         if (($last_row < $first_row) || ($last_col < $first_col)) {
@@ -686,23 +748,23 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set this worksheet as a selected worksheet,
-    * i.e. the worksheet has its tab highlighted.
-    *
-    * @access public
-    */
+     * Set this worksheet as a selected worksheet,
+     * i.e. the worksheet has its tab highlighted.
+     *
+     * @access public
+     */
     public function select()
     {
         $this->selected = 1;
     }
 
     /**
-    * Set this worksheet as the active worksheet,
-    * i.e. the worksheet that is displayed when the workbook is opened.
-    * Also set it as selected.
-    *
-    * @access public
-    */
+     * Set this worksheet as the active worksheet,
+     * i.e. the worksheet that is displayed when the workbook is opened.
+     * Also set it as selected.
+     *
+     * @access public
+     */
     public function activate()
     {
         $this->selected = 1;
@@ -710,25 +772,26 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set this worksheet as the first visible sheet.
-    * This is necessary when there are a large number of worksheets and the
-    * activated worksheet is not visible on the screen.
-    *
-    * @access public
-    */
+     * Set this worksheet as the first visible sheet.
+     * This is necessary when there are a large number of worksheets and the
+     * activated worksheet is not visible on the screen.
+     *
+     * @access public
+     */
     public function setFirstSheet()
     {
         $this->firstsheet = $this->index;
     }
 
     /**
-    * Set the worksheet protection flag
-    * to prevent accidental modification and to
-    * hide formulas if the locked and hidden format properties have been set.
-    *
-    * @access public
-    * @param string $password The password to use for protecting the sheet.
-    */
+     * Set the worksheet protection flag
+     * to prevent accidental modification and to
+     * hide formulas if the locked and hidden format properties have been set.
+     *
+     * @access public
+     *
+     * @param string $password The password to use for protecting the sheet.
+     */
     public function protect($password)
     {
         $this->_protect   = 1;
@@ -736,16 +799,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the width of a single column or a range of columns.
-    *
-    * @access public
-    * @param integer $firstcol first column on the range
-    * @param integer $lastcol  last column on the range
-    * @param integer $width    width to set
-    * @param mixed   $format   The optional XF format to apply to the columns
-    * @param integer $hidden   The optional hidden atribute
-    * @param integer $level    The optional outline level
-    */
+     * Set the width of a single column or a range of columns.
+     *
+     * @access public
+     *
+     * @param integer $firstcol first column on the range
+     * @param integer $lastcol  last column on the range
+     * @param integer $width    width to set
+     * @param mixed   $format   The optional XF format to apply to the columns
+     * @param integer $hidden   The optional hidden atribute
+     * @param integer $level    The optional outline level
+     */
     public function setColumn($firstcol, $lastcol, $width, $format = null, $hidden = 0, $level = 0)
     { // added by Dan Lynn <dan@spiderweblabs.com) on 2006-12-06
         // look for any ranges this might overlap and remove, size or split where necessary
@@ -783,30 +847,32 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set which cell or cells are selected in a worksheet
-    *
-    * @access public
-    * @param integer $first_row    first row in the selected quadrant
-    * @param integer $first_column first column in the selected quadrant
-    * @param integer $last_row     last row in the selected quadrant
-    * @param integer $last_column  last column in the selected quadrant
-    */
+     * Set which cell or cells are selected in a worksheet
+     *
+     * @access public
+     *
+     * @param integer $first_row    first row in the selected quadrant
+     * @param integer $first_column first column in the selected quadrant
+     * @param integer $last_row     last row in the selected quadrant
+     * @param integer $last_column  last column in the selected quadrant
+     */
     public function setSelection($first_row,$first_column,$last_row,$last_column)
     {
         $this->_selection = array($first_row,$first_column,$last_row,$last_column);
     }
 
     /**
-    * Set panes and mark them as frozen.
-    *
-    * @access public
-    * @param array $panes This is the only parameter received and is composed of the following:
-    *                     0 => Vertical split position,
-    *                     1 => Horizontal split position
-    *                     2 => Top row visible
-    *                     3 => Leftmost column visible
-    *                     4 => Active pane
-    */
+     * Set panes and mark them as frozen.
+     *
+     * @access public
+     *
+     * @param array $panes This is the only parameter received and is composed of the following:
+     *                     0 => Vertical split position,
+     *                     1 => Horizontal split position
+     *                     2 => Top row visible
+     *                     3 => Leftmost column visible
+     *                     4 => Active pane
+     */
     public function freezePanes($panes)
     {
         $this->_frozen = 1;
@@ -814,16 +880,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set panes and mark them as unfrozen.
-    *
-    * @access public
-    * @param array $panes This is the only parameter received and is composed of the following:
-    *                     0 => Vertical split position,
-    *                     1 => Horizontal split position
-    *                     2 => Top row visible
-    *                     3 => Leftmost column visible
-    *                     4 => Active pane
-    */
+     * Set panes and mark them as unfrozen.
+     *
+     * @access public
+     *
+     * @param array $panes This is the only parameter received and is composed of the following:
+     *                     0 => Vertical split position,
+     *                     1 => Horizontal split position
+     *                     2 => Top row visible
+     *                     3 => Leftmost column visible
+     *                     4 => Active pane
+     */
     public function thawPanes($panes)
     {
         $this->_frozen = 0;
@@ -831,43 +898,45 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the page orientation as portrait.
-    *
-    * @access public
-    */
+     * Set the page orientation as portrait.
+     *
+     * @access public
+     */
     public function setPortrait()
     {
         $this->_orientation = 1;
     }
 
     /**
-    * Set the page orientation as landscape.
-    *
-    * @access public
-    */
+     * Set the page orientation as landscape.
+     *
+     * @access public
+     */
     public function setLandscape()
     {
         $this->_orientation = 0;
     }
 
     /**
-    * Set the paper type. Ex. 1 = US Letter, 9 = A4
-    *
-    * @access public
-    * @param integer $size The type of paper size to use
-    */
+     * Set the paper type. Ex. 1 = US Letter, 9 = A4
+     *
+     * @access public
+     *
+     * @param integer $size The type of paper size to use
+     */
     public function setPaper($size = 0)
     {
         $this->_paper_size = $size;
     }
 
     /**
-    * Set the page header caption and optional margin.
-    *
-    * @access public
-    * @param string $string The header text
-    * @param float  $margin optional head margin in inches.
-    */
+     * Set the page header caption and optional margin.
+     *
+     * @access public
+     *
+     * @param string $string The header text
+     * @param float  $margin optional head margin in inches.
+     */
     public function setHeader($string,$margin = 0.50)
     {
         if (strlen($string) >= 255) {
@@ -879,12 +948,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the page footer caption and optional margin.
-    *
-    * @access public
-    * @param string $string The footer text
-    * @param float  $margin optional foot margin in inches.
-    */
+     * Set the page footer caption and optional margin.
+     *
+     * @access public
+     *
+     * @param string $string The footer text
+     * @param float  $margin optional foot margin in inches.
+     */
     public function setFooter($string,$margin = 0.50)
     {
         if (strlen($string) >= 255) {
@@ -896,33 +966,36 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Center the page horinzontally.
-    *
-    * @access public
-    * @param integer $center the optional value for centering. Defaults to 1 (center).
-    */
+     * Center the page horinzontally.
+     *
+     * @access public
+     *
+     * @param integer $center the optional value for centering. Defaults to 1 (center).
+     */
     public function centerHorizontally($center = 1)
     {
         $this->_hcenter = $center;
     }
 
     /**
-    * Center the page vertically.
-    *
-    * @access public
-    * @param integer $center the optional value for centering. Defaults to 1 (center).
-    */
+     * Center the page vertically.
+     *
+     * @access public
+     *
+     * @param integer $center the optional value for centering. Defaults to 1 (center).
+     */
     public function centerVertically($center = 1)
     {
         $this->_vcenter = $center;
     }
 
     /**
-    * Set all the page margins to the same value in inches.
-    *
-    * @access public
-    * @param float $margin The margin to set in inches
-    */
+     * Set all the page margins to the same value in inches.
+     *
+     * @access public
+     *
+     * @param float $margin The margin to set in inches
+     */
     public function setMargins($margin)
     {
         $this->setMarginLeft($margin);
@@ -932,11 +1005,12 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the left and right margins to the same value in inches.
-    *
-    * @access public
-    * @param float $margin The margin to set in inches
-    */
+     * Set the left and right margins to the same value in inches.
+     *
+     * @access public
+     *
+     * @param float $margin The margin to set in inches
+     */
     public function setMargins_LR($margin)
     {
         $this->setMarginLeft($margin);
@@ -944,11 +1018,12 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the top and bottom margins to the same value in inches.
-    *
-    * @access public
-    * @param float $margin The margin to set in inches
-    */
+     * Set the top and bottom margins to the same value in inches.
+     *
+     * @access public
+     *
+     * @param float $margin The margin to set in inches
+     */
     public function setMargins_TB($margin)
     {
         $this->setMarginTop($margin);
@@ -956,56 +1031,61 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the left margin in inches.
-    *
-    * @access public
-    * @param float $margin The margin to set in inches
-    */
+     * Set the left margin in inches.
+     *
+     * @access public
+     *
+     * @param float $margin The margin to set in inches
+     */
     public function setMarginLeft($margin = 0.75)
     {
         $this->_margin_left = $margin;
     }
 
     /**
-    * Set the right margin in inches.
-    *
-    * @access public
-    * @param float $margin The margin to set in inches
-    */
+     * Set the right margin in inches.
+     *
+     * @access public
+     *
+     * @param float $margin The margin to set in inches
+     */
     public function setMarginRight($margin = 0.75)
     {
         $this->_margin_right = $margin;
     }
 
     /**
-    * Set the top margin in inches.
-    *
-    * @access public
-    * @param float $margin The margin to set in inches
-    */
+     * Set the top margin in inches.
+     *
+     * @access public
+     *
+     * @param float $margin The margin to set in inches
+     */
     public function setMarginTop($margin = 1.00)
     {
         $this->_margin_top = $margin;
     }
 
     /**
-    * Set the bottom margin in inches.
-    *
-    * @access public
-    * @param float $margin The margin to set in inches
-    */
+     * Set the bottom margin in inches.
+     *
+     * @access public
+     *
+     * @param float $margin The margin to set in inches
+     */
     public function setMarginBottom($margin = 1.00)
     {
         $this->_margin_bottom = $margin;
     }
 
     /**
-    * Set the rows to repeat at the top of each printed page.
-    *
-    * @access public
-    * @param integer $first_row First row to repeat
-    * @param integer $last_row  Last row to repeat. Optional.
-    */
+     * Set the rows to repeat at the top of each printed page.
+     *
+     * @access public
+     *
+     * @param integer $first_row First row to repeat
+     * @param integer $last_row  Last row to repeat. Optional.
+     */
     public function repeatRows($first_row, $last_row = null)
     {
         $this->title_rowmin  = $first_row;
@@ -1017,12 +1097,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the columns to repeat at the left hand side of each printed page.
-    *
-    * @access public
-    * @param integer $first_col First column to repeat
-    * @param integer $last_col  Last column to repeat. Optional.
-    */
+     * Set the columns to repeat at the left hand side of each printed page.
+     *
+     * @access public
+     *
+     * @param integer $first_col First column to repeat
+     * @param integer $last_col  Last column to repeat. Optional.
+     */
     public function repeatColumns($first_col, $last_col = null)
     {
         $this->title_colmin  = $first_col;
@@ -1034,14 +1115,15 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the area of each worksheet that will be printed.
-    *
-    * @access public
-    * @param integer $first_row First row of the area to print
-    * @param integer $first_col First column of the area to print
-    * @param integer $last_row  Last row of the area to print
-    * @param integer $last_col  Last column of the area to print
-    */
+     * Set the area of each worksheet that will be printed.
+     *
+     * @access public
+     *
+     * @param integer $first_row First row of the area to print
+     * @param integer $first_col First column of the area to print
+     * @param integer $last_row  Last row of the area to print
+     * @param integer $last_col  Last column of the area to print
+     */
     public function printArea($first_row, $first_col, $last_row, $last_col)
     {
         $this->print_rowmin  = $first_row;
@@ -1051,45 +1133,48 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the option to hide gridlines on the printed page.
-    *
-    * @access public
-    */
+     * Set the option to hide gridlines on the printed page.
+     *
+     * @access public
+     */
     public function hideGridlines()
     {
         $this->_print_gridlines = 0;
     }
 
     /**
-    * Set the option to hide gridlines on the worksheet (as seen on the screen).
-    *
-    * @access public
-    */
+     * Set the option to hide gridlines on the worksheet (as seen on the screen).
+     *
+     * @access public
+     */
     public function hideScreenGridlines()
     {
         $this->_screen_gridlines = 0;
     }
 
     /**
-    * Set the option to print the row and column headers on the printed page.
-    *
-    * @access public
-    * @param integer $print Whether to print the headers or not. Defaults to 1 (print).
-    */
+     * Set the option to print the row and column headers on the printed page.
+     *
+     * @access public
+     *
+     * @param integer $print Whether to print the headers or not. Defaults to 1 (print).
+     */
     public function printRowColHeaders($print = 1)
     {
         $this->_print_headers = $print;
     }
 
     /**
-    * Set the vertical and horizontal number of pages that will define the maximum area printed.
-    * It doesn't seem to work with OpenOffice.
-    *
-    * @access public
-    * @param  integer $width  Maximun width of printed area in pages
-    * @param  integer $height Maximun heigth of printed area in pages
-    * @see setPrintScale()
-    */
+     * Set the vertical and horizontal number of pages that will define the maximum area printed.
+     * It doesn't seem to work with OpenOffice.
+     *
+     * @access public
+     *
+     * @param integer $width  Maximun width of printed area in pages
+     * @param integer $height Maximun heigth of printed area in pages
+     *
+     * @see setPrintScale()
+     */
     public function fitToPages($width, $height)
     {
         $this->_fit_page      = 1;
@@ -1098,12 +1183,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the horizontal page breaks on a worksheet (for printing).
-    * The breaks represent the row after which the break is inserted.
-    *
-    * @access public
-    * @param array $breaks Array containing the horizontal page breaks
-    */
+     * Store the horizontal page breaks on a worksheet (for printing).
+     * The breaks represent the row after which the break is inserted.
+     *
+     * @access public
+     *
+     * @param array $breaks Array containing the horizontal page breaks
+     */
     public function setHPagebreaks($breaks)
     {
         foreach ($breaks as $break) {
@@ -1112,12 +1198,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the vertical page breaks on a worksheet (for printing).
-    * The breaks represent the column after which the break is inserted.
-    *
-    * @access public
-    * @param array $breaks Array containing the vertical page breaks
-    */
+     * Store the vertical page breaks on a worksheet (for printing).
+     * The breaks represent the column after which the break is inserted.
+     *
+     * @access public
+     *
+     * @param array $breaks Array containing the vertical page breaks
+     */
     public function setVPagebreaks($breaks)
     {
         foreach ($breaks as $break) {
@@ -1126,11 +1213,12 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the worksheet zoom factor.
-    *
-    * @access public
-    * @param integer $scale The zoom factor
-    */
+     * Set the worksheet zoom factor.
+     *
+     * @access public
+     *
+     * @param integer $scale The zoom factor
+     */
     public function setZoom($scale = 100)
     {
         // Confine the scale to Excel's range
@@ -1143,12 +1231,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the scale factor for the printed page.
-    * It turns off the "fit to page" option
-    *
-    * @access public
-    * @param integer $scale The optional scale factor. Defaults to 100
-    */
+     * Set the scale factor for the printed page.
+     * It turns off the "fit to page" option
+     *
+     * @access public
+     *
+     * @param integer $scale The optional scale factor. Defaults to 100
+     */
     public function setPrintScale($scale = 100)
     {
         // Confine the scale to Excel's range
@@ -1164,14 +1253,15 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Map to the appropriate write method acording to the token recieved.
-    *
-    * @access public
-    * @param integer $row    The row of the cell we are writing to
-    * @param integer $col    The column of the cell we are writing to
-    * @param mixed   $token  What we are writing
-    * @param mixed   $format The optional format to apply to the cell
-    */
+     * Map to the appropriate write method acording to the token recieved.
+     *
+     * @access public
+     *
+     * @param integer $row    The row of the cell we are writing to
+     * @param integer $col    The column of the cell we are writing to
+     * @param mixed   $token  What we are writing
+     * @param mixed   $format The optional format to apply to the cell
+     */
     public function write($row, $col, $token, $format = null)
     {
         // Check for a cell reference in A1 notation and substitute row and column
@@ -1204,15 +1294,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write an array of values as a row
-    *
-    * @access public
-    * @param integer $row    The row we are writing to
-    * @param integer $col    The first col (leftmost col) we are writing to
-    * @param array   $val    The array of values to write
-    * @param mixed   $format The optional format to apply to the cell
-    * @return mixed Excel_PEAR_Error on failure
-    */
+     * Write an array of values as a row
+     *
+     * @access public
+     *
+     * @param integer $row    The row we are writing to
+     * @param integer $col    The first col (leftmost col) we are writing to
+     * @param array   $val    The array of values to write
+     * @param mixed   $format The optional format to apply to the cell
+     *
+     * @return mixed Excel_PEAR_Error on failure
+     */
 
     public function writeRow($row, $col, $val, $format = null)
     {
@@ -1234,15 +1326,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write an array of values as a column
-    *
-    * @access public
-    * @param integer $row    The first row (uppermost row) we are writing to
-    * @param integer $col    The col we are writing to
-    * @param array   $val    The array of values to write
-    * @param mixed   $format The optional format to apply to the cell
-    * @return mixed Excel_PEAR_Error on failure
-    */
+     * Write an array of values as a column
+     *
+     * @access public
+     *
+     * @param integer $row    The first row (uppermost row) we are writing to
+     * @param integer $col    The col we are writing to
+     * @param array   $val    The array of values to write
+     * @param mixed   $format The optional format to apply to the cell
+     *
+     * @return mixed Excel_PEAR_Error on failure
+     */
 
     public function writeCol($row, $col, $val, $format = null)
     {
@@ -1260,12 +1354,14 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Returns an index to the XF record in the workbook
-    *
-    * @access private
-    * @param mixed &$format The optional XF format
-    * @return integer The XF record index
-    */
+     * Returns an index to the XF record in the workbook
+     *
+     * @access private
+     *
+     * @param mixed &$format The optional XF format
+     *
+     * @return integer The XF record index
+     */
     public function _XF(&$format)
     {
         if ($format) {
@@ -1282,12 +1378,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     */
 
     /**
-    * Store Worksheet data in memory using the parent's class append() or to a
-    * temporary file, the default.
-    *
-    * @access private
-    * @param string $data The binary data to append
-    */
+     * Store Worksheet data in memory using the parent's class append() or to a
+     * temporary file, the default.
+     *
+     * @access private
+     *
+     * @param string $data The binary data to append
+     */
     public function _append($data)
     {
         if ($this->_using_tmpfile) {
@@ -1303,15 +1400,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Substitute an Excel cell reference in A1 notation for  zero based row and
-    * column values in an argument list.
-    *
-    * Ex: ("A4", "Hello") is converted to (3, 0, "Hello").
-    *
-    * @access private
-    * @param string $cell The cell reference. Or range of cells.
-    * @return array
-    */
+     * Substitute an Excel cell reference in A1 notation for  zero based row and
+     * column values in an argument list.
+     *
+     * Ex: ("A4", "Hello") is converted to (3, 0, "Hello").
+     *
+     * @access private
+     *
+     * @param string $cell The cell reference. Or range of cells.
+     *
+     * @return array
+     */
     public function _substituteCellref($cell)
     {
         $cell = strtoupper($cell);
@@ -1343,13 +1442,15 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Convert an Excel cell reference in A1 notation to a zero based row and column
-    * reference; converts C1 to (0, 2).
-    *
-    * @access private
-    * @param string $cell The cell reference.
-    * @return array containing (row, column)
-    */
+     * Convert an Excel cell reference in A1 notation to a zero based row and column
+     * reference; converts C1 to (0, 2).
+     *
+     * @access private
+     *
+     * @param string $cell The cell reference.
+     *
+     * @return array containing (row, column)
+     */
     public function _cellToRowcol($cell)
     {
         preg_match("/\$?([A-I]?[A-Z])\$?(\d+)/",$cell,$match);
@@ -1375,12 +1476,14 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Based on the algorithm provided by Daniel Rentz of OpenOffice.
-    *
-    * @access private
-    * @param string $plaintext The password to be encoded in plaintext.
-    * @return string The encoded password
-    */
+     * Based on the algorithm provided by Daniel Rentz of OpenOffice.
+     *
+     * @access private
+     *
+     * @param string $plaintext The password to be encoded in plaintext.
+     *
+     * @return string The encoded password
+     */
     public function _encodePassword($plaintext)
     {
         $password = 0x0000;
@@ -1403,14 +1506,14 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * This method sets the properties for outlining and grouping. The defaults
-    * correspond to Excel's defaults.
-    *
-    * @param bool $visible
-    * @param bool $symbols_below
-    * @param bool $symbols_right
-    * @param bool $auto_style
-    */
+     * This method sets the properties for outlining and grouping. The defaults
+     * correspond to Excel's defaults.
+     *
+     * @param bool $visible
+     * @param bool $symbols_below
+     * @param bool $symbols_right
+     * @param bool $auto_style
+     */
     public function setOutline($visible = true, $symbols_below = true, $symbols_right = true, $auto_style = false)
     {
         $this->_outline_on    = $visible;
@@ -1425,10 +1528,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
      }
 
     /**
-    * This method sets the worksheet direction to right-to-left (RTL)
-    *
-    * @param bool $rtl
-    */
+     * This method sets the worksheet direction to right-to-left (RTL)
+     *
+     * @param bool $rtl
+     */
     public function setRTL($rtl = true)
     {
         $this->_Arabic = ($rtl ? 1 : 0);
@@ -1441,20 +1544,22 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     */
 
     /**
-    * Write a double to the specified row and column (zero indexed).
-    * An integer can be written as a double. Excel will display an
-    * integer. $format is optional.
-    *
-    * Returns  0 : normal termination
-    *         -2 : row or column out of range
-    *
-    * @access public
-    * @param integer $row    Zero indexed row
-    * @param integer $col    Zero indexed column
-    * @param float   $num    The number to write
-    * @param mixed   $format The optional XF format
-    * @return integer
-    */
+     * Write a double to the specified row and column (zero indexed).
+     * An integer can be written as a double. Excel will display an
+     * integer. $format is optional.
+     *
+     * Returns  0 : normal termination
+     *         -2 : row or column out of range
+     *
+     * @access public
+     *
+     * @param integer $row    Zero indexed row
+     * @param integer $col    Zero indexed column
+     * @param float   $num    The number to write
+     * @param mixed   $format The optional XF format
+     *
+     * @return integer
+     */
     public function writeNumber($row, $col, $num, $format = null)
     {
         $record    = 0x0203;                 // Record identifier
@@ -1495,20 +1600,22 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write a string to the specified row and column (zero indexed).
-    * NOTE: there is an Excel 5 defined limit of 255 characters.
-    * $format is optional.
-    * Returns  0 : normal termination
-    *         -2 : row or column out of range
-    *         -3 : long string truncated to 255 chars
-    *
-    * @access public
-    * @param integer $row    Zero indexed row
-    * @param integer $col    Zero indexed column
-    * @param string  $str    The string to write
-    * @param mixed   $format The XF format for the cell
-    * @return integer
-    */
+     * Write a string to the specified row and column (zero indexed).
+     * NOTE: there is an Excel 5 defined limit of 255 characters.
+     * $format is optional.
+     * Returns  0 : normal termination
+     *         -2 : row or column out of range
+     *         -3 : long string truncated to 255 chars
+     *
+     * @access public
+     *
+     * @param integer $row    Zero indexed row
+     * @param integer $col    Zero indexed column
+     * @param string  $str    The string to write
+     * @param mixed   $format The XF format for the cell
+     *
+     * @return integer
+     */
     public function writeString($row, $col, $str, $format = null)
     {
         $strlen    = strlen($str);
@@ -1553,11 +1660,12 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Sets Input Encoding for writing strings
-    *
-    * @access public
-    * @param string $encoding The encoding. Ex: 'UTF-16LE', 'utf-8', 'ISO-859-7'
-    */
+     * Sets Input Encoding for writing strings
+     *
+     * @access public
+     *
+     * @param string $encoding The encoding. Ex: 'UTF-16LE', 'utf-8', 'ISO-859-7'
+     */
     public function setInputEncoding($encoding)
     {
          if ($encoding != 'UTF-16LE' && ! function_exists('iconv')) {
@@ -1567,20 +1675,22 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write a string to the specified row and column (zero indexed).
-    * This is the BIFF8 version (no 255 chars limit).
-    * $format is optional.
-    * Returns  0 : normal termination
-    *         -2 : row or column out of range
-    *         -3 : long string truncated to 255 chars
-    *
-    * @access public
-    * @param integer $row    Zero indexed row
-    * @param integer $col    Zero indexed column
-    * @param string  $str    The string to write
-    * @param mixed   $format The XF format for the cell
-    * @return integer
-    */
+     * Write a string to the specified row and column (zero indexed).
+     * This is the BIFF8 version (no 255 chars limit).
+     * $format is optional.
+     * Returns  0 : normal termination
+     *         -2 : row or column out of range
+     *         -3 : long string truncated to 255 chars
+     *
+     * @access public
+     *
+     * @param integer $row    Zero indexed row
+     * @param integer $col    Zero indexed column
+     * @param string  $str    The string to write
+     * @param mixed   $format The XF format for the cell
+     *
+     * @return integer
+     */
     public function writeStringBIFF8($row, $col, $str, $format = null)
     {
         // If the string is Unicode and contains any "surrogate pairs" then using mb_strlen($str, 'UTF-16LE')
@@ -1631,15 +1741,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Check row and col before writing to a cell, and update the sheet's
-    * dimensions accordingly
-    *
-    * @access private
-    * @param integer $row    Zero indexed row
-    * @param integer $col    Zero indexed column
-    * @return boolean true for success, false if row and/or col are grester
-    *                 then maximums allowed.
-    */
+     * Check row and col before writing to a cell, and update the sheet's
+     * dimensions accordingly
+     *
+     * @access private
+     *
+     * @param integer $row Zero indexed row
+     * @param integer $col Zero indexed column
+     *
+     * @return boolean true for success, false if row and/or col are grester
+     *                 then maximums allowed.
+     */
     public function _checkRowCol($row, $col)
     {
         if ($row >= $this->_xls_rowmax) {
@@ -1665,14 +1777,15 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Writes a note associated with the cell given by the row and column.
-    * NOTE records don't have a length limit.
-    *
-    * @access public
-    * @param integer $row    Zero indexed row
-    * @param integer $col    Zero indexed column
-    * @param string  $note   The note to write
-    */
+     * Writes a note associated with the cell given by the row and column.
+     * NOTE records don't have a length limit.
+     *
+     * @access public
+     *
+     * @param integer $row  Zero indexed row
+     * @param integer $col  Zero indexed column
+     * @param string  $note The note to write
+     */
     public function writeNote($row, $col, $note)
     {
         $note_length    = strlen($note);
@@ -1718,22 +1831,23 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write a blank cell to the specified row and column (zero indexed).
-    * A blank cell is used to specify formatting without adding a string
-    * or a number.
-    *
-    * A blank cell without a format serves no purpose. Therefore, we don't write
-    * a BLANK record unless a format is specified.
-    *
-    * Returns  0 : normal termination (including no format)
-    *         -1 : insufficient number of arguments
-    *         -2 : row or column out of range
-    *
-    * @access public
-    * @param integer $row    Zero indexed row
-    * @param integer $col    Zero indexed column
-    * @param mixed   $format The XF format
-    */
+     * Write a blank cell to the specified row and column (zero indexed).
+     * A blank cell is used to specify formatting without adding a string
+     * or a number.
+     *
+     * A blank cell without a format serves no purpose. Therefore, we don't write
+     * a BLANK record unless a format is specified.
+     *
+     * Returns  0 : normal termination (including no format)
+     *         -1 : insufficient number of arguments
+     *         -2 : row or column out of range
+     *
+     * @access public
+     *
+     * @param integer $row    Zero indexed row
+     * @param integer $col    Zero indexed column
+     * @param mixed   $format The XF format
+     */
     public function writeBlank($row, $col, $format)
     {
         // Don't write a blank cell unless it has a format
@@ -1773,21 +1887,23 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write a formula to the specified row and column (zero indexed).
-    * The textual representation of the formula is passed to the parser in
-    * Parser.php which returns a packed binary string.
-    *
-    * Returns  0 : normal termination
-    *         -1 : formula errors (bad formula)
-    *         -2 : row or column out of range
-    *
-    * @access public
-    * @param integer $row     Zero indexed row
-    * @param integer $col     Zero indexed column
-    * @param string  $formula The formula text string
-    * @param mixed   $format  The optional XF format
-    * @return integer
-    */
+     * Write a formula to the specified row and column (zero indexed).
+     * The textual representation of the formula is passed to the parser in
+     * Parser.php which returns a packed binary string.
+     *
+     * Returns  0 : normal termination
+     *         -1 : formula errors (bad formula)
+     *         -2 : row or column out of range
+     *
+     * @access public
+     *
+     * @param integer $row     Zero indexed row
+     * @param integer $col     Zero indexed column
+     * @param string  $formula The formula text string
+     * @param mixed   $format  The optional XF format
+     *
+     * @return integer
+     */
     public function writeFormula($row, $col, $formula, $format = null)
     {
         $record    = 0x0006;     // Record identifier
@@ -1848,28 +1964,30 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write a hyperlink.
-    * This is comprised of two elements: the visible label and
-    * the invisible link. The visible label is the same as the link unless an
-    * alternative string is specified. The label is written using the
-    * writeString() method. Therefore the 255 characters string limit applies.
-    * $string and $format are optional.
-    *
-    * The hyperlink can be to a http, ftp, mail, internal sheet (not yet), or external
-    * directory url.
-    *
-    * Returns  0 : normal termination
-    *         -2 : row or column out of range
-    *         -3 : long string truncated to 255 chars
-    *
-    * @access public
-    * @param integer $row    Row
-    * @param integer $col    Column
-    * @param string  $url    URL string
-    * @param string  $string Alternative label
-    * @param mixed   $format The cell format
-    * @return integer
-    */
+     * Write a hyperlink.
+     * This is comprised of two elements: the visible label and
+     * the invisible link. The visible label is the same as the link unless an
+     * alternative string is specified. The label is written using the
+     * writeString() method. Therefore the 255 characters string limit applies.
+     * $string and $format are optional.
+     *
+     * The hyperlink can be to a http, ftp, mail, internal sheet (not yet), or external
+     * directory url.
+     *
+     * Returns  0 : normal termination
+     *         -2 : row or column out of range
+     *         -3 : long string truncated to 255 chars
+     *
+     * @access public
+     *
+     * @param integer $row    Row
+     * @param integer $col    Column
+     * @param string  $url    URL string
+     * @param string  $string Alternative label
+     * @param mixed   $format The cell format
+     *
+     * @return integer
+     */
     public function writeUrl($row, $col, $url, $string = '', $format = null)
     {
         // Add start row and col to arg list
@@ -1877,22 +1995,25 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * This is the more general form of writeUrl(). It allows a hyperlink to be
-    * written to a range of cells. This function also decides the type of hyperlink
-    * to be written. These are either, Web (http, ftp, mailto), Internal
-    * (Sheet1!A1) or external ('c:\temp\foo.xls#Sheet1!A1').
-    *
-    * @access private
-    * @see writeUrl()
-    * @param integer $row1   Start row
-    * @param integer $col1   Start column
-    * @param integer $row2   End row
-    * @param integer $col2   End column
-    * @param string  $url    URL string
-    * @param string  $string Alternative label
-    * @param mixed   $format The cell format
-    * @return integer
-    */
+     * This is the more general form of writeUrl(). It allows a hyperlink to be
+     * written to a range of cells. This function also decides the type of hyperlink
+     * to be written. These are either, Web (http, ftp, mailto), Internal
+     * (Sheet1!A1) or external ('c:\temp\foo.xls#Sheet1!A1').
+     *
+     * @access private
+     *
+     * @see writeUrl()
+     *
+     * @param integer $row1   Start row
+     * @param integer $col1   Start column
+     * @param integer $row2   End row
+     * @param integer $col2   End column
+     * @param string  $url    URL string
+     * @param string  $string Alternative label
+     * @param mixed   $format The cell format
+     *
+     * @return integer
+     */
 
     public function _writeUrlRange($row1, $col1, $row2, $col2, $url, $string = '', $format = null)
     {
@@ -1909,21 +2030,24 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Used to write http, ftp and mailto hyperlinks.
-    * The link type ($options) is 0x03 is the same as absolute dir ref without
-    * sheet. However it is differentiated by the $unknown2 data stream.
-    *
-    * @access private
-    * @see writeUrl()
-    * @param integer $row1   Start row
-    * @param integer $col1   Start column
-    * @param integer $row2   End row
-    * @param integer $col2   End column
-    * @param string  $url    URL string
-    * @param string  $str    Alternative label
-    * @param mixed   $format The cell format
-    * @return integer
-    */
+     * Used to write http, ftp and mailto hyperlinks.
+     * The link type ($options) is 0x03 is the same as absolute dir ref without
+     * sheet. However it is differentiated by the $unknown2 data stream.
+     *
+     * @access private
+     *
+     * @see writeUrl()
+     *
+     * @param integer $row1   Start row
+     * @param integer $col1   Start column
+     * @param integer $row2   End row
+     * @param integer $col2   End column
+     * @param string  $url    URL string
+     * @param string  $str    Alternative label
+     * @param mixed   $format The cell format
+     *
+     * @return integer
+     */
     public function _writeUrlWeb($row1, $col1, $row2, $col2, $url, $str, $format = null)
     {
         $record      = 0x01B8;                       // Record identifier
@@ -1972,19 +2096,22 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Used to write internal reference hyperlinks such as "Sheet1!A1".
-    *
-    * @access private
-    * @see writeUrl()
-    * @param integer $row1   Start row
-    * @param integer $col1   Start column
-    * @param integer $row2   End row
-    * @param integer $col2   End column
-    * @param string  $url    URL string
-    * @param string  $str    Alternative label
-    * @param mixed   $format The cell format
-    * @return integer
-    */
+     * Used to write internal reference hyperlinks such as "Sheet1!A1".
+     *
+     * @access private
+     *
+     * @see writeUrl()
+     *
+     * @param integer $row1   Start row
+     * @param integer $col1   Start column
+     * @param integer $row2   End row
+     * @param integer $col2   End column
+     * @param string  $url    URL string
+     * @param string  $str    Alternative label
+     * @param mixed   $format The cell format
+     *
+     * @return integer
+     */
     public function _writeUrlInternal($row1, $col1, $row2, $col2, $url, $str, $format = null)
     {
         $record      = 0x01B8;                       // Record identifier
@@ -2035,23 +2162,26 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write links to external directory names such as 'c:\foo.xls',
-    * c:\foo.xls#Sheet1!A1', '../../foo.xls'. and '../../foo.xls#Sheet1!A1'.
-    *
-    * Note: Excel writes some relative links with the $dir_long string. We ignore
-    * these cases for the sake of simpler code.
-    *
-    * @access private
-    * @see writeUrl()
-    * @param integer $row1   Start row
-    * @param integer $col1   Start column
-    * @param integer $row2   End row
-    * @param integer $col2   End column
-    * @param string  $url    URL string
-    * @param string  $str    Alternative label
-    * @param mixed   $format The cell format
-    * @return integer
-    */
+     * Write links to external directory names such as 'c:\foo.xls',
+     * c:\foo.xls#Sheet1!A1', '../../foo.xls'. and '../../foo.xls#Sheet1!A1'.
+     *
+     * Note: Excel writes some relative links with the $dir_long string. We ignore
+     * these cases for the sake of simpler code.
+     *
+     * @access private
+     *
+     * @see writeUrl()
+     *
+     * @param integer $row1   Start row
+     * @param integer $col1   Start column
+     * @param integer $row2   End row
+     * @param integer $col2   End column
+     * @param string  $url    URL string
+     * @param string  $str    Alternative label
+     * @param mixed   $format The cell format
+     *
+     * @return integer
+     */
     public function _writeUrlExternal($row1, $col1, $row2, $col2, $url, $str, $format = null)
     {
         // Network drives are different. We will handle them separately
@@ -2170,16 +2300,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * This method is used to set the height and format for a row.
-    *
-    * @access public
-    * @param integer $row    The row to set
-    * @param integer $height Height we are giving to the row.
-    *                        Use null to set XF without setting height
-    * @param mixed   $format XF format we are giving to the row
-    * @param bool    $hidden The optional hidden attribute
-    * @param integer $level  The optional outline level for row, in range [0,7]
-    */
+     * This method is used to set the height and format for a row.
+     *
+     * @access public
+     *
+     * @param integer $row    The row to set
+     * @param integer $height Height we are giving to the row.
+     *                        Use null to set XF without setting height
+     * @param mixed   $format XF format we are giving to the row
+     * @param bool    $hidden The optional hidden attribute
+     * @param integer $level  The optional outline level for row, in range [0,7]
+     */
     public function setRow($row, $height, $format = null, $hidden = false, $level = 0)
     {
         $record      = 0x0208;               // Record identifier
@@ -2228,10 +2359,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Writes Excel DIMENSIONS to define the area in which there is data.
-    *
-    * @access private
-    */
+     * Writes Excel DIMENSIONS to define the area in which there is data.
+     *
+     * @access private
+     */
     public function _storeDimensions()
     {
         $record    = 0x0200;                 // Record identifier
@@ -2250,10 +2381,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write BIFF record Window2.
-    *
-    * @access private
-    */
+     * Write BIFF record Window2.
+     *
+     * @access private
+     */
     public function _storeWindow2()
     {
         $record         = 0x023E;     // Record identifier
@@ -2299,10 +2430,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write BIFF record DEFCOLWIDTH if COLINFO records are in use.
-    *
-    * @access private
-    */
+     * Write BIFF record DEFCOLWIDTH if COLINFO records are in use.
+     *
+     * @access private
+     */
     public function _storeDefcol()
     {
         $record   = 0x0055;      // Record identifier
@@ -2315,20 +2446,21 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write BIFF record COLINFO to define column widths
-    *
-    * Note: The SDK says the record length is 0x0B but Excel writes a 0x0C
-    * length record.
-    *
-    * @access private
-    * @param array $col_array This is the only parameter received and is composed of the following:
-    *                0 => First formatted column,
-    *                1 => Last formatted column,
-    *                2 => Col width (8.43 is Excel default),
-    *                3 => The optional XF format of the column,
-    *                4 => Option flags.
-    *                5 => Optional outline level
-    */
+     * Write BIFF record COLINFO to define column widths
+     *
+     * Note: The SDK says the record length is 0x0B but Excel writes a 0x0C
+     * length record.
+     *
+     * @access private
+     *
+     * @param array $col_array This is the only parameter received and is composed of the following:
+     *                         0 => First formatted column,
+     *                         1 => Last formatted column,
+     *                         2 => Col width (8.43 is Excel default),
+     *                         3 => The optional XF format of the column,
+     *                         4 => Option flags.
+     *                         5 => Optional outline level
+     */
     public function _storeColinfo($col_array)
     {
         if (isset($col_array[0])) {
@@ -2376,12 +2508,14 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write BIFF record SELECTION.
-    *
-    * @access private
-    * @param array $array array containing ($rwFirst,$colFirst,$rwLast,$colLast)
-    * @see setSelection()
-    */
+     * Write BIFF record SELECTION.
+     *
+     * @access private
+     *
+     * @param array $array array containing ($rwFirst,$colFirst,$rwLast,$colLast)
+     *
+     * @see setSelection()
+     */
     public function _storeSelection($array)
     {
         list($rwFirst,$colFirst,$rwLast,$colLast) = $array;
@@ -2419,10 +2553,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the MERGEDCELLS record for all ranges of merged cells
-    *
-    * @access private
-    */
+     * Store the MERGEDCELLS record for all ranges of merged cells
+     *
+     * @access private
+     */
     public function _storeMergedCells()
     {
         // if there are no merged cell ranges set, return
@@ -2443,18 +2577,19 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write BIFF record EXTERNCOUNT to indicate the number of external sheet
-    * references in a worksheet.
-    *
-    * Excel only stores references to external sheets that are used in formulas.
-    * For simplicity we store references to all the sheets in the workbook
-    * regardless of whether they are used or not. This reduces the overall
-    * complexity and eliminates the need for a two way dialogue between the formula
-    * parser the worksheet objects.
-    *
-    * @access private
-    * @param integer $count The number of external sheet references in this worksheet
-    */
+     * Write BIFF record EXTERNCOUNT to indicate the number of external sheet
+     * references in a worksheet.
+     *
+     * Excel only stores references to external sheets that are used in formulas.
+     * For simplicity we store references to all the sheets in the workbook
+     * regardless of whether they are used or not. This reduces the overall
+     * complexity and eliminates the need for a two way dialogue between the formula
+     * parser the worksheet objects.
+     *
+     * @access private
+     *
+     * @param integer $count The number of external sheet references in this worksheet
+     */
     public function _storeExterncount($count)
     {
         $record = 0x0016;          // Record identifier
@@ -2466,14 +2601,15 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Writes the Excel BIFF EXTERNSHEET record. These references are used by
-    * formulas. A formula references a sheet name via an index. Since we store a
-    * reference to all of the external worksheets the EXTERNSHEET index is the same
-    * as the worksheet index.
-    *
-    * @access private
-    * @param string $sheetname The name of a external worksheet
-    */
+     * Writes the Excel BIFF EXTERNSHEET record. These references are used by
+     * formulas. A formula references a sheet name via an index. Since we store a
+     * reference to all of the external worksheets the EXTERNSHEET index is the same
+     * as the worksheet index.
+     *
+     * @access private
+     *
+     * @param string $sheetname The name of a external worksheet
+     */
     public function _storeExternsheet($sheetname)
     {
         $record    = 0x0017;         // Record identifier
@@ -2498,19 +2634,20 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Writes the Excel BIFF PANE record.
-    * The panes can either be frozen or thawed (unfrozen).
-    * Frozen panes are specified in terms of an integer number of rows and columns.
-    * Thawed panes are specified in terms of Excel's units for rows and columns.
-    *
-    * @access private
-    * @param array $panes This is the only parameter received and is composed of the following:
-    *                     0 => Vertical split position,
-    *                     1 => Horizontal split position
-    *                     2 => Top row visible
-    *                     3 => Leftmost column visible
-    *                     4 => Active pane
-    */
+     * Writes the Excel BIFF PANE record.
+     * The panes can either be frozen or thawed (unfrozen).
+     * Frozen panes are specified in terms of an integer number of rows and columns.
+     * Thawed panes are specified in terms of Excel's units for rows and columns.
+     *
+     * @access private
+     *
+     * @param array $panes This is the only parameter received and is composed of the following:
+     *                     0 => Vertical split position,
+     *                     1 => Horizontal split position
+     *                     2 => Top row visible
+     *                     3 => Leftmost column visible
+     *                     4 => Active pane
+     */
     public function _storePanes($panes)
     {
         $y       = $panes[0];
@@ -2578,10 +2715,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the page setup SETUP BIFF record.
-    *
-    * @access private
-    */
+     * Store the page setup SETUP BIFF record.
+     *
+     * @access private
+     */
     public function _storeSetup()
     {
         $record       = 0x00A1;                  // Record identifier
@@ -2639,10 +2776,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the header caption BIFF record.
-    *
-    * @access private
-    */
+     * Store the header caption BIFF record.
+     *
+     * @access private
+     */
     public function _storeHeader()
     {
         $record  = 0x0014;               // Record identifier
@@ -2658,10 +2795,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the footer caption BIFF record.
-    *
-    * @access private
-    */
+     * Store the footer caption BIFF record.
+     *
+     * @access private
+     */
     public function _storeFooter()
     {
         $record  = 0x0015;               // Record identifier
@@ -2677,10 +2814,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the horizontal centering HCENTER BIFF record.
-    *
-    * @access private
-    */
+     * Store the horizontal centering HCENTER BIFF record.
+     *
+     * @access private
+     */
     public function _storeHcenter()
     {
         $record   = 0x0083;              // Record identifier
@@ -2695,10 +2832,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the vertical centering VCENTER BIFF record.
-    *
-    * @access private
-    */
+     * Store the vertical centering VCENTER BIFF record.
+     *
+     * @access private
+     */
     public function _storeVcenter()
     {
         $record   = 0x0084;              // Record identifier
@@ -2712,10 +2849,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the LEFTMARGIN BIFF record.
-    *
-    * @access private
-    */
+     * Store the LEFTMARGIN BIFF record.
+     *
+     * @access private
+     */
     public function _storeMarginLeft()
     {
         $record  = 0x0026;                   // Record identifier
@@ -2733,10 +2870,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the RIGHTMARGIN BIFF record.
-    *
-    * @access private
-    */
+     * Store the RIGHTMARGIN BIFF record.
+     *
+     * @access private
+     */
     public function _storeMarginRight()
     {
         $record  = 0x0027;                   // Record identifier
@@ -2754,10 +2891,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the TOPMARGIN BIFF record.
-    *
-    * @access private
-    */
+     * Store the TOPMARGIN BIFF record.
+     *
+     * @access private
+     */
     public function _storeMarginTop()
     {
         $record  = 0x0028;                   // Record identifier
@@ -2775,10 +2912,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the BOTTOMMARGIN BIFF record.
-    *
-    * @access private
-    */
+     * Store the BOTTOMMARGIN BIFF record.
+     *
+     * @access private
+     */
     public function _storeMarginBottom()
     {
         $record  = 0x0029;                   // Record identifier
@@ -2796,16 +2933,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Merges the area given by its arguments.
-    * This is an Excel97/2000 method. It is required to perform more complicated
-    * merging than the normal setAlign('merge').
-    *
-    * @access public
-    * @param integer $first_row First row of the area to merge
-    * @param integer $first_col First column of the area to merge
-    * @param integer $last_row  Last row of the area to merge
-    * @param integer $last_col  Last column of the area to merge
-    */
+     * Merges the area given by its arguments.
+     * This is an Excel97/2000 method. It is required to perform more complicated
+     * merging than the normal setAlign('merge').
+     *
+     * @access public
+     *
+     * @param integer $first_row First row of the area to merge
+     * @param integer $first_col First column of the area to merge
+     * @param integer $last_row  Last row of the area to merge
+     * @param integer $last_col  Last column of the area to merge
+     */
     public function mergeCells($first_row, $first_col, $last_row, $last_col)
     {
         $record  = 0x00E5;                   // Record identifier
@@ -2829,10 +2967,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write the PRINTHEADERS BIFF record.
-    *
-    * @access private
-    */
+     * Write the PRINTHEADERS BIFF record.
+     *
+     * @access private
+     */
     public function _storePrintHeaders()
     {
         $record      = 0x002a;                   // Record identifier
@@ -2846,11 +2984,11 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write the PRINTGRIDLINES BIFF record. Must be used in conjunction with the
-    * GRIDSET record.
-    *
-    * @access private
-    */
+     * Write the PRINTGRIDLINES BIFF record. Must be used in conjunction with the
+     * GRIDSET record.
+     *
+     * @access private
+     */
     public function _storePrintGridlines()
     {
         $record      = 0x002b;                    // Record identifier
@@ -2864,11 +3002,11 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write the GRIDSET BIFF record. Must be used in conjunction with the
-    * PRINTGRIDLINES record.
-    *
-    * @access private
-    */
+     * Write the GRIDSET BIFF record. Must be used in conjunction with the
+     * PRINTGRIDLINES record.
+     *
+     * @access private
+     */
     public function _storeGridset()
     {
         $record      = 0x0082;                        // Record identifier
@@ -2882,13 +3020,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write the GUTS BIFF record. This is used to configure the gutter margins
-    * where Excel outline symbols are displayed. The visibility of the gutters is
-    * controlled by a flag in WSBOOL.
-    *
-    * @see _storeWsbool()
-    * @access private
-    */
+     * Write the GUTS BIFF record. This is used to configure the gutter margins
+     * where Excel outline symbols are displayed. The visibility of the gutters is
+     * controlled by a flag in WSBOOL.
+     *
+     * @see _storeWsbool()
+     * @access private
+     */
     public function _storeGuts()
     {
         $record      = 0x0080;   // Record identifier
@@ -2928,11 +3066,11 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write the WSBOOL BIFF record, mainly for fit-to-page. Used in conjunction
-    * with the SETUP record.
-    *
-    * @access private
-    */
+     * Write the WSBOOL BIFF record, mainly for fit-to-page. Used in conjunction
+     * with the SETUP record.
+     *
+     * @access private
+     */
     public function _storeWsbool()
     {
         $record      = 0x0081;   // Record identifier
@@ -2971,10 +3109,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write the HORIZONTALPAGEBREAKS BIFF record.
-    *
-    * @access private
-    */
+     * Write the HORIZONTALPAGEBREAKS BIFF record.
+     *
+     * @access private
+     */
     public function _storeHbreak()
     {
         // Return if the user hasn't specified pagebreaks
@@ -3006,10 +3144,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write the VERTICALPAGEBREAKS BIFF record.
-    *
-    * @access private
-    */
+     * Write the VERTICALPAGEBREAKS BIFF record.
+     *
+     * @access private
+     */
     public function _storeVbreak()
     {
         // Return if the user hasn't specified pagebreaks
@@ -3043,10 +3181,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Set the Biff PROTECT record to indicate that the worksheet is protected.
-    *
-    * @access private
-    */
+     * Set the Biff PROTECT record to indicate that the worksheet is protected.
+     *
+     * @access private
+     */
     public function _storeProtect()
     {
         // Exit unless sheet protection has been specified
@@ -3066,10 +3204,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Write the worksheet PASSWORD record.
-    *
-    * @access private
-    */
+     * Write the worksheet PASSWORD record.
+     *
+     * @access private
+     */
     public function _storePassword()
     {
         // Exit unless sheet protection and password have been specified
@@ -3089,17 +3227,18 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Insert a 24bit bitmap image in a worksheet.
-    *
-    * @access public
-    * @param integer $row     The row we are going to insert the bitmap into
-    * @param integer $col     The column we are going to insert the bitmap into
-    * @param string  $bitmap  The bitmap filename
-    * @param integer $x       The horizontal position (offset) of the image inside the cell.
-    * @param integer $y       The vertical position (offset) of the image inside the cell.
-    * @param integer $scale_x The horizontal scale
-    * @param integer $scale_y The vertical scale
-    */
+     * Insert a 24bit bitmap image in a worksheet.
+     *
+     * @access public
+     *
+     * @param integer $row     The row we are going to insert the bitmap into
+     * @param integer $col     The column we are going to insert the bitmap into
+     * @param string  $bitmap  The bitmap filename
+     * @param integer $x       The horizontal position (offset) of the image inside the cell.
+     * @param integer $y       The vertical position (offset) of the image inside the cell.
+     * @param integer $scale_x The horizontal scale
+     * @param integer $scale_y The vertical scale
+     */
     public function insertBitmap($row, $col, $bitmap, $x = 0, $y = 0, $scale_x = 1, $scale_y = 1)
     {
         $bitmap_array = $this->_processBitmap($bitmap);
@@ -3129,56 +3268,57 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Calculate the vertices that define the position of the image as required by
-    * the OBJ record.
-    *
-    *         +------------+------------+
-    *         |     A      |      B     |
-    *   +-----+------------+------------+
-    *   |     |(x1,y1)     |            |
-    *   |  1  |(A1)._______|______      |
-    *   |     |    |              |     |
-    *   |     |    |              |     |
-    *   +-----+----|    BITMAP    |-----+
-    *   |     |    |              |     |
-    *   |  2  |    |______________.     |
-    *   |     |            |        (B2)|
-    *   |     |            |     (x2,y2)|
-    *   +---- +------------+------------+
-    *
-    * Example of a bitmap that covers some of the area from cell A1 to cell B2.
-    *
-    * Based on the width and height of the bitmap we need to calculate 8 vars:
-    *     $col_start, $row_start, $col_end, $row_end, $x1, $y1, $x2, $y2.
-    * The width and height of the cells are also variable and have to be taken into
-    * account.
-    * The values of $col_start and $row_start are passed in from the calling
-    * function. The values of $col_end and $row_end are calculated by subtracting
-    * the width and height of the bitmap from the width and height of the
-    * underlying cells.
-    * The vertices are expressed as a percentage of the underlying cell width as
-    * follows (rhs values are in pixels):
-    *
-    *       x1 = X / W *1024
-    *       y1 = Y / H *256
-    *       x2 = (X-1) / W *1024
-    *       y2 = (Y-1) / H *256
-    *
-    *       Where:  X is distance from the left side of the underlying cell
-    *               Y is distance from the top of the underlying cell
-    *               W is the width of the cell
-    *               H is the height of the cell
-    *
-    * @access private
-    * @note  the SDK incorrectly states that the height should be expressed as a
-    *        percentage of 1024.
-    * @param integer $col_start Col containing upper left corner of object
-    * @param integer $row_start Row containing top left corner of object
-    * @param integer $x1        Distance to left side of object
-    * @param integer $y1        Distance to top of object
-    * @param integer $width     Width of image frame
-    * @param integer $height    Height of image frame
-    */
+     * Calculate the vertices that define the position of the image as required by
+     * the OBJ record.
+     *
+     *         +------------+------------+
+     *         |     A      |      B     |
+     *   +-----+------------+------------+
+     *   |     |(x1,y1)     |            |
+     *   |  1  |(A1)._______|______      |
+     *   |     |    |              |     |
+     *   |     |    |              |     |
+     *   +-----+----|    BITMAP    |-----+
+     *   |     |    |              |     |
+     *   |  2  |    |______________.     |
+     *   |     |            |        (B2)|
+     *   |     |            |     (x2,y2)|
+     *   +---- +------------+------------+
+     *
+     * Example of a bitmap that covers some of the area from cell A1 to cell B2.
+     *
+     * Based on the width and height of the bitmap we need to calculate 8 vars:
+     *     $col_start, $row_start, $col_end, $row_end, $x1, $y1, $x2, $y2.
+     * The width and height of the cells are also variable and have to be taken into
+     * account.
+     * The values of $col_start and $row_start are passed in from the calling
+     * function. The values of $col_end and $row_end are calculated by subtracting
+     * the width and height of the bitmap from the width and height of the
+     * underlying cells.
+     * The vertices are expressed as a percentage of the underlying cell width as
+     * follows (rhs values are in pixels):
+     *
+     *       x1 = X / W *1024
+     *       y1 = Y / H *256
+     *       x2 = (X-1) / W *1024
+     *       y2 = (Y-1) / H *256
+     *
+     *       Where:  X is distance from the left side of the underlying cell
+     *               Y is distance from the top of the underlying cell
+     *               W is the width of the cell
+     *               H is the height of the cell
+     *
+     * @access private
+     * @note  the SDK incorrectly states that the height should be expressed as a
+     *        percentage of 1024.
+     *
+     * @param integer $col_start Col containing upper left corner of object
+     * @param integer $row_start Row containing top left corner of object
+     * @param integer $x1        Distance to left side of object
+     * @param integer $y1        Distance to top of object
+     * @param integer $width     Width of image frame
+     * @param integer $height    Height of image frame
+     */
     public function _positionImage($col_start, $row_start, $x1, $y1, $width, $height)
     {
         // Initialise end cell to the same as the start cell
@@ -3237,14 +3377,16 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Convert the width of a cell from user's units to pixels. By interpolation
-    * the relationship is: y = 7x +5. If the width hasn't been set by the user we
-    * use the default value. If the col is hidden we use a value of zero.
-    *
-    * @access private
-    * @param integer $col The column
-    * @return integer The width in pixels
-    */
+     * Convert the width of a cell from user's units to pixels. By interpolation
+     * the relationship is: y = 7x +5. If the width hasn't been set by the user we
+     * use the default value. If the col is hidden we use a value of zero.
+     *
+     * @access private
+     *
+     * @param integer $col The column
+     *
+     * @return integer The width in pixels
+     */
     public function _sizeCol($col)
     {
         // Look up the cell value to see if it has been changed
@@ -3260,15 +3402,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Convert the height of a cell from user's units to pixels. By interpolation
-    * the relationship is: y = 4/3x. If the height hasn't been set by the user we
-    * use the default value. If the row is hidden we use a value of zero. (Not
-    * possible to hide row yet).
-    *
-    * @access private
-    * @param integer $row The row
-    * @return integer The width in pixels
-    */
+     * Convert the height of a cell from user's units to pixels. By interpolation
+     * the relationship is: y = 4/3x. If the height hasn't been set by the user we
+     * use the default value. If the row is hidden we use a value of zero. (Not
+     * possible to hide row yet).
+     *
+     * @access private
+     *
+     * @param integer $row The row
+     *
+     * @return integer The width in pixels
+     */
     public function _sizeRow($row)
     {
         // Look up the cell value to see if it has been changed
@@ -3284,19 +3428,20 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the OBJ record that precedes an IMDATA record. This could be generalise
-    * to support other Excel objects.
-    *
-    * @access private
-    * @param integer $colL Column containing upper left corner of object
-    * @param integer $dxL  Distance from left side of cell
-    * @param integer $rwT  Row containing top left corner of object
-    * @param integer $dyT  Distance from top of cell
-    * @param integer $colR Column containing lower right corner of object
-    * @param integer $dxR  Distance from right of cell
-    * @param integer $rwB  Row containing bottom right corner of object
-    * @param integer $dyB  Distance from bottom of cell
-    */
+     * Store the OBJ record that precedes an IMDATA record. This could be generalise
+     * to support other Excel objects.
+     *
+     * @access private
+     *
+     * @param integer $colL Column containing upper left corner of object
+     * @param integer $dxL  Distance from left side of cell
+     * @param integer $rwT  Row containing top left corner of object
+     * @param integer $dyT  Distance from top of cell
+     * @param integer $colR Column containing lower right corner of object
+     * @param integer $dxR  Distance from right of cell
+     * @param integer $rwB  Row containing bottom right corner of object
+     * @param integer $dyB  Distance from bottom of cell
+     */
     public function _storeObjPicture($colL,$dxL,$rwT,$dyT,$colR,$dxR,$rwB,$dyB)
     {
         $record      = 0x005d;   // Record identifier
@@ -3364,14 +3509,16 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Convert a 24 bit bitmap into the modified internal format used by Windows.
-    * This is described in BITMAPCOREHEADER and BITMAPCOREINFO structures in the
-    * MSDN library.
-    *
-    * @access private
-    * @param string $bitmap The bitmap to process
-    * @return array Array with data and properties of the bitmap
-    */
+     * Convert a 24 bit bitmap into the modified internal format used by Windows.
+     * This is described in BITMAPCOREHEADER and BITMAPCOREINFO structures in the
+     * MSDN library.
+     *
+     * @access private
+     *
+     * @param string $bitmap The bitmap to process
+     *
+     * @return array Array with data and properties of the bitmap
+     */
     public function _processBitmap($bitmap)
     {
         // Open file.
@@ -3451,11 +3598,11 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the window zoom factor. This should be a reduced fraction but for
-    * simplicity we will store all fractions with a numerator of 100.
-    *
-    * @access private
-    */
+     * Store the window zoom factor. This should be a reduced fraction but for
+     * simplicity we will store all fractions with a numerator of 100.
+     *
+     * @access private
+     */
     public function _storeZoom()
     {
         // If scale is 100 we don't need to write a record
@@ -3472,8 +3619,8 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * FIXME: add comments
-    */
+     * FIXME: add comments
+     */
     public function setValidation($row1, $col1, $row2, $col2, &$validator)
     {
         $this->_dv[] = $validator->_getData() .
@@ -3481,10 +3628,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     }
 
     /**
-    * Store the DVAL and DV records.
-    *
-    * @access private
-    */
+     * Store the DVAL and DV records.
+     *
+     * @access private
+     */
     public function _storeDataValidity()
     {
         $record      = 0x01b2;      // Record identifier

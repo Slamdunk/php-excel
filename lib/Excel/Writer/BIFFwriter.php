@@ -1,72 +1,80 @@
 <?php
 
 /**
-* Class for writing Excel BIFF records.
-*
-* From "MICROSOFT EXCEL BINARY FILE FORMAT" by Mark O'Brien (Microsoft Corporation):
-*
-* BIFF (BInary File Format) is the file format in which Excel documents are
-* saved on disk.  A BIFF file is a complete description of an Excel document.
-* BIFF files consist of sequences of variable-length records. There are many
-* different types of BIFF records.  For example, one record type describes a
-* formula entered into a cell; one describes the size and location of a
-* window into a document; another describes a picture format.
-*
-* @author   Xavier Noguer <xnoguer@php.net>
-* @category FileFormats
-* @package  Excel_Writer
-*/
+ * Class for writing Excel BIFF records.
+ *
+ * From "MICROSOFT EXCEL BINARY FILE FORMAT" by Mark O'Brien (Microsoft Corporation):
+ *
+ * BIFF (BInary File Format) is the file format in which Excel documents are
+ * saved on disk.  A BIFF file is a complete description of an Excel document.
+ * BIFF files consist of sequences of variable-length records. There are many
+ * different types of BIFF records.  For example, one record type describes a
+ * formula entered into a cell; one describes the size and location of a
+ * window into a document; another describes a picture format.
+ *
+ * @author   Xavier Noguer <xnoguer@php.net>
+ *
+ * @category FileFormats
+ */
 
 class Excel_Writer_BIFFwriter
 {
     /**
-    * The BIFF/Excel version (5).
-    * @var integer
-    */
+     * The BIFF/Excel version (5).
+     *
+     * @var integer
+     */
     const BIFF_version = 0x0500;
 
     /**
-    * The byte order of this architecture. 0 => little endian, 1 => big endian
-    * @var integer
-    */
+     * The byte order of this architecture. 0 => little endian, 1 => big endian
+     *
+     * @var integer
+     */
     public $_byte_order;
 
     /**
-    * The string containing the data of the BIFF stream
-    * @var string
-    */
+     * The string containing the data of the BIFF stream
+     *
+     * @var string
+     */
     public $_data;
 
     /**
-    * The size of the data in bytes. Should be the same as strlen($this->_data)
-    * @var integer
-    */
+     * The size of the data in bytes. Should be the same as strlen($this->_data)
+     *
+     * @var integer
+     */
     public $_datasize;
 
     /**
-    * The maximun length for a BIFF record. See _addContinue()
-    * @var integer
-    * @see _addContinue()
-    */
+     * The maximun length for a BIFF record. See _addContinue()
+     *
+     * @var integer
+     *
+     * @see _addContinue()
+     */
     public $_limit;
 
     /**
-    * The temporary dir for storing the Excel_OLE file
-    * @var string
-    */
+     * The temporary dir for storing the Excel_OLE file
+     *
+     * @var string
+     */
     public $_tmp_dir;
 
     /**
-    * The temporary file for storing the Excel_OLE file
-    * @var string
-    */
+     * The temporary file for storing the Excel_OLE file
+     *
+     * @var string
+     */
     public $_tmp_file;
 
     /**
-    * Constructor
-    *
-    * @access public
-    */
+     * Constructor
+     *
+     * @access public
+     */
     public function Excel_Writer_BIFFwriter()
     {
         $this->_byte_order = '';
@@ -79,11 +87,11 @@ class Excel_Writer_BIFFwriter
     }
 
     /**
-    * Determine the byte order and store it as class data to avoid
-    * recalculating it for each call to new().
-    *
-    * @access private
-    */
+     * Determine the byte order and store it as class data to avoid
+     * recalculating it for each call to new().
+     *
+     * @access private
+     */
     public function _setByteOrder()
     {
         // Check if "pack" gives the required IEEE 64bit float
@@ -102,11 +110,11 @@ class Excel_Writer_BIFFwriter
     }
 
     /**
-    * General storage function
-    *
-    * @param string $data binary data to prepend
-    * @access private
-    */
+     * General storage function
+     *
+     * @param string $data binary data to prepend
+     * @access private
+     */
     public function _prepend($data)
     {
         if (strlen($data) > $this->_limit) {
@@ -117,11 +125,11 @@ class Excel_Writer_BIFFwriter
     }
 
     /**
-    * General storage function
-    *
-    * @param string $data binary data to append
-    * @access private
-    */
+     * General storage function
+     *
+     * @param string $data binary data to append
+     * @access private
+     */
     public function _append($data)
     {
         if (strlen($data) > $this->_limit) {
@@ -132,13 +140,13 @@ class Excel_Writer_BIFFwriter
     }
 
     /**
-    * Writes Excel BOF record to indicate the beginning of a stream or
-    * sub-stream in the BIFF file.
-    *
-    * @param  integer $type Type of BIFF file to write: 0x0005 Workbook,
-    *                       0x0010 Worksheet.
-    * @access private
-    */
+     * Writes Excel BOF record to indicate the beginning of a stream or
+     * sub-stream in the BIFF file.
+     *
+     * @param integer $type Type of BIFF file to write: 0x0005 Workbook,
+     *                      0x0010 Worksheet.
+     * @access private
+     */
     public function _storeBof($type)
     {
         $record  = 0x0809;        // Record identifier
@@ -158,10 +166,10 @@ class Excel_Writer_BIFFwriter
     }
 
     /**
-    * Writes Excel EOF record to indicate the end of a BIFF stream.
-    *
-    * @access private
-    */
+     * Writes Excel EOF record to indicate the end of a BIFF stream.
+     *
+     * @access private
+     */
     public function _storeEof()
     {
         $record    = 0x000A;   // Record identifier
@@ -171,17 +179,18 @@ class Excel_Writer_BIFFwriter
     }
 
     /**
-    * Excel limits the size of BIFF records. In Excel 5 the limit is 2084 bytes. In
-    * Excel 97 the limit is 8228 bytes. Records that are longer than these limits
-    * must be split up into CONTINUE blocks.
-    *
-    * This function takes a long BIFF record and inserts CONTINUE records as
-    * necessary.
-    *
-    * @param  string  $data The original binary data to be written
-    * @return string        A very convenient string of continue blocks
-    * @access private
-    */
+     * Excel limits the size of BIFF records. In Excel 5 the limit is 2084 bytes. In
+     * Excel 97 the limit is 8228 bytes. Records that are longer than these limits
+     * must be split up into CONTINUE blocks.
+     *
+     * This function takes a long BIFF record and inserts CONTINUE records as
+     * necessary.
+     *
+     * @param string $data The original binary data to be written
+     *
+     * @return string A very convenient string of continue blocks
+     * @access private
+     */
     public function _addContinue($data)
     {
         $limit  = $this->_limit;
@@ -209,12 +218,14 @@ class Excel_Writer_BIFFwriter
     }
 
     /**
-    * Sets the temp dir used for storing the Excel_OLE file
-    *
-    * @access public
-    * @param string $dir The dir to be used as temp dir
-    * @return true if given dir is valid, false otherwise
-    */
+     * Sets the temp dir used for storing the Excel_OLE file
+     *
+     * @access public
+     *
+     * @param string $dir The dir to be used as temp dir
+     *
+     * @return true if given dir is valid, false otherwise
+     */
     public function setTempDir($dir)
     {
         if (is_dir($dir)) {

@@ -1,8 +1,8 @@
 <?php
 
 /**
-* Constants for Excel_OLE package
-*/
+ * Constants for Excel_OLE package
+ */
 define('Excel_OLE_PPS_TYPE_ROOT',        5);
 define('Excel_OLE_PPS_TYPE_DIR',         1);
 define('Excel_OLE_PPS_TYPE_FILE',        2);
@@ -11,94 +11,105 @@ define('Excel_OLE_LONG_INT_SIZE',        4);
 define('Excel_OLE_PPS_SIZE',          0x80);
 
 /**
-* Array for storing Excel_OLE instances that are accessed from
-* Excel_OLE_ChainedBlockStream::stream_open().
-* @var  array
-*/
+ * Array for storing Excel_OLE instances that are accessed from
+ * Excel_OLE_ChainedBlockStream::stream_open().
+ *
+ * @var  array
+ */
 $GLOBALS['_Excel_OLE_INSTANCES'] = array();
 
 /**
-* Excel_OLE package base class.
-*
-* @category Structures
-* @package  Excel_OLE
-* @author   Xavier Noguer <xnoguer@php.net>
-* @author   Christian Schmidt <schmidt@php.net>
-*/
+ * Excel_OLE package base class.
+ *
+ * @category Structures
+ *
+ * @author   Xavier Noguer <xnoguer@php.net>
+ * @author   Christian Schmidt <schmidt@php.net>
+ */
 class Excel_OLE
 {
 
     /**
-    * The file handle for reading an Excel_OLE container
-    * @var resource
-    */
+     * The file handle for reading an Excel_OLE container
+     *
+     * @var resource
+     */
     public $_file_handle;
 
     /**
-    * Array of PPS's found on the Excel_OLE container
-    * @var array
-    */
+     * Array of PPS's found on the Excel_OLE container
+     *
+     * @var array
+     */
     public $_list;
 
     /**
-    * Root directory of Excel_OLE container
-    * @var Excel_OLE_PPS_Root
-    */
+     * Root directory of Excel_OLE container
+     *
+     * @var Excel_OLE_PPS_Root
+     */
     public $root;
 
     /**
-    * Big Block Allocation Table
-    * @var array  (blockId => nextBlockId)
-    */
+     * Big Block Allocation Table
+     *
+     * @var array (blockId => nextBlockId)
+     */
     public $bbat;
 
     /**
-    * Short Block Allocation Table
-    * @var array  (blockId => nextBlockId)
-    */
+     * Short Block Allocation Table
+     *
+     * @var array (blockId => nextBlockId)
+     */
     public $sbat;
 
     /**
-    * Size of big blocks. This is usually 512.
-    * @var  int  number of octets per block.
-    */
+     * Size of big blocks. This is usually 512.
+     *
+     * @var int number of octets per block.
+     */
     public $bigBlockSize;
 
     /**
-    * Size of small blocks. This is usually 64.
-    * @var  int  number of octets per block
-    */
+     * Size of small blocks. This is usually 64.
+     *
+     * @var int number of octets per block
+     */
     public $smallBlockSize;
 
     // Per unitTests
     public static $gmmktime;
     /**
-    * Creates a new Excel_OLE object
-    * @access public
-    */
+     * Creates a new Excel_OLE object
+     *
+     * @access public
+     */
     public function Excel_OLE()
     {
         $this->_list = array();
     }
 
     /**
-    * Destructor (using PEAR)
-    * Just closes the file handle on the Excel_OLE file.
-    *
-    * @access private
-    */
+     * Destructor (using PEAR)
+     * Just closes the file handle on the Excel_OLE file.
+     *
+     * @access private
+     */
     public function _Excel_OLE()
     {
         fclose($this->_file_handle);
     }
 
     /**
-    * Reads an Excel_OLE container from the contents of the file given.
-    *
-    * @access public
-    * @param string $file
-    * @return mixed true on success, PEAR_Error on failure
-    */
+     * Reads an Excel_OLE container from the contents of the file given.
+     *
+     * @access public
+     *
+     * @param string $file
+     *
+     * @return mixed true on success, PEAR_Error on failure
+     */
     public function read($file)
     {
         $fh = @fopen($file, "r");
@@ -191,6 +202,7 @@ class Excel_OLE
 
     /**
      * @param int $blockId block id
+     *
      * @return int byte offset from beginning of file
      * @access private
      */
@@ -202,7 +214,9 @@ class Excel_OLE
     /**
      * Returns a stream for use with fread() etc. External callers should
      * use Excel_OLE_PPS_File::getStream().
+     *
      * @param int|PPS $blockIdOrPps block id or PPS
+     *
      * @return resource read-only stream
      */
     public function getStream($blockIdOrPps)
@@ -234,7 +248,9 @@ class Excel_OLE
 
     /**
      * Reads a signed char.
+     *
      * @param resource $fh file handle
+     *
      * @return int
      * @access private
      */
@@ -247,7 +263,9 @@ class Excel_OLE
 
     /**
      * Reads an unsigned short (2 octets).
+     *
      * @param resource $fh file handle
+     *
      * @return int
      * @access private
      */
@@ -260,8 +278,10 @@ class Excel_OLE
 
     /**
      * Reads an unsigned long (4 octets).
+     *
      * @param   resource  file handle
-     * @return  int
+     *
+     * @return int
      * @access private
      */
     public function _readInt4($fh)
@@ -272,13 +292,15 @@ class Excel_OLE
     }
 
     /**
-    * Gets information about all PPS's on the Excel_OLE container from the PPS WK's
-    * creates an Excel_OLE_PPS object for each one.
-    *
-    * @access private
-    * @param integer $blockId the block id of the first block
-    * @return mixed true on success, PEAR_Error on failure
-    */
+     * Gets information about all PPS's on the Excel_OLE container from the PPS WK's
+     * creates an Excel_OLE_PPS object for each one.
+     *
+     * @access private
+     *
+     * @param integer $blockId the block id of the first block
+     *
+     * @return mixed true on success, PEAR_Error on failure
+     */
     public function _readPpsWks($blockId)
     {
         $fh = $this->getStream($blockId);
@@ -351,13 +373,15 @@ class Excel_OLE
     }
 
     /**
-    * It checks whether the PPS tree is complete (all PPS's read)
-    * starting with the given PPS (not necessarily root)
-    *
-    * @access private
-    * @param integer $index The index of the PPS from which we are checking
-    * @return boolean Whether the PPS tree for the given PPS is complete
-    */
+     * It checks whether the PPS tree is complete (all PPS's read)
+     * starting with the given PPS (not necessarily root)
+     *
+     * @access private
+     *
+     * @param integer $index The index of the PPS from which we are checking
+     *
+     * @return boolean Whether the PPS tree for the given PPS is complete
+     */
     public function _ppsTreeComplete($index)
     {
         return isset($this->_list[$index]) &&
@@ -371,12 +395,14 @@ class Excel_OLE
     }
 
     /**
-    * Checks whether a PPS is a File PPS or not.
-    * If there is no PPS for the index given, it will return false.
-    * @param integer $index The index for the PPS
-    * @return bool true if it's a File PPS, false otherwise
-    * @access public
-    */
+     * Checks whether a PPS is a File PPS or not.
+     * If there is no PPS for the index given, it will return false.
+     *
+     * @param integer $index The index for the PPS
+     *
+     * @return bool true if it's a File PPS, false otherwise
+     * @access public
+     */
     public function isFile($index)
     {
         if (isset($this->_list[$index])) {
@@ -387,12 +413,14 @@ class Excel_OLE
     }
 
     /**
-    * Checks whether a PPS is a Root PPS or not.
-    * If there is no PPS for the index given, it will return false.
-    * @param integer $index The index for the PPS.
-    * @return bool true if it's a Root PPS, false otherwise
-    * @access public
-    */
+     * Checks whether a PPS is a Root PPS or not.
+     * If there is no PPS for the index given, it will return false.
+     *
+     * @param integer $index The index for the PPS.
+     *
+     * @return bool true if it's a Root PPS, false otherwise
+     * @access public
+     */
     public function isRoot($index)
     {
         if (isset($this->_list[$index])) {
@@ -403,26 +431,30 @@ class Excel_OLE
     }
 
     /**
-    * Gives the total number of PPS's found in the Excel_OLE container.
-    * @return integer The total number of PPS's found in the Excel_OLE container
-    * @access public
-    */
+     * Gives the total number of PPS's found in the Excel_OLE container.
+     *
+     * @return integer The total number of PPS's found in the Excel_OLE container
+     * @access public
+     */
     public function ppsTotal()
     {
         return count($this->_list);
     }
 
     /**
-    * Gets data from a PPS
-    * If there is no PPS for the index given, it will return an empty string.
-    * @param integer $index    The index for the PPS
-    * @param integer $position The position from which to start reading
-    *                          (relative to the PPS)
-    * @param integer $length   The amount of bytes to read (at most)
-    * @return string The binary string containing the data requested
-    * @access public
-    * @see Excel_OLE_PPS_File::getStream()
-    */
+     * Gets data from a PPS
+     * If there is no PPS for the index given, it will return an empty string.
+     *
+     * @param integer $index    The index for the PPS
+     * @param integer $position The position from which to start reading
+     *                          (relative to the PPS)
+     * @param integer $length   The amount of bytes to read (at most)
+     *
+     * @return string The binary string containing the data requested
+     * @access public
+     *
+     * @see Excel_OLE_PPS_File::getStream()
+     */
     public function getData($index, $position, $length)
     {
         // if position is not valid return empty string
@@ -440,12 +472,14 @@ class Excel_OLE
     }
 
     /**
-    * Gets the data length from a PPS
-    * If there is no PPS for the index given, it will return 0.
-    * @param integer $index The index for the PPS
-    * @return integer The amount of bytes in data the PPS has
-    * @access public
-    */
+     * Gets the data length from a PPS
+     * If there is no PPS for the index given, it will return 0.
+     *
+     * @param integer $index The index for the PPS
+     *
+     * @return integer The amount of bytes in data the PPS has
+     * @access public
+     */
     public function getDataLength($index)
     {
         if (isset($this->_list[$index])) {
@@ -456,13 +490,15 @@ class Excel_OLE
     }
 
     /**
-    * Utility function to transform ASCII text to Unicode
-    *
-    * @access public
-    * @static
-    * @param string $ascii The ASCII string to transform
-    * @return string The string in Unicode
-    */
+     * Utility function to transform ASCII text to Unicode
+     *
+     * @access public
+     * @static
+     *
+     * @param string $ascii The ASCII string to transform
+     *
+     * @return string The string in Unicode
+     */
     public static function Asc2Ucs($ascii)
     {
         $rawname = '';
@@ -474,14 +510,16 @@ class Excel_OLE
     }
 
     /**
-    * Utility function
-    * Returns a string for the Excel_OLE container with the date given
-    *
-    * @access public
-    * @static
-    * @param integer $date A timestamp
-    * @return string The string for the Excel_OLE container
-    */
+     * Utility function
+     * Returns a string for the Excel_OLE container with the date given
+     *
+     * @access public
+     * @static
+     *
+     * @param integer $date A timestamp
+     *
+     * @return string The string for the Excel_OLE container
+     */
     public static function LocalDate2Excel_OLE($date = null)
     {
         if (! isset($date)) {
@@ -527,12 +565,14 @@ class Excel_OLE
     }
 
     /**
-    * Returns a timestamp from an Excel_OLE container's date
-    * @param integer $string A binary string with the encoded date
-    * @return string The timestamp corresponding to the string
-    * @access public
-    * @static
-    */
+     * Returns a timestamp from an Excel_OLE container's date
+     *
+     * @param integer $string A binary string with the encoded date
+     *
+     * @return string The timestamp corresponding to the string
+     * @access public
+     * @static
+     */
     public static function Excel_OLE2LocalDate($string)
     {
         if (strlen($string) != 8) {

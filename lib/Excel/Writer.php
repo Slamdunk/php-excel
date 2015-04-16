@@ -1,21 +1,22 @@
 <?php
 
 /**
-* Class for writing Excel Spreadsheets. This class should change COMPLETELY.
-*
-* @author   Xavier Noguer <xnoguer@rezebra.com>
-* @category FileFormats
-* @package  Excel_Writer
-*/
+ * Class for writing Excel Spreadsheets. This class should change COMPLETELY.
+ *
+ * @author   Xavier Noguer <xnoguer@rezebra.com>
+ *
+ * @category FileFormats
+ */
 
 class Excel_Writer extends Excel_Writer_Workbook
 {
     /**
-    * The constructor. It just creates a Workbook
-    *
-    * @param string $filename The optional filename for the Workbook.
-    * @return Excel_Writer_Workbook The Workbook created
-    */
+     * The constructor. It just creates a Workbook
+     *
+     * @param string $filename The optional filename for the Workbook.
+     *
+     * @return Excel_Writer_Workbook The Workbook created
+     */
     public function Excel_Writer($filename = '')
     {
         $this->_filename = $filename;
@@ -23,11 +24,11 @@ class Excel_Writer extends Excel_Writer_Workbook
     }
 
     /**
-    * Send HTTP headers for the Excel file.
-    *
-    * @param string $filename The filename to use for HTTP headers
-    * @access public
-    */
+     * Send HTTP headers for the Excel file.
+     *
+     * @param string $filename The filename to use for HTTP headers
+     * @access public
+     */
     public function send($filename)
     {
         header("Content-type: application/vnd.ms-excel");
@@ -38,15 +39,17 @@ class Excel_Writer extends Excel_Writer_Workbook
     }
 
     /**
-    * Utility function for writing formulas
-    * Converts a cell's coordinates to the A1 format.
-    *
-    * @access public
-    * @static
-    * @param integer $row Row for the cell to convert (0-indexed).
-    * @param integer $col Column for the cell to convert (0-indexed).
-    * @return string The cell identifier in A1 format
-    */
+     * Utility function for writing formulas
+     * Converts a cell's coordinates to the A1 format.
+     *
+     * @access public
+     * @static
+     *
+     * @param integer $row Row for the cell to convert (0-indexed).
+     * @param integer $col Column for the cell to convert (0-indexed).
+     *
+     * @return string The cell identifier in A1 format
+     */
     public function rowcolToCell($row, $col)
     {
         if ($col > 255) { //maximum column value exceeded

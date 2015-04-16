@@ -1,144 +1,151 @@
 <?php
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_ADD token identifier for character "+"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_ADD token identifier for character "+"
+ */
 define('SPREADSHEET_EXCEL_WRITER_ADD', "+");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_SUB token identifier for character "-"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_SUB token identifier for character "-"
+ */
 define('SPREADSHEET_EXCEL_WRITER_SUB', "-");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_MUL token identifier for character "*"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_MUL token identifier for character "*"
+ */
 define('SPREADSHEET_EXCEL_WRITER_MUL', "*");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_DIV token identifier for character "/"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_DIV token identifier for character "/"
+ */
 define('SPREADSHEET_EXCEL_WRITER_DIV', "/");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_OPEN token identifier for character "("
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_OPEN token identifier for character "("
+ */
 define('SPREADSHEET_EXCEL_WRITER_OPEN', "(");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_CLOSE token identifier for character ")"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_CLOSE token identifier for character ")"
+ */
 define('SPREADSHEET_EXCEL_WRITER_CLOSE', ")");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_COMA token identifier for character ","
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_COMA token identifier for character ","
+ */
 define('SPREADSHEET_EXCEL_WRITER_COMA', ",");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_SEMICOLON token identifier for character ";"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_SEMICOLON token identifier for character ";"
+ */
 define('SPREADSHEET_EXCEL_WRITER_SEMICOLON', ";");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_GT token identifier for character ">"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_GT token identifier for character ">"
+ */
 define('SPREADSHEET_EXCEL_WRITER_GT', ">");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_LT token identifier for character "<"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_LT token identifier for character "<"
+ */
 define('SPREADSHEET_EXCEL_WRITER_LT', "<");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_LE token identifier for character "<="
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_LE token identifier for character "<="
+ */
 define('SPREADSHEET_EXCEL_WRITER_LE', "<=");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_GE token identifier for character ">="
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_GE token identifier for character ">="
+ */
 define('SPREADSHEET_EXCEL_WRITER_GE', ">=");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_EQ token identifier for character "="
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_EQ token identifier for character "="
+ */
 define('SPREADSHEET_EXCEL_WRITER_EQ', "=");
 
 /**
-* @const SPREADSHEET_EXCEL_WRITER_NE token identifier for character "<>"
-*/
+ * @const SPREADSHEET_EXCEL_WRITER_NE token identifier for character "<>"
+ */
 define('SPREADSHEET_EXCEL_WRITER_NE', "<>");
 
 /**
-* * @const SPREADSHEET_EXCEL_WRITER_CONCAT token identifier for character "&"
-*/
+ * * @const SPREADSHEET_EXCEL_WRITER_CONCAT token identifier for character "&"
+ */
 define('SPREADSHEET_EXCEL_WRITER_CONCAT', "&");
 
 /**
-* Class for parsing Excel formulas
-*
-* @author   Xavier Noguer <xnoguer@rezebra.com>
-* @category FileFormats
-* @package  Excel_Writer
-*/
+ * Class for parsing Excel formulas
+ *
+ * @author   Xavier Noguer <xnoguer@rezebra.com>
+ *
+ * @category FileFormats
+ */
 
 class Excel_Writer_Parser
 {
     /**
-    * The index of the character we are currently looking at
-    * @var integer
-    */
+     * The index of the character we are currently looking at
+     *
+     * @var integer
+     */
     public $_current_char;
 
     /**
-    * The token we are working on.
-    * @var string
-    */
+     * The token we are working on.
+     *
+     * @var string
+     */
     public $_current_token;
 
     /**
-    * The formula to parse
-    * @var string
-    */
+     * The formula to parse
+     *
+     * @var string
+     */
     public $_formula;
 
     /**
-    * The character ahead of the current char
-    * @var string
-    */
+     * The character ahead of the current char
+     *
+     * @var string
+     */
     public $_lookahead;
 
     /**
-    * The parse tree to be generated
-    * @var string
-    */
+     * The parse tree to be generated
+     *
+     * @var string
+     */
     public $_parse_tree;
 
     /**
-    * The byte order. 1 => big endian, 0 => little endian.
-    * @var integer
-    */
+     * The byte order. 1 => big endian, 0 => little endian.
+     *
+     * @var integer
+     */
     public $_byte_order;
 
     /**
-    * Array of external sheets
-    * @var array
-    */
+     * Array of external sheets
+     *
+     * @var array
+     */
     public $_ext_sheets;
 
     /**
-    * Array of sheet references in the form of REF structures
-    * @var array
-    */
+     * Array of sheet references in the form of REF structures
+     *
+     * @var array
+     */
     public $_references;
 
     /**
-    * The class constructor
-    *
-    * @param integer $byte_order The byte order (Little endian or Big endian) of the architecture
-                                 (optional). 1 => big endian, 0 (default) little endian.
-    */
+     * The class constructor
+     *
+     * @param integer $byte_order The byte order (Little endian or Big endian) of the architecture
+     */
     public function Excel_Writer_Parser($byte_order)
     {
         $this->_current_char  = 0;
@@ -153,10 +160,10 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Initialize the ptg and function hashes.
-    *
-    * @access private
-    */
+     * Initialize the ptg and function hashes.
+     *
+     * @access private
+     */
     public function _initializeHashes()
     {
         // The Excel ptg indices
@@ -502,13 +509,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert a token to the proper ptg value.
-    *
-    * @access private
-    * @param mixed $token The token to convert.
-    * @return mixed the converted token on success. Excel_PEAR_Error if the token
-    *               is not recognized
-    */
+     * Convert a token to the proper ptg value.
+     *
+     * @access private
+     *
+     * @param mixed $token The token to convert.
+     *
+     * @return mixed the converted token on success. Excel_PEAR_Error if the token
+     *               is not recognized
+     */
     public function _convert($token)
     {
         if (preg_match("/^\"[^\"]{0,255}\"$/", $token)) {
@@ -564,11 +573,12 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert a number token to ptgInt or ptgNum
-    *
-    * @access private
-    * @param mixed $num an integer or double for conversion to its ptg value
-    */
+     * Convert a number token to ptgInt or ptgNum
+     *
+     * @access private
+     *
+     * @param mixed $num an integer or double for conversion to its ptg value
+     */
     public function _convertNumber($num)
     {
         // Integer in the range 0..2**16-1
@@ -584,13 +594,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert a string token to ptgStr
-    *
-    * @access private
-    * @param string $string A string for conversion to its ptg value.
-    * @return mixed the converted token on success. Excel_PEAR_Error if the string
-    *               is longer than 255 characters.
-    */
+     * Convert a string token to ptgStr
+     *
+     * @access private
+     *
+     * @param string $string A string for conversion to its ptg value.
+     *
+     * @return mixed the converted token on success. Excel_PEAR_Error if the string
+     *               is longer than 255 characters.
+     */
     public function _convertString($string)
     {
         // chop away beggining and ending quotes
@@ -603,14 +615,16 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert a function to a ptgFunc or ptgFuncVarV depending on the number of
-    * args that it takes.
-    *
-    * @access private
-    * @param string  $token    The name of the function for convertion to ptg value.
-    * @param integer $num_args The number of arguments the function receives.
-    * @return string The packed ptg for the function
-    */
+     * Convert a function to a ptgFunc or ptgFuncVarV depending on the number of
+     * args that it takes.
+     *
+     * @access private
+     *
+     * @param string  $token    The name of the function for convertion to ptg value.
+     * @param integer $num_args The number of arguments the function receives.
+     *
+     * @return string The packed ptg for the function
+     */
     public function _convertFunction($token, $num_args)
     {
         $args     = $this->_functions[$token][1];
@@ -627,11 +641,12 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert an Excel range such as A1:D4 to a ptgRefV.
-    *
-    * @access private
-    * @param string $range An Excel range in the A1:A2 or A1..A2 format.
-    */
+     * Convert an Excel range such as A1:D4 to a ptgRefV.
+     *
+     * @access private
+     *
+     * @param string $range An Excel range in the A1:A2 or A1..A2 format.
+     */
     public function _convertRange2d($range, $class = 0)
     {
 
@@ -669,13 +684,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert an Excel 3d range such as "Sheet1!A1:D4" or "Sheet1:Sheet2!A1:D4" to
-    * a ptgArea3d.
-    *
-    * @access private
-    * @param string $token An Excel range in the Sheet1!A1:A2 format.
-    * @return mixed The packed ptgArea3d token on success, Excel_PEAR_Error on failure.
-    */
+     * Convert an Excel 3d range such as "Sheet1!A1:D4" or "Sheet1:Sheet2!A1:D4" to
+     * a ptgArea3d.
+     *
+     * @access private
+     *
+     * @param string $token An Excel range in the Sheet1!A1:A2 format.
+     *
+     * @return mixed The packed ptgArea3d token on success, Excel_PEAR_Error on failure.
+     */
     public function _convertRange3d($token)
     {
         $class = 2; // as far as I know, this is magick.
@@ -715,12 +732,14 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert an Excel reference such as A1, $B2, C$3 or $D$4 to a ptgRefV.
-    *
-    * @access private
-    * @param string $cell An Excel cell reference
-    * @return string The cell in packed() format with the corresponding ptg
-    */
+     * Convert an Excel reference such as A1, $B2, C$3 or $D$4 to a ptgRefV.
+     *
+     * @access private
+     *
+     * @param string $cell An Excel cell reference
+     *
+     * @return string The cell in packed() format with the corresponding ptg
+     */
     public function _convertRef2d($cell)
     {
         $class = 2; // as far as I know, this is magick.
@@ -745,13 +764,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert an Excel 3d reference such as "Sheet1!A1" or "Sheet1:Sheet2!A1" to a
-    * ptgRef3d.
-    *
-    * @access private
-    * @param string $cell An Excel cell reference
-    * @return mixed The packed ptgRef3d token on success, Excel_PEAR_Error on failure.
-    */
+     * Convert an Excel 3d reference such as "Sheet1!A1" or "Sheet1:Sheet2!A1" to a
+     * ptgRef3d.
+     *
+     * @access private
+     *
+     * @param string $cell An Excel cell reference
+     *
+     * @return mixed The packed ptgRef3d token on success, Excel_PEAR_Error on failure.
+     */
     public function _convertRef3d($cell)
     {
         $class = 2; // as far as I know, this is magick.
@@ -780,13 +801,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert the sheet name part of an external reference, for example "Sheet1" or
-    * "Sheet1:Sheet2", to a packed structure.
-    *
-    * @access private
-    * @param string $ext_ref The name of the external reference
-    * @return string The reference index in packed() format
-    */
+     * Convert the sheet name part of an external reference, for example "Sheet1" or
+     * "Sheet1:Sheet2", to a packed structure.
+     *
+     * @access private
+     *
+     * @param string $ext_ref The name of the external reference
+     *
+     * @return string The reference index in packed() format
+     */
     public function _packExtRef($ext_ref)
     {
         $ext_ref = preg_replace("/^'/", '', $ext_ref); // Remove leading  ' if any.
@@ -824,15 +847,17 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Look up the REF index that corresponds to an external sheet name
-    * (or range). If it doesn't exist yet add it to the workbook's references
-    * array. It assumes all sheet names given must exist.
-    *
-    * @access private
-    * @param string $ext_ref The name of the external reference
-    * @return mixed The reference index in packed() format on success,
-    *               Excel_PEAR_Error on failure
-    */
+     * Look up the REF index that corresponds to an external sheet name
+     * (or range). If it doesn't exist yet add it to the workbook's references
+     * array. It assumes all sheet names given must exist.
+     *
+     * @access private
+     *
+     * @param string $ext_ref The name of the external reference
+     *
+     * @return mixed The reference index in packed() format on success,
+     *               Excel_PEAR_Error on failure
+     */
     public function _getRefIndex($ext_ref)
     {
         $ext_ref = preg_replace("/^'/", '', $ext_ref); // Remove leading  ' if any.
@@ -884,13 +909,14 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Look up the index that corresponds to an external sheet name. The hash of
-    * sheet names is updated by the addworksheet() method of the
-    * Excel_Writer_Workbook class.
-    *
-    * @access private
-    * @return integer The sheet index, -1 if the sheet was not found
-    */
+     * Look up the index that corresponds to an external sheet name. The hash of
+     * sheet names is updated by the addworksheet() method of the
+     * Excel_Writer_Workbook class.
+     *
+     * @access private
+     *
+     * @return integer The sheet index, -1 if the sheet was not found
+     */
     public function _getSheetIndex($sheet_name)
     {
         if (! isset($this->_ext_sheets[$sheet_name])) {
@@ -901,27 +927,31 @@ class Excel_Writer_Parser
     }
 
     /**
-    * This method is used to update the array of sheet names. It is
-    * called by the addWorksheet() method of the
-    * Excel_Writer_Workbook class.
-    *
-    * @access public
-    * @see Excel_Writer_Workbook::addWorksheet()
-    * @param string  $name  The name of the worksheet being added
-    * @param integer $index The index of the worksheet being added
-    */
+     * This method is used to update the array of sheet names. It is
+     * called by the addWorksheet() method of the
+     * Excel_Writer_Workbook class.
+     *
+     * @access public
+     *
+     * @see Excel_Writer_Workbook::addWorksheet()
+     *
+     * @param string  $name  The name of the worksheet being added
+     * @param integer $index The index of the worksheet being added
+     */
     public function setExtSheet($name, $index)
     {
         $this->_ext_sheets[$name] = $index;
     }
 
     /**
-    * pack() row and column into the required 3 or 4 byte format.
-    *
-    * @access private
-    * @param string $cell The Excel cell reference to be packed
-    * @return array Array containing the row and column in packed() format
-    */
+     * pack() row and column into the required 3 or 4 byte format.
+     *
+     * @access private
+     *
+     * @param string $cell The Excel cell reference to be packed
+     *
+     * @return array Array containing the row and column in packed() format
+     */
     public function _cellToPackedRowcol($cell)
     {
         $cell = strtoupper($cell);
@@ -945,13 +975,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * pack() row range into the required 3 or 4 byte format.
-    * Just using maximum col/rows, which is probably not the correct solution
-    *
-    * @access private
-    * @param string $range The Excel range to be packed
-    * @return array Array containing (row1,col1,row2,col2) in packed() format
-    */
+     * pack() row range into the required 3 or 4 byte format.
+     * Just using maximum col/rows, which is probably not the correct solution
+     *
+     * @access private
+     *
+     * @param string $range The Excel range to be packed
+     *
+     * @return array Array containing (row1,col1,row2,col2) in packed() format
+     */
     public function _rangeToPackedRange($range)
     {
         preg_match('/(\$)?(\d+)\:(\$)?(\d+)/', $range, $match);
@@ -984,14 +1016,16 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Convert an Excel cell reference such as A1 or $B2 or C$3 or $D$4 to a zero
-    * indexed row and column number. Also returns two (0,1) values to indicate
-    * whether the row or column are relative references.
-    *
-    * @access private
-    * @param string $cell The Excel cell reference in A1 format.
-    * @return array
-    */
+     * Convert an Excel cell reference such as A1 or $B2 or C$3 or $D$4 to a zero
+     * indexed row and column number. Also returns two (0,1) values to indicate
+     * whether the row or column are relative references.
+     *
+     * @access private
+     *
+     * @param string $cell The Excel cell reference in A1 format.
+     *
+     * @return array
+     */
     public function _cellToRowcol($cell)
     {
         preg_match('/(\$)?([A-I]?[A-Z])(\$)?(\d+)/',$cell,$match);
@@ -1018,10 +1052,10 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Advance to the next valid token.
-    *
-    * @access private
-    */
+     * Advance to the next valid token.
+     *
+     * @access private
+     */
     public function _advance()
     {
         $i = $this->_current_char;
@@ -1067,12 +1101,14 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Checks if it's a valid token.
-    *
-    * @access private
-    * @param mixed $token The token to check.
-    * @return mixed       The checked token or false on failure
-    */
+     * Checks if it's a valid token.
+     *
+     * @access private
+     *
+     * @param mixed $token The token to check.
+     *
+     * @return mixed The checked token or false on failure
+     */
     public function _match($token)
     {
         switch($token) {
@@ -1200,13 +1236,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * The parsing method. It parses a formula.
-    *
-    * @access public
-    * @param string $formula The formula to parse, without the initial equal
-    *                        sign (=).
-    * @return mixed true on success, Excel_PEAR_Error on failure
-    */
+     * The parsing method. It parses a formula.
+     *
+     * @access public
+     *
+     * @param string $formula The formula to parse, without the initial equal
+     *                        sign (=).
+     *
+     * @return mixed true on success, Excel_PEAR_Error on failure
+     */
     public function parse($formula)
     {
         $this->_current_char = 0;
@@ -1219,12 +1257,13 @@ class Excel_Writer_Parser
     }
 
     /**
-    * It parses a condition. It assumes the following rule:
-    * Cond -> Expr [(">" | "<") Expr]
-    *
-    * @access private
-    * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
-    */
+     * It parses a condition. It assumes the following rule:
+     * Cond -> Expr [(">" | "<") Expr]
+     *
+     * @access private
+     *
+     * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
+     */
     public function _condition()
     {
         $result = $this->_expression();
@@ -1262,14 +1301,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * It parses a expression. It assumes the following rule:
-    * Expr -> Term [("+" | "-") Term]
-    *      -> "string"
-    *      -> "-" Term
-    *
-    * @access private
-    * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
-    */
+     * It parses a expression. It assumes the following rule:
+     * Expr -> Term [("+" | "-") Term]
+     *      -> "string"
+     *      -> "-" Term
+     *
+     * @access private
+     *
+     * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
+     */
     public function _expression()
     {
         // If it's a string return a string node
@@ -1305,13 +1345,15 @@ class Excel_Writer_Parser
     }
 
     /**
-    * This function just introduces a ptgParen element in the tree, so that Excel
-    * doesn't get confused when working with a parenthesized formula afterwards.
-    *
-    * @access private
-    * @see _fact()
-    * @return array The parsed ptg'd tree
-    */
+     * This function just introduces a ptgParen element in the tree, so that Excel
+     * doesn't get confused when working with a parenthesized formula afterwards.
+     *
+     * @access private
+     *
+     * @see _fact()
+     *
+     * @return array The parsed ptg'd tree
+     */
     public function _parenthesizedExpression()
     {
         $result = $this->_createTree('ptgParen', $this->_expression(), '');
@@ -1320,12 +1362,13 @@ class Excel_Writer_Parser
     }
 
     /**
-    * It parses a term. It assumes the following rule:
-    * Term -> Fact [("*" | "/") Fact]
-    *
-    * @access private
-    * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
-    */
+     * It parses a term. It assumes the following rule:
+     * Term -> Fact [("*" | "/") Fact]
+     *
+     * @access private
+     *
+     * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
+     */
     public function _term()
     {
         $result = $this->_fact();
@@ -1347,16 +1390,17 @@ class Excel_Writer_Parser
     }
 
     /**
-    * It parses a factor. It assumes the following rule:
-    * Fact -> ( Expr )
-    *       | CellRef
-    *       | CellRange
-    *       | Number
-    *       | Function
-    *
-    * @access private
-    * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
-    */
+     * It parses a factor. It assumes the following rule:
+     * Fact -> ( Expr )
+     *       | CellRef
+     *       | CellRange
+     *       | Number
+     *       | Function
+     *
+     * @access private
+     *
+     * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
+     */
     public function _fact()
     {
         if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_OPEN) {
@@ -1438,12 +1482,13 @@ class Excel_Writer_Parser
     }
 
     /**
-    * It parses a function call. It assumes the following rule:
-    * Func -> ( Expr [,Expr]* )
-    *
-    * @access private
-    * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
-    */
+     * It parses a function call. It assumes the following rule:
+     * Func -> ( Expr [,Expr]* )
+     *
+     * @access private
+     *
+     * @return mixed The parsed ptg'd tree on success, Excel_PEAR_Error on failure
+     */
     public function _func()
     {
         $num_args = 0; // number of arguments received
@@ -1485,47 +1530,51 @@ class Excel_Writer_Parser
     }
 
     /**
-    * Creates a tree. In fact an array which may have one or two arrays (sub-trees)
-    * as elements.
-    *
-    * @access private
-    * @param mixed $value The value of this node.
-    * @param mixed $left  The left array (sub-tree) or a final node.
-    * @param mixed $right The right array (sub-tree) or a final node.
-    * @return array A tree
-    */
+     * Creates a tree. In fact an array which may have one or two arrays (sub-trees)
+     * as elements.
+     *
+     * @access private
+     *
+     * @param mixed $value The value of this node.
+     * @param mixed $left  The left array (sub-tree) or a final node.
+     * @param mixed $right The right array (sub-tree) or a final node.
+     *
+     * @return array A tree
+     */
     public function _createTree($value, $left, $right)
     {
         return array('value' => $value, 'left' => $left, 'right' => $right);
     }
 
     /**
-    * Builds a string containing the tree in reverse polish notation (What you
-    * would use in a HP calculator stack).
-    * The following tree:
-    *
-    *    +
-    *   / \
-    *  2   3
-    *
-    * produces: "23+"
-    *
-    * The following tree:
-    *
-    *    +
-    *   / \
-    *  3   *
-    *     / \
-    *    6   A1
-    *
-    * produces: "36A1*+"
-    *
-    * In fact all operands, functions, references, etc... are written as ptg's
-    *
-    * @access public
-    * @param array $tree The optional tree to convert.
-    * @return string The tree in reverse polish notation
-    */
+     * Builds a string containing the tree in reverse polish notation (What you
+     * would use in a HP calculator stack).
+     * The following tree:
+     *
+     *    +
+     *   / \
+     *  2   3
+     *
+     * produces: "23+"
+     *
+     * The following tree:
+     *
+     *    +
+     *   / \
+     *  3   *
+     *     / \
+     *    6   A1
+     *
+     * produces: "36A1*+"
+     *
+     * In fact all operands, functions, references, etc... are written as ptg's
+     *
+     * @access public
+     *
+     * @param array $tree The optional tree to convert.
+     *
+     * @return string The tree in reverse polish notation
+     */
     public function toReversePolish($tree = array())
     {
         $polish = ""; // the string we are going to return

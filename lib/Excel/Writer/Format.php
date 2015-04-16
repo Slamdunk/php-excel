@@ -1,220 +1,254 @@
 <?php
 
 /**
-* Class for generating Excel XF records (formats)
-*
-* @author   Xavier Noguer <xnoguer@rezebra.com>
-* @category FileFormats
-* @package  Excel_Writer
-*/
+ * Class for generating Excel XF records (formats)
+ *
+ * @author   Xavier Noguer <xnoguer@rezebra.com>
+ *
+ * @category FileFormats
+ */
 
 class Excel_Writer_Format
 {
     /**
-    * The index given by the workbook when creating a new format.
-    * @var integer
-    */
+     * The index given by the workbook when creating a new format.
+     *
+     * @var integer
+     */
     public $_xf_index;
 
     /**
-    * Index to the FONT record.
-    * @var integer
-    */
+     * Index to the FONT record.
+     *
+     * @var integer
+     */
     public $font_index;
 
     /**
-    * The font name (ASCII).
-    * @var string
-    */
+     * The font name (ASCII).
+     *
+     * @var string
+     */
     public $_font_name;
 
     /**
-    * Height of font (1/20 of a point)
-    * @var integer
-    */
+     * Height of font (1/20 of a point)
+     *
+     * @var integer
+     */
     public $_size;
 
     /**
-    * Bold style
-    * @var integer
-    */
+     * Bold style
+     *
+     * @var integer
+     */
     public $_bold;
 
     /**
-    * Bit specifiying if the font is italic.
-    * @var integer
-    */
+     * Bit specifiying if the font is italic.
+     *
+     * @var integer
+     */
     public $_italic;
 
     /**
-    * Index to the cell's color
-    * @var integer
-    */
+     * Index to the cell's color
+     *
+     * @var integer
+     */
     public $_color;
 
     /**
-    * The text underline property
-    * @var integer
-    */
+     * The text underline property
+     *
+     * @var integer
+     */
     public $_underline;
 
     /**
-    * Bit specifiying if the font has strikeout.
-    * @var integer
-    */
+     * Bit specifiying if the font has strikeout.
+     *
+     * @var integer
+     */
     public $_font_strikeout;
 
     /**
-    * Bit specifiying if the font has outline.
-    * @var integer
-    */
+     * Bit specifiying if the font has outline.
+     *
+     * @var integer
+     */
     public $_font_outline;
 
     /**
-    * Bit specifiying if the font has shadow.
-    * @var integer
-    */
+     * Bit specifiying if the font has shadow.
+     *
+     * @var integer
+     */
     public $_font_shadow;
 
     /**
-    * 2 bytes specifiying the script type for the font.
-    * @var integer
-    */
+     * 2 bytes specifiying the script type for the font.
+     *
+     * @var integer
+     */
     public $_font_script;
 
     /**
-    * Byte specifiying the font family.
-    * @var integer
-    */
+     * Byte specifiying the font family.
+     *
+     * @var integer
+     */
     public $_font_family;
 
     /**
-    * Byte specifiying the font charset.
-    * @var integer
-    */
+     * Byte specifiying the font charset.
+     *
+     * @var integer
+     */
     public $_font_charset;
 
     /**
-    * An index (2 bytes) to a FORMAT record (number format).
-    * @var integer
-    */
+     * An index (2 bytes) to a FORMAT record (number format).
+     *
+     * @var integer
+     */
     public $_num_format;
 
     /**
-    * Bit specifying if formulas are hidden.
-    * @var integer
-    */
+     * Bit specifying if formulas are hidden.
+     *
+     * @var integer
+     */
     public $_hidden;
 
     /**
-    * Bit specifying if the cell is locked.
-    * @var integer
-    */
+     * Bit specifying if the cell is locked.
+     *
+     * @var integer
+     */
     public $_locked;
 
     /**
-    * The three bits specifying the text horizontal alignment.
-    * @var integer
-    */
+     * The three bits specifying the text horizontal alignment.
+     *
+     * @var integer
+     */
     public $_text_h_align;
 
     /**
-    * Bit specifying if the text is wrapped at the right border.
-    * @var integer
-    */
+     * Bit specifying if the text is wrapped at the right border.
+     *
+     * @var integer
+     */
     public $_text_wrap;
 
     /**
-    * The three bits specifying the text vertical alignment.
-    * @var integer
-    */
+     * The three bits specifying the text vertical alignment.
+     *
+     * @var integer
+     */
     public $_text_v_align;
 
     /**
-    * 1 bit, apparently not used.
-    * @var integer
-    */
+     * 1 bit, apparently not used.
+     *
+     * @var integer
+     */
     public $_text_justlast;
 
     /**
-    * The two bits specifying the text rotation.
-    * @var integer
-    */
+     * The two bits specifying the text rotation.
+     *
+     * @var integer
+     */
     public $_rotation;
 
     /**
-    * The cell's foreground color.
-    * @var integer
-    */
+     * The cell's foreground color.
+     *
+     * @var integer
+     */
     public $_fg_color;
 
     /**
-    * The cell's background color.
-    * @var integer
-    */
+     * The cell's background color.
+     *
+     * @var integer
+     */
     public $_bg_color;
 
     /**
-    * The cell's background fill pattern.
-    * @var integer
-    */
+     * The cell's background fill pattern.
+     *
+     * @var integer
+     */
     public $_pattern;
 
     /**
-    * Style of the bottom border of the cell
-    * @var integer
-    */
+     * Style of the bottom border of the cell
+     *
+     * @var integer
+     */
     public $_bottom;
 
     /**
-    * Color of the bottom border of the cell.
-    * @var integer
-    */
+     * Color of the bottom border of the cell.
+     *
+     * @var integer
+     */
     public $_bottom_color;
 
     /**
-    * Style of the top border of the cell
-    * @var integer
-    */
+     * Style of the top border of the cell
+     *
+     * @var integer
+     */
     public $_top;
 
     /**
-    * Color of the top border of the cell.
-    * @var integer
-    */
+     * Color of the top border of the cell.
+     *
+     * @var integer
+     */
     public $_top_color;
 
     /**
-    * Style of the left border of the cell
-    * @var integer
-    */
+     * Style of the left border of the cell
+     *
+     * @var integer
+     */
     public $_left;
 
     /**
-    * Color of the left border of the cell.
-    * @var integer
-    */
+     * Color of the left border of the cell.
+     *
+     * @var integer
+     */
     public $_left_color;
 
     /**
-    * Style of the right border of the cell
-    * @var integer
-    */
+     * Style of the right border of the cell
+     *
+     * @var integer
+     */
     public $_right;
 
     /**
-    * Color of the right border of the cell.
-    * @var integer
-    */
+     * Color of the right border of the cell.
+     *
+     * @var integer
+     */
     public $_right_color;
 
     /**
-    * Constructor
-    *
-    * @access private
-    * @param integer $index the XF index for the format.
-    * @param array   $properties array with properties to be set on initialization.
-    */
+     * Constructor
+     *
+     * @access private
+     *
+     * @param integer $index      the XF index for the format.
+     * @param array   $properties array with properties to be set on initialization.
+     */
     public function Excel_Writer_Format($index = 0, $properties =  array())
     {
         $this->_xf_index       = $index;
@@ -271,11 +305,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Generate an Excel BIFF XF record (style or cell).
-    *
-    * @param string $style The type of the XF record ('style' or 'cell').
-    * @return string The XF record
-    */
+     * Generate an Excel BIFF XF record (style or cell).
+     *
+     * @param string $style The type of the XF record ('style' or 'cell').
+     *
+     * @return string The XF record
+     */
     public function getXf($style)
     {
         // Set the type of the XF record and some of the attributes.
@@ -358,10 +393,10 @@ class Excel_Writer_Format
     }
 
     /**
-    * Generate an Excel BIFF FONT record.
-    *
-    * @return string The FONT record
-    */
+     * Generate an Excel BIFF FONT record.
+     *
+     * @return string The FONT record
+     */
     public function getFont()
     {
         $dyHeight   = $this->_size * 20;    // Height of font (1/20 of a point)
@@ -400,15 +435,15 @@ class Excel_Writer_Format
     }
 
     /**
-    * Returns a unique hash key for a font.
-    * Used by Excel_Writer_Workbook::_storeAllFonts()
-    *
-    * The elements that form the key are arranged to increase the probability of
-    * generating a unique key. Elements that hold a large range of numbers
-    * (eg. _color) are placed between two binary elements such as _italic
-    *
-    * @return string A key for this font
-    */
+     * Returns a unique hash key for a font.
+     * Used by Excel_Writer_Workbook::_storeAllFonts()
+     *
+     * The elements that form the key are arranged to increase the probability of
+     * generating a unique key. Elements that hold a large range of numbers
+     * (eg. _color) are placed between two binary elements such as _italic
+     *
+     * @return string A key for this font
+     */
     public function getFontKey()
     {
         $key  = "$this->_font_name$this->_size";
@@ -422,24 +457,26 @@ class Excel_Writer_Format
     }
 
     /**
-    * Returns the index used by Excel_Writer_Worksheet::_XF()
-    *
-    * @return integer The index for the XF record
-    */
+     * Returns the index used by Excel_Writer_Worksheet::_XF()
+     *
+     * @return integer The index for the XF record
+     */
     public function getXfIndex()
     {
         return($this->_xf_index);
     }
 
     /**
-    * Used in conjunction with the set_xxx_color methods to convert a color
-    * string into a number. Color range is 0..63 but we will restrict it
-    * to 8..63 to comply with Gnumeric. Colors 0..7 are repeated in 8..15.
-    *
-    * @access private
-    * @param string $name_color name of the color (i.e.: 'blue', 'red', etc..). Optional.
-    * @return integer The color index
-    */
+     * Used in conjunction with the set_xxx_color methods to convert a color
+     * string into a number. Color range is 0..63 but we will restrict it
+     * to 8..63 to comply with Gnumeric. Colors 0..7 are repeated in 8..15.
+     *
+     * @access private
+     *
+     * @param string $name_color name of the color (i.e.: 'blue', 'red', etc..). Optional.
+     *
+     * @return integer The color index
+     */
     public function _getColor($name_color = '')
     {
         $colors = array(
@@ -488,11 +525,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Set cell alignment.
-    *
-    * @access public
-    * @param string $location alignment for the cell ('left', 'right', etc...).
-    */
+     * Set cell alignment.
+     *
+     * @access public
+     *
+     * @param string $location alignment for the cell ('left', 'right', etc...).
+     */
     public function setAlign($location)
     {
         $this->setHAlign($location);
@@ -500,11 +538,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Set cell horizontal alignment.
-    *
-    * @access public
-    * @param string $location alignment for the cell ('left', 'right', etc...).
-    */
+     * Set cell horizontal alignment.
+     *
+     * @access public
+     *
+     * @param string $location alignment for the cell ('left', 'right', etc...).
+     */
     public function setHAlign($location)
     {
         $location = strtolower((string) $location);
@@ -525,11 +564,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Set cell vertical alignment.
-    *
-    * @access public
-    * @param string $location alignment for the cell ('top', 'vleft', 'vright', etc...).
-    */
+     * Set cell vertical alignment.
+     *
+     * @access public
+     *
+     * @param string $location alignment for the cell ('top', 'vleft', 'vright', etc...).
+     */
     public function setVAlign($location)
     {
         $location = strtolower((string) $location);
@@ -548,25 +588,24 @@ class Excel_Writer_Format
     }
 
     /**
-    * This is an alias for the unintuitive setAlign('merge')
-    *
-    * @access public
-    */
+     * This is an alias for the unintuitive setAlign('merge')
+     *
+     * @access public
+     */
     public function setMerge()
     {
         $this->setAlign('merge');
     }
 
     /**
-    * Sets the boldness of the text.
-    * Bold has a range 100..1000.
-    * 0 (400) is normal. 1 (700) is bold.
-    *
-    * @access public
-    * @param integer $weight Weight for the text, 0 maps to 400 (normal text),
-                             1 maps to 700 (bold text). Valid range is: 100-1000.
-                             It's Optional, default is 1 (bold).
-    */
+     * Sets the boldness of the text.
+     * Bold has a range 100..1000.
+     * 0 (400) is normal. 1 (700) is bold.
+     *
+     * @access public
+     *
+     * @param integer $weight Weight for the text, 0 maps to 400 (normal text),
+     */
     public function setBold($weight = 1)
     {
         $bold = 400;
@@ -582,55 +621,60 @@ class Excel_Writer_Format
     */
 
     /**
-    * Sets the width for the bottom border of the cell
-    *
-    * @access public
-    * @param integer $style style of the cell border. 1 => thin, 2 => thick.
-    */
+     * Sets the width for the bottom border of the cell
+     *
+     * @access public
+     *
+     * @param integer $style style of the cell border. 1 => thin, 2 => thick.
+     */
     public function setBottom($style)
     {
         $this->_bottom = $style;
     }
 
     /**
-    * Sets the width for the top border of the cell
-    *
-    * @access public
-    * @param integer $style style of the cell top border. 1 => thin, 2 => thick.
-    */
+     * Sets the width for the top border of the cell
+     *
+     * @access public
+     *
+     * @param integer $style style of the cell top border. 1 => thin, 2 => thick.
+     */
     public function setTop($style)
     {
         $this->_top = $style;
     }
 
     /**
-    * Sets the width for the left border of the cell
-    *
-    * @access public
-    * @param integer $style style of the cell left border. 1 => thin, 2 => thick.
-    */
+     * Sets the width for the left border of the cell
+     *
+     * @access public
+     *
+     * @param integer $style style of the cell left border. 1 => thin, 2 => thick.
+     */
     public function setLeft($style)
     {
         $this->_left = $style;
     }
 
     /**
-    * Sets the width for the right border of the cell
-    *
-    * @access public
-    * @param integer $style style of the cell right border. 1 => thin, 2 => thick.
-    */
+     * Sets the width for the right border of the cell
+     *
+     * @access public
+     *
+     * @param integer $style style of the cell right border. 1 => thin, 2 => thick.
+     */
     public function setRight($style)
     {
         $this->_right = $style;
     }
 
     /**
-    * Set cells borders to the same style
-    *
-    * @access public
-    * @param integer $style style to apply for all cell borders. 1 => thin, 2 => thick.
-    */
+     * Set cells borders to the same style
+     *
+     * @access public
+     *
+     * @param integer $style style to apply for all cell borders. 1 => thin, 2 => thick.
+     */
     public function setBorder($style)
     {
         $this->setBottom($style);
@@ -644,12 +688,13 @@ class Excel_Writer_Format
     */
 
     /**
-    * Sets all the cell's borders to the same color
-    *
-    * @access public
-    * @param mixed $color The color we are setting. Either a string (like 'blue'),
-    *                     or an integer (range is [8...63]).
-    */
+     * Sets all the cell's borders to the same color
+     *
+     * @access public
+     *
+     * @param mixed $color The color we are setting. Either a string (like 'blue'),
+     *                     or an integer (range is [8...63]).
+     */
     public function setBorderColor($color)
     {
         $this->setBottomColor($color);
@@ -659,11 +704,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Sets the cell's bottom border color
-    *
-    * @access public
-    * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
-    */
+     * Sets the cell's bottom border color
+     *
+     * @access public
+     *
+     * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
+     */
     public function setBottomColor($color)
     {
         $value = $this->_getColor($color);
@@ -671,11 +717,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Sets the cell's top border color
-    *
-    * @access public
-    * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
-    */
+     * Sets the cell's top border color
+     *
+     * @access public
+     *
+     * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
+     */
     public function setTopColor($color)
     {
         $value = $this->_getColor($color);
@@ -683,11 +730,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Sets the cell's left border color
-    *
-    * @access public
-    * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
-    */
+     * Sets the cell's left border color
+     *
+     * @access public
+     *
+     * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
+     */
     public function setLeftColor($color)
     {
         $value = $this->_getColor($color);
@@ -695,11 +743,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Sets the cell's right border color
-    *
-    * @access public
-    * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
-    */
+     * Sets the cell's right border color
+     *
+     * @access public
+     *
+     * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
+     */
     public function setRightColor($color)
     {
         $value = $this->_getColor($color);
@@ -707,11 +756,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Sets the cell's foreground color
-    *
-    * @access public
-    * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
-    */
+     * Sets the cell's foreground color
+     *
+     * @access public
+     *
+     * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
+     */
     public function setFgColor($color)
     {
         $value = $this->_getColor($color);
@@ -722,11 +772,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Sets the cell's background color
-    *
-    * @access public
-    * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
-    */
+     * Sets the cell's background color
+     *
+     * @access public
+     *
+     * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
+     */
     public function setBgColor($color)
     {
         $value = $this->_getColor($color);
@@ -737,11 +788,12 @@ class Excel_Writer_Format
     }
 
     /**
-    * Sets the cell's color
-    *
-    * @access public
-    * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
-    */
+     * Sets the cell's color
+     *
+     * @access public
+     *
+     * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
+     */
     public function setColor($color)
     {
         $value = $this->_getColor($color);
@@ -749,67 +801,70 @@ class Excel_Writer_Format
     }
 
     /**
-    * Sets the fill pattern attribute of a cell
-    *
-    * @access public
-    * @param integer $arg Optional. Defaults to 1. Meaningful values are: 0-18,
-    *                     0 meaning no background.
-    */
+     * Sets the fill pattern attribute of a cell
+     *
+     * @access public
+     *
+     * @param integer $arg Optional. Defaults to 1. Meaningful values are: 0-18,
+     *                     0 meaning no background.
+     */
     public function setPattern($arg = 1)
     {
         $this->_pattern = $arg;
     }
 
     /**
-    * Sets the underline of the text
-    *
-    * @access public
-    * @param integer $underline The value for underline. Possible values are:
-    *                          1 => underline, 2 => double underline.
-    */
+     * Sets the underline of the text
+     *
+     * @access public
+     *
+     * @param integer $underline The value for underline. Possible values are:
+     *                           1 => underline, 2 => double underline.
+     */
     public function setUnderline($underline)
     {
         $this->_underline = $underline;
     }
 
     /**
-    * Sets the font style as italic
-    *
-    * @access public
-    */
+     * Sets the font style as italic
+     *
+     * @access public
+     */
     public function setItalic()
     {
         $this->_italic = 1;
     }
 
     /**
-    * Sets the font size
-    *
-    * @access public
-    * @param integer $size The font size (in pixels I think).
-    */
+     * Sets the font size
+     *
+     * @access public
+     *
+     * @param integer $size The font size (in pixels I think).
+     */
     public function setSize($size)
     {
         $this->_size = $size;
     }
 
     /**
-    * Sets text wrapping
-    *
-    * @access public
-    */
+     * Sets text wrapping
+     *
+     * @access public
+     */
     public function setTextWrap()
     {
         $this->_text_wrap = 1;
     }
 
     /**
-    * Sets the orientation of the text
-    *
-    * @access public
-    * @param integer $angle The rotation angle for the text (clockwise). Possible
-                            values are: 0, 90, 270 and -1 for stacking top-to-bottom.
-    */
+     * Sets the orientation of the text
+     *
+     * @access public
+     *
+     * @param integer $angle The rotation angle for the text (clockwise). Possible
+     */
     /*
     function setTextRotation($angle)
     {
@@ -838,86 +893,89 @@ class Excel_Writer_Format
     */
 
     /**
-    * Sets the numeric format.
-    * It can be date, time, currency, etc...
-    *
-    * @access public
-    * @param integer $num_format The numeric format.
-    */
+     * Sets the numeric format.
+     * It can be date, time, currency, etc...
+     *
+     * @access public
+     *
+     * @param integer $num_format The numeric format.
+     */
     public function setNumFormat($num_format)
     {
         $this->_num_format = $num_format;
     }
 
     /**
-    * Sets font as strikeout.
-    *
-    * @access public
-    */
+     * Sets font as strikeout.
+     *
+     * @access public
+     */
     public function setStrikeOut()
     {
         $this->_font_strikeout = 1;
     }
 
     /**
-    * Sets outlining for a font.
-    *
-    * @access public
-    */
+     * Sets outlining for a font.
+     *
+     * @access public
+     */
     public function setOutLine()
     {
         $this->_font_outline = 1;
     }
 
     /**
-    * Sets font as shadow.
-    *
-    * @access public
-    */
+     * Sets font as shadow.
+     *
+     * @access public
+     */
     public function setShadow()
     {
         $this->_font_shadow = 1;
     }
 
     /**
-    * Sets the script type of the text
-    *
-    * @access public
-    * @param integer $script The value for script type. Possible values are:
-    *                        1 => superscript, 2 => subscript.
-    */
+     * Sets the script type of the text
+     *
+     * @access public
+     *
+     * @param integer $script The value for script type. Possible values are:
+     *                        1 => superscript, 2 => subscript.
+     */
     public function setScript($script)
     {
         $this->_font_script = $script;
     }
 
      /**
-     * Locks a cell.
-     *
-     * @access public
-     */
+      * Locks a cell.
+      *
+      * @access public
+      */
      public function setLocked()
      {
          $this->_locked = 1;
      }
 
     /**
-    * Unlocks a cell. Useful for unprotecting particular cells of a protected sheet.
-    *
-    * @access public
-    */
+     * Unlocks a cell. Useful for unprotecting particular cells of a protected sheet.
+     *
+     * @access public
+     */
     public function setUnLocked()
     {
         $this->_locked = 0;
     }
 
     /**
-    * Sets the font family name.
-    *
-    * @access public
-    * @param string $fontfamily The font family name. Possible values are:
-    *                           'Times New Roman', 'Arial', 'Courier'.
-    */
+     * Sets the font family name.
+     *
+     * @access public
+     *
+     * @param string $fontfamily The font family name. Possible values are:
+     *                           'Times New Roman', 'Arial', 'Courier'.
+     */
     public function setFontFamily($font_family)
     {
         $this->_font_name = $font_family;

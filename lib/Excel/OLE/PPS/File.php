@@ -1,27 +1,30 @@
 <?php
 
 /**
-* Class for creating File PPS's for Excel_OLE containers
-*
-* @author   Xavier Noguer <xnoguer@php.net>
-* @category Structures
-* @package  Excel_OLE
-*/
+ * Class for creating File PPS's for Excel_OLE containers
+ *
+ * @author   Xavier Noguer <xnoguer@php.net>
+ *
+ * @category Structures
+ */
 class Excel_OLE_PPS_File extends Excel_OLE_PPS
 {
     /**
-    * The temporary dir for storing the Excel_OLE file
-    * @var string
-    */
+     * The temporary dir for storing the Excel_OLE file
+     *
+     * @var string
+     */
     public $_tmp_dir;
 
     /**
-    * The constructor
-    *
-    * @access public
-    * @param string $name The name of the file (in Unicode)
-    * @see Excel_OLE::Asc2Ucs()
-    */
+     * The constructor
+     *
+     * @access public
+     *
+     * @param string $name The name of the file (in Unicode)
+     *
+     * @see Excel_OLE::Asc2Ucs()
+     */
     public function Excel_OLE_PPS_File($name)
     {
         $this->_tmp_dir = sys_get_temp_dir();
@@ -39,12 +42,14 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     }
 
     /**
-    * Sets the temp dir used for storing the Excel_OLE file
-    *
-    * @access public
-    * @param string $dir The dir to be used as temp dir
-    * @return true if given dir is valid, false otherwise
-    */
+     * Sets the temp dir used for storing the Excel_OLE file
+     *
+     * @access public
+     *
+     * @param string $dir The dir to be used as temp dir
+     *
+     * @return true if given dir is valid, false otherwise
+     */
     public function setTempDir($dir)
     {
         if (is_dir($dir)) {
@@ -57,11 +62,12 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     }
 
     /**
-    * Initialization method. Has to be called right after Excel_OLE_PPS_File().
-    *
-    * @access public
-    * @return mixed true on success. PEAR_Error on failure
-    */
+     * Initialization method. Has to be called right after Excel_OLE_PPS_File().
+     *
+     * @access public
+     *
+     * @return mixed true on success. PEAR_Error on failure
+     */
     public function init()
     {
         $this->_tmp_filename = tempnam($this->_tmp_dir, "Excel_OLE_PPS_File");
@@ -78,11 +84,12 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     }
 
     /**
-    * Append data to PPS
-    *
-    * @access public
-    * @param string $data The data to append
-    */
+     * Append data to PPS
+     *
+     * @access public
+     *
+     * @param string $data The data to append
+     */
     public function append($data)
     {
         if ($this->_PPS_FILE) {
@@ -94,7 +101,8 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
 
     /**
      * Returns a stream for reading this file using fread() etc.
-     * @return  resource  a read-only stream
+     *
+     * @return resource a read-only stream
      */
     public function getStream()
     {
