@@ -1950,7 +1950,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $options     = pack("V", 0x03);
 
         // Convert URL to a null terminated wchar string
-        $url         = join("\0", preg_split("''", $url, -1, PREG_SPLIT_NO_EMPTY));
+        $url         = implode("\0", preg_split("''", $url, -1, PREG_SPLIT_NO_EMPTY));
         $url         = $url . "\0\0\0";
 
         // Pack the length of the URL
@@ -2013,7 +2013,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $options     = pack("V", 0x08);
 
         // Convert the URL type and to a null terminated wchar string
-        $url         = join("\0", preg_split("''", $url, -1, PREG_SPLIT_NO_EMPTY));
+        $url         = implode("\0", preg_split("''", $url, -1, PREG_SPLIT_NO_EMPTY));
         $url         = $url . "\0\0\0";
 
         // Pack the length of the URL as chars (not wchars)
@@ -2152,7 +2152,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
                           $dir_short_len .
                           $dir_short    .
                           $unknown3     .
-                          $stream_len   ;/*.
+                          $stream_len;/*.
                           $dir_long_len .
                           $unknown4     .
                           $dir_long     .

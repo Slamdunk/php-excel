@@ -76,7 +76,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         // Initial Setting for saving
         $this->_BIG_BLOCK_SIZE  = pow(2,
                       ((isset($this->_BIG_BLOCK_SIZE)) ? $this->_adjust2($this->_BIG_BLOCK_SIZE)  : 9));
-        $this->_SMALL_BLOCK_SIZE= pow(2,
+        $this->_SMALL_BLOCK_SIZE = pow(2,
                       ((isset($this->_SMALL_BLOCK_SIZE)) ?  $this->_adjust2($this->_SMALL_BLOCK_SIZE) : 6));
 
         // Open temp file if we are sending output to stdout
@@ -457,8 +457,8 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         }
         // Extra BDList
         if ($iBdCnt > $i1stBdL) {
-            $iN=0;
-            $iNb=0;
+            $iN = 0;
+            $iNb = 0;
             for ($i = $i1stBdL;$i < $iBdCnt; $i++, $iN++) {
                 if ($iN >= ($iBbCnt - 1)) {
                     $iN = 0;
@@ -525,8 +525,8 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
       // Extra BDList
       if($bbd_info["blockchain_list_entries"] > $bbd_info["header_blockchain_list_entries"])
         {
-          $iN=0;
-          $iNb=0;
+          $iN = 0;
+          $iNb = 0;
           for($i = $bbd_info["header_blockchain_list_entries"]; $i < $bbd_info["blockchain_list_entries"]; $i++, $iN++)
             {
               if($iN >= ($bbd_info["entries_per_block"]-1))
@@ -615,7 +615,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         }
 
       // BDList
-      for ($i=0; $i < $bbd_info["header_blockchain_list_entries"] and $i < $bbd_info["blockchain_list_entries"]; $i++)
+      for ($i = 0; $i < $bbd_info["header_blockchain_list_entries"] and $i < $bbd_info["blockchain_list_entries"]; $i++)
         {
           fwrite($FILE, pack("V", $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i));
         }

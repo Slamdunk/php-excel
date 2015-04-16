@@ -165,7 +165,7 @@ class Excel_OLE
         for ($i = 0; $i < $bbatBlockCount; $i++) {
             $pos = $this->_getBlockOffset($mbatBlocks[$i]);
             fseek($fh, $pos);
-            for ($j = 0 ; $j < $this->bigBlockSize / 4; $j++) {
+            for ($j = 0; $j < $this->bigBlockSize / 4; $j++) {
                 $this->bbat[] = $this->_readInt4($fh);
             }
         }
@@ -282,7 +282,7 @@ class Excel_OLE
     function _readPpsWks($blockId)
     {
         $fh = $this->getStream($blockId);
-        for ($pos = 0; ; $pos += 128) {
+        for ($pos = 0;; $pos += 128) {
             fseek($fh, $pos, SEEK_SET);
             $nameUtf16 = fread($fh, 64);
             $nameLength = $this->_readInt2($fh);

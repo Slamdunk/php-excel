@@ -632,7 +632,7 @@ class Excel_Writer_Parser
     * @access private
     * @param string $range An Excel range in the A1:A2 or A1..A2 format.
     */
-    function _convertRange2d($range, $class=0)
+    function _convertRange2d($range, $class = 0)
     {
 
         // TODO: possible class value 0,1,2 check Formula.pm

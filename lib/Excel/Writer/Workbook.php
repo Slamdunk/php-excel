@@ -157,7 +157,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $this->_string_sizeinfo  = 3;
 
         // Add the default format for hyperlinks
-        $this->_url_format =& $this->addFormat(array('color' => 'blue', 'underline' => 1));
+        $this->_url_format = & $this->addFormat(array('color' => 'blue', 'underline' => 1));
         $this->_str_total       = 0;
         $this->_str_unique      = 0;
         $this->_str_table       = array();
@@ -1200,7 +1200,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
                             $align = 1;
                         }
                         // Split section without header => split on even boundary
-                        else if ($split_string && $space_remaining % 2 == 1) {
+                        elseif ($split_string && $space_remaining % 2 == 1) {
                             $space_remaining--;
                             $align = 1;
                         }
@@ -1365,7 +1365,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
                             $align = 1;
                         }
                         // Split section without header => split on even boundary
-                        else if ($split_string && $space_remaining % 2 == 1) {
+                        elseif ($split_string && $space_remaining % 2 == 1) {
                             $space_remaining--;
                             $align = 1;
                         }
