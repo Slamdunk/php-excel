@@ -578,6 +578,7 @@ class Excel_Writer_Parser
             if ($this->_byte_order) { // if it's Big Endian
                 $num = strrev($num);
             }
+
             return pack("Cd", $this->ptg['ptgNum'], $num);
         }
     }
@@ -663,6 +664,7 @@ class Excel_Writer_Parser
             // TODO: use real error codes
             return $this->raiseError("Unknown class $class", 0, Excel_PEAR_ERROR_DIE);
         }
+
         return $ptgArea . $row1 . $row2 . $col1. $col2;
     }
 
@@ -738,6 +740,7 @@ class Excel_Writer_Parser
             // TODO: use real error codes
             throw new Excel_Exception_RuntimeException("Unknown class $class");
         }
+
         return $ptgRef.$row.$col;
     }
 
@@ -1049,6 +1052,7 @@ class Excel_Writer_Parser
                 //}
                 $this->_current_char = $i + 1;
                 $this->_current_token = $token;
+
                 return 1;
             }
 
@@ -1100,6 +1104,7 @@ class Excel_Writer_Parser
                 if ($this->_lookahead == '=') { // it's a GE token
                     break;
                 }
+
                 return $token;
                 break;
             case SPREADSHEET_EXCEL_WRITER_LT:
@@ -1107,6 +1112,7 @@ class Excel_Writer_Parser
                 if (($this->_lookahead == '=') or ($this->_lookahead == '>')) {
                     break;
                 }
+
                 return $token;
                 break;
             case SPREADSHEET_EXCEL_WRITER_GE:
@@ -1188,6 +1194,7 @@ class Excel_Writer_Parser
                 {
                     return $token;
                 }
+
                 return '';
         }
     }
@@ -1207,6 +1214,7 @@ class Excel_Writer_Parser
         $this->_lookahead    = $formula{1};
         $this->_advance();
         $this->_parse_tree   = $this->_condition();
+
         return true;
     }
 
@@ -1249,6 +1257,7 @@ class Excel_Writer_Parser
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgConcat', $result, $result2);
         }
+
         return $result;
     }
 
@@ -1267,12 +1276,14 @@ class Excel_Writer_Parser
         if (preg_match("/^\"[^\"]{0,255}\"$/", $this->_current_token)) {
             $result = $this->_createTree($this->_current_token, '', '');
             $this->_advance();
+
             return $result;
         } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_SUB) {
             // catch "-" Term
             $this->_advance();
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgUminus', $result2, '');
+
             return $result;
         }
         $result = $this->_term();
@@ -1289,6 +1300,7 @@ class Excel_Writer_Parser
                 $result = $this->_createTree('ptgSub', $result, $result2);
             }
         }
+
         return $result;
     }
 
@@ -1303,6 +1315,7 @@ class Excel_Writer_Parser
     function _parenthesizedExpression()
     {
         $result = $this->_createTree('ptgParen', $this->_expression(), '');
+
         return $result;
     }
 
@@ -1329,6 +1342,7 @@ class Excel_Writer_Parser
                 $result = $this->_createTree('ptgDiv', $result, $result2);
             }
         }
+
         return $result;
     }
 
@@ -1359,6 +1373,7 @@ class Excel_Writer_Parser
         {
             $result = $this->_createTree($this->_current_token, '', '');
             $this->_advance();
+
             return $result;
         }
         // If it's an external reference (Sheet1!A1 or Sheet1:Sheet2!A1)
@@ -1366,6 +1381,7 @@ class Excel_Writer_Parser
         {
             $result = $this->_createTree($this->_current_token, '', '');
             $this->_advance();
+
             return $result;
         }
         // If it's an external reference ('Sheet1'!A1 or 'Sheet1:Sheet2'!A1)
@@ -1373,6 +1389,7 @@ class Excel_Writer_Parser
         {
             $result = $this->_createTree($this->_current_token, '', '');
             $this->_advance();
+
             return $result;
         }
         // if it's a range
@@ -1381,6 +1398,7 @@ class Excel_Writer_Parser
         {
             $result = $this->_current_token;
             $this->_advance();
+
             return $result;
         }
         // If it's an external range (Sheet1!A1 or Sheet1!A1:B2)
@@ -1388,6 +1406,7 @@ class Excel_Writer_Parser
         {
             $result = $this->_current_token;
             $this->_advance();
+
             return $result;
         }
         // If it's an external range ('Sheet1'!A1 or 'Sheet1'!A1:B2)
@@ -1395,20 +1414,24 @@ class Excel_Writer_Parser
         {
             $result = $this->_current_token;
             $this->_advance();
+
             return $result;
         }
         elseif (is_numeric($this->_current_token))
         {
             $result = $this->_createTree($this->_current_token, '', '');
             $this->_advance();
+
             return $result;
         }
         // if it's a function call
         elseif (preg_match("/^[A-Z0-9\xc0-\xdc\.]+$/i",$this->_current_token))
         {
             $result = $this->_func();
+
             return $result;
         }
+
         return $this->raiseError("Syntax error: ".$this->_current_token.
                                  ", lookahead: ".$this->_lookahead.
                                  ", current char: ".$this->_current_char);
@@ -1542,7 +1565,7 @@ class Excel_Writer_Parser
             $converted_tree = $this->_convert($tree['value']);
         }
         $polish .= $converted_tree;
+
         return $polish;
     }
 }
-?>

@@ -418,6 +418,7 @@ class Excel_Writer_Format
         $key .= "$this->_font_family$this->_font_charset";
         $key .= "$this->_font_shadow$this->_color$this->_italic";
         $key  = str_replace(' ', '_', $key);
+
         return ($key);
     }
 
@@ -927,4 +928,3 @@ class Excel_Writer_Format
         $this->_font_name = $font_family;
     }
 }
-?>

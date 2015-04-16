@@ -135,6 +135,7 @@ class Excel_OLE_PPS
         if (isset($this->_PPS_FILE)) {
             fseek($this->_PPS_FILE, 0);
             $stats = fstat($this->_PPS_FILE);
+
             return $stats[7];
         } else {
             return strlen($this->_data);
@@ -166,7 +167,7 @@ class Excel_OLE_PPS
               . "\x00\x00\x00\x00"                  // 100
               . Excel_OLE::LocalDate2Excel_OLE($this->Time1st)       // 108
               . Excel_OLE::LocalDate2Excel_OLE($this->Time2nd)       // 116
-              . pack("V", isset($this->_StartBlock)? 
+              . pack("V", isset($this->_StartBlock)?
                         $this->_StartBlock:0)        // 120
               . pack("V", $this->Size)               // 124
               . pack("V", 0);                        // 128
@@ -179,10 +180,10 @@ class Excel_OLE_PPS
     *
     * @access private
     * @param array &$pps_array Reference to the array of PPS's for the whole Excel_OLE
-    *                          container 
+    *                          container
     * @return integer          The index for this PPS
     */
-    static function _savePpsSetPnt(&$raList, $to_save, $depth = 0) 
+    static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
     {
       if ( !is_array($to_save) || (count($to_save) == 0) ) {
         return 0xFFFFFFFF;
@@ -195,6 +196,7 @@ class Excel_OLE_PPS
         $raList[$cnt]->PrevPps = 0xFFFFFFFF;
         $raList[$cnt]->NextPps = 0xFFFFFFFF;
         $raList[$cnt]->DirPps  = self::_savePpsSetPnt($raList, @$raList[$cnt]->children, $depth++);
+
         return $cnt;
       }
       else {
@@ -214,4 +216,3 @@ class Excel_OLE_PPS
       }
     }
 }
-?>

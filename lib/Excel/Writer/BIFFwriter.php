@@ -219,9 +219,10 @@ class Excel_Writer_BIFFwriter
     {
         if (is_dir($dir)) {
             $this->_tmp_dir = $dir;
+
             return true;
         }
+
         return false;
     }
 }
-?>

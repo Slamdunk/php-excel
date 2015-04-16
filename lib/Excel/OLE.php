@@ -228,6 +228,7 @@ class Excel_OLE
         } else {
             $path .= '&blockId=' . $blockIdOrPps;
         }
+
         return fopen($path, 'r');
     }
 
@@ -240,6 +241,7 @@ class Excel_OLE
     function _readInt1($fh)
     {
         list(, $tmp) = unpack("c", fread($fh, 1));
+
         return $tmp;
     }
 
@@ -252,6 +254,7 @@ class Excel_OLE
     function _readInt2($fh)
     {
         list(, $tmp) = unpack("v", fread($fh, 2));
+
         return $tmp;
     }
 
@@ -264,6 +267,7 @@ class Excel_OLE
     function _readInt4($fh)
     {
         list(, $tmp) = unpack("V", fread($fh, 4));
+
         return $tmp;
     }
 
@@ -366,7 +370,7 @@ class Excel_OLE
                 $this->_ppsTreeComplete($pps->DirPps));
     }
 
-    /** 
+    /**
     * Checks whether a PPS is a File PPS or not.
     * If there is no PPS for the index given, it will return false.
     * @param integer $index The index for the PPS
@@ -378,10 +382,11 @@ class Excel_OLE
         if (isset($this->_list[$index])) {
             return ($this->_list[$index]->Type == Excel_OLE_PPS_TYPE_FILE);
         }
+
         return false;
     }
 
-    /** 
+    /**
     * Checks whether a PPS is a Root PPS or not.
     * If there is no PPS for the index given, it will return false.
     * @param integer $index The index for the PPS.
@@ -393,10 +398,11 @@ class Excel_OLE
         if (isset($this->_list[$index])) {
             return ($this->_list[$index]->Type == Excel_OLE_PPS_TYPE_ROOT);
         }
+
         return false;
     }
 
-    /** 
+    /**
     * Gives the total number of PPS's found in the Excel_OLE container.
     * @return integer The total number of PPS's found in the Excel_OLE container
     * @access public
@@ -429,6 +435,7 @@ class Excel_OLE
         $fh = $this->getStream($this->_list[$index]);
         $data = stream_get_contents($fh, $length, $position);
         fclose($fh);
+
         return $data;
     }
 
@@ -444,6 +451,7 @@ class Excel_OLE
         if (isset($this->_list[$index])) {
             return $this->_list[$index]->Size;
         }
+
         return 0;
     }
 
@@ -461,6 +469,7 @@ class Excel_OLE
         for ($i = 0; $i < strlen($ascii); $i++) {
             $rawname .= $ascii{$i} . "\x00";
         }
+
         return $rawname;
     }
 
@@ -470,7 +479,7 @@ class Excel_OLE
     *
     * @access public
     * @static
-    * @param integer $date A timestamp 
+    * @param integer $date A timestamp
     * @return string The string for the Excel_OLE container
     */
     static function LocalDate2Excel_OLE($date = null)
@@ -513,6 +522,7 @@ class Excel_OLE
             $res .= pack('c', $hex);
             $high_part /= 0x100;
         }
+
         return $res;
     }
 
@@ -554,7 +564,7 @@ class Excel_OLE
         
         // translate to seconds from beggining of UNIX era
         $big_date -= $days * 24 * 3600;
+
         return floor($big_date);
     }
 }
-?>

@@ -469,6 +469,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             // open_basedir restriction in effect - store data in memory
             // ToDo: Let the error actually have an effect somewhere
             $this->_using_tmpfile = false;
+
             return new Excel_PEAR_Error('Temp file could not be opened since open_basedir restriction in effect - please use setTmpDir() - using memory storage instead');
         }
 
@@ -642,6 +643,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             if ($this->_using_tmpfile) {
                 fseek($fh, 0);
             }
+
             return $tmp;
         }
         // Return data stored on disk
@@ -1230,6 +1232,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         } else {
             $retval = new Excel_PEAR_Error('$val needs to be an array');
         }
+
         return($retval);
     }
 
@@ -1255,6 +1258,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         } else {
             $retval = new Excel_PEAR_Error('$val needs to be an array');
         }
+
         return($retval);
     }
 
@@ -1328,12 +1332,14 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         if (preg_match("/\$?([A-I]?[A-Z]\$?\d+):\$?([A-I]?[A-Z]\$?\d+)/", $cell, $match)) {
             list($row1, $col1) =  $this->_cellToRowcol($match[1]);
             list($row2, $col2) =  $this->_cellToRowcol($match[2]);
+
             return(array($row1, $col1, $row2, $col2));
         }
 
         // Convert a cell reference: 'A1' or 'AD2000'
         if (preg_match("/\$?([A-I]?[A-Z]\$?\d+)/", $cell)) {
             list($row1, $col1) =  $this->_cellToRowcol($match[1]);
+
             return(array($row1, $col1));
         }
 
@@ -1490,6 +1496,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         }
 
         $this->_append($header.$data.$xl_double);
+
         return(0);
     }
 
@@ -1547,6 +1554,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header    = pack("vv",   $record, $length);
         $data      = pack("vvvv", $row, $col, $xf, $strlen);
         $this->_append($header . $data . $str);
+
         return($str_error);
     }
 
@@ -1624,6 +1632,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header    = pack('vv',   $record, $length);
         $data      = pack('vvvV', $row, $col, $xf, $this->_str_table[$str]);
         $this->_append($header.$data);
+
         return $str_error;
     }
 
@@ -1657,6 +1666,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         if ($col >  $this->_dim_colmax) {
             $this->_dim_colmax = $col;
         }
+
         return true;
     }
 
@@ -1709,6 +1719,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             $data   = pack("vvv", -1, 0, strlen($chunk));
             $this->_append($header.$data.$chunk);
         }
+
         return(0);
     }
 
@@ -1763,6 +1774,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header    = pack("vv",  $record, $length);
         $data      = pack("vvv", $row, $col, $xf);
         $this->_append($header . $data);
+
         return 0;
     }
 
@@ -1810,6 +1822,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         } else {
             // Error handling
             $this->writeString($row, $col, 'Unrecognised character for formula');
+
             return -1;
         }
 
@@ -1817,12 +1830,14 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $error = $this->_parser->parse($formula);
         if ($this->isError($error)) {
             $this->writeString($row, $col, $error->getMessage());
+
             return -1;
         }
 
         $formula = $this->_parser->toReversePolish();
         if ($this->isError($formula)) {
             $this->writeString($row, $col, $formula->getMessage());
+
             return -1;
         }
 
@@ -1834,6 +1849,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
                                      $grbit, $unknown, $formlen);
 
         $this->_append($header . $data . $formula);
+
         return 0;
     }
 
@@ -1894,6 +1910,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         if (preg_match('[^external:]', $url)) {
             return($this->_writeUrlExternal($row1, $col1, $row2, $col2, $url, $string, $format));
         }
+
         return($this->_writeUrlWeb($row1, $col1, $row2, $col2, $url, $string, $format));
     }
 
@@ -1957,6 +1974,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_append($header . $data .
                        $unknown1 . $options .
                        $unknown2 . $url_len . $url);
+
         return($str_error);
     }
 
@@ -2019,6 +2037,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_append($header . $data .
                        $unknown1 . $options .
                        $url_len . $url);
+
         return($str_error);
     }
 
@@ -2155,6 +2174,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         // Write the packed data
         $this->_append($header. $data);
+
         return($str_error);
     }
 
@@ -3100,6 +3120,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $bitmap_array = $this->_processBitmap($bitmap);
         if ($this->isError($bitmap_array)) {
             $this->writeString($row, $col, $bitmap_array->getMessage());
+
             return;
         }
         list($width, $height, $size, $data) = $bitmap_array; //$this->_processBitmap($bitmap);
@@ -3502,4 +3523,3 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         }
     }
 }
-?>

@@ -32,7 +32,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     {
         $this->_tmp_dir = sys_get_temp_dir();
         $this->Excel_OLE_PPS(
-           null, 
+           null,
            Excel_OLE::Asc2Ucs('Root Entry'),
            Excel_OLE_PPS_TYPE_ROOT,
            null,
@@ -55,8 +55,10 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     {
         if (is_dir($dir)) {
             $this->_tmp_dir = $dir;
+
             return true;
         }
+
         return false;
     }
 
@@ -74,7 +76,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         // Initial Setting for saving
         $this->_BIG_BLOCK_SIZE  = pow(2,
                       ((isset($this->_BIG_BLOCK_SIZE))? $this->_adjust2($this->_BIG_BLOCK_SIZE)  : 9));
-        $this->_SMALL_BLOCK_SIZE= pow(2, 
+        $this->_SMALL_BLOCK_SIZE= pow(2,
                       ((isset($this->_SMALL_BLOCK_SIZE))?  $this->_adjust2($this->_SMALL_BLOCK_SIZE): 6));
  
         // Open temp file if we are sending output to stdout
@@ -128,7 +130,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @param array $raList Reference to an array of PPS's
     * @return array The array of numbers
     */
-    function _calcSize(&$raList) 
+    function _calcSize(&$raList)
     {
         // Calculate Basic Setting
         list($iSBDcnt, $iBBcnt, $iPPScnt) = array(0,0,0);
@@ -169,6 +171,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     function _adjust2($i2)
     {
         $iWk = log($i2)/log(2);
+
         return ($iWk > floor($iWk))? floor($iWk)+1:$iWk;
     }
 
@@ -225,7 +228,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
                   . pack("v", 0)
                   . "\x00\x00\x00\x00"
                   . "\x00\x00\x00\x00"
-                  . pack("V", $iBdCnt) 
+                  . pack("V", $iBdCnt)
                   . pack("V", $iBBcnt+$iSBDcnt) //ROOT START
                   . pack("V", 0)
                   . pack("V", 0x1000)
@@ -290,7 +293,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
                     }
                     // Set For PPS
                     $raList[$i]->_StartBlock = $iStBlk;
-                    $iStBlk += 
+                    $iStBlk +=
                             (floor($raList[$i]->Size / $this->_BIG_BLOCK_SIZE) +
                                 (($raList[$i]->Size % $this->_BIG_BLOCK_SIZE)? 1: 0));
                 }
@@ -357,6 +360,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
                 fwrite($FILE, pack("V", -1));
             }
         }
+
         return $sRes;
     }
 
@@ -366,7 +370,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @access private
     * @param array $raList Reference to an array with all PPS's
     */
-    function _savePps(&$raList) 
+    function _savePps(&$raList)
     {
         // Save each PPS WK
         for ($i = 0; $i < count($raList); $i++) {
@@ -390,7 +394,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @param integer $iBsize
     * @param integer $iPpsCnt
     */
-    function _saveBbd($iSbdSize, $iBsize, $iPpsCnt) 
+    function _saveBbd($iSbdSize, $iBsize, $iPpsCnt)
     {
       if($this->new_func)
         return $this->_create_big_block_chain($iSbdSize, $iBsize, $iPpsCnt);
@@ -465,7 +469,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
             }
             if (($iBdCnt-$i1stBdL) % ($iBbCnt-1)) {
                 for ($i = 0; $i < (($iBbCnt - 1) - (($iBdCnt - $i1stBdL) % ($iBbCnt - 1))); $i++) {
-                    fwrite($FILE, pack("V", -1)); 
+                    fwrite($FILE, pack("V", -1));
                 }
             }
             fwrite($FILE, pack("V", -2));
@@ -482,7 +486,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      * @param integer $num_bb_blocks - number of Bigblock depot blocks
      * @param integer $num_pps_blocks - number of PropertySetStorage blocks
      */
-    function _create_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks) 
+    function _create_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
       $FILE = $this->_FILEH_;
 
@@ -564,7 +568,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      * @param integer $num_bb_blocks - number of Bigblock depot blocks
      * @param integer $num_pps_blocks - number of PropertySetStorage blocks
      */
-    function _create_header($num_sb_blocks, $num_bb_blocks, $num_pps_blocks) 
+    function _create_header($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
       $FILE = $this->_FILEH_;
 
@@ -585,7 +589,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
              . pack("v", 0)
              . "\x00\x00\x00\x00"
              . "\x00\x00\x00\x00"
-             . pack("V", $bbd_info["blockchain_list_entries"]) 
+             . pack("V", $bbd_info["blockchain_list_entries"])
              . pack("V", $num_sb_blocks + $num_bb_blocks) //ROOT START
              . pack("V", 0)
              . pack("V", 0x1000)
@@ -613,14 +617,14 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         }
 
       // BDList
-      for ($i=0; $i < $bbd_info["header_blockchain_list_entries"] and $i < $bbd_info["blockchain_list_entries"]; $i++) 
+      for ($i=0; $i < $bbd_info["header_blockchain_list_entries"] and $i < $bbd_info["blockchain_list_entries"]; $i++)
         {
           fwrite($FILE, pack("V", $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i));
         }
 
       if($i < $bbd_info["header_blockchain_list_entries"])
         {
-          for($j = 0; $j < ($bbd_info["header_blockchain_list_entries"]-$i); $j++) 
+          for($j = 0; $j < ($bbd_info["header_blockchain_list_entries"]-$i); $j++)
             {
               fwrite($FILE, (pack("V", -1)));
             }
@@ -712,4 +716,3 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         }
     }
 }
-?>

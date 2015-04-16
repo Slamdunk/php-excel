@@ -26,7 +26,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     {
         $this->_tmp_dir = sys_get_temp_dir();
         $this->Excel_OLE_PPS(
-            null, 
+            null,
             $name,
             Excel_OLE_PPS_TYPE_FILE,
             null,
@@ -49,8 +49,10 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     {
         if (is_dir($dir)) {
             $this->_tmp_dir = $dir;
+
             return true;
         }
+
         return false;
     }
 
@@ -99,4 +101,3 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
         $this->ole->getStream($this);
     }
 }
-?>

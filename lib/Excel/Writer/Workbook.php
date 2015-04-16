@@ -179,6 +179,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $res = $this->_storeWorkbook();
 
         $this->_fileclosed = 1;
+
         return true;
     }
 
@@ -278,6 +279,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $format = new Excel_Writer_Format($this->_xf_index, $properties);
         $this->_xf_index += 1;
         $this->_formats[] = &$format;
+
         return $format;
     }
 
@@ -316,6 +318,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
 
         // Set the RGB value
         $this->_palette[$index] = array($red, $green, $blue, 0);
+
         return($index + 8);
     }
 
@@ -1444,4 +1447,3 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
 
 
 }
-

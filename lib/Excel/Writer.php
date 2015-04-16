@@ -67,4 +67,3 @@ class Excel_Writer extends Excel_Writer_Workbook
         return $chr1 . $chr2 . $row;
     }
 }
-?>
