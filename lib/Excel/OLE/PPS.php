@@ -128,10 +128,9 @@ class Excel_OLE_PPS
         $this->Time2nd = $time_2nd;
         $this->_data      = $data;
         $this->children   = $children;
+        $this->Size = 0;
         if ($data != '') {
             $this->Size = strlen($data);
-        } else {
-            $this->Size = 0;
         }
     }
 
@@ -147,14 +146,15 @@ class Excel_OLE_PPS
         if (! isset($this->_data)) {
             return 0;
         }
+
         if (isset($this->_PPS_FILE)) {
             fseek($this->_PPS_FILE, 0);
             $stats = fstat($this->_PPS_FILE);
 
             return $stats[7];
-        } else {
-            return strlen($this->_data);
         }
+
+        return strlen($this->_data);
     }
 
     /**
@@ -171,22 +171,24 @@ class Excel_OLE_PPS
             $ret .= "\x00";
         }
         $ret .= pack("v", strlen($this->Name) + 2)  // 66
-              . pack("c", $this->Type)              // 67
-              . pack("c", 0x00) //UK                // 68
-              . pack("V", $this->PrevPps) //Prev    // 72
-              . pack("V", $this->NextPps) //Next    // 76
-              . pack("V", $this->DirPps)  //Dir     // 80
-              . "\x00\x09\x02\x00"                  // 84
-              . "\x00\x00\x00\x00"                  // 88
-              . "\xc0\x00\x00\x00"                  // 92
-              . "\x00\x00\x00\x46"                  // 96 // Seems to be ok only for Root
-              . "\x00\x00\x00\x00"                  // 100
-              . Excel_OLE::LocalDate2Excel_OLE($this->Time1st)       // 108
-              . Excel_OLE::LocalDate2Excel_OLE($this->Time2nd)       // 116
-              . pack("V", isset($this->_StartBlock) ?
+            .   pack("c", $this->Type)              // 67
+            .   pack("c", 0x00) //UK                // 68
+            .   pack("V", $this->PrevPps) //Prev    // 72
+            .   pack("V", $this->NextPps) //Next    // 76
+            .   pack("V", $this->DirPps)  //Dir     // 80
+            .   "\x00\x09\x02\x00"                  // 84
+            .   "\x00\x00\x00\x00"                  // 88
+            .   "\xc0\x00\x00\x00"                  // 92
+            .   "\x00\x00\x00\x46"                  // 96 // Seems to be ok only for Root
+            .   "\x00\x00\x00\x00"                  // 100
+            .   Excel_OLE::LocalDate2Excel_OLE($this->Time1st)       // 108
+            .   Excel_OLE::LocalDate2Excel_OLE($this->Time2nd)       // 116
+            .   pack("V", isset($this->_StartBlock) ?
                         $this->_StartBlock : 0)        // 120
-              . pack("V", $this->Size)               // 124
-              . pack("V", 0);                        // 128
+            .   pack("V", $this->Size)               // 124
+            .   pack("V", 0)                         // 128
+        ;
+
         return $ret;
     }
 
@@ -203,21 +205,22 @@ class Excel_OLE_PPS
      */
     public static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
     {
-      if (! is_array($to_save) || (count($to_save) == 0)) {
-        return 0xFFFFFFFF;
-      }
-      elseif(count($to_save) == 1) {
-        $cnt = count($raList);
-        // If the first entry, it's the root... Don't clone it!
-        $raList[$cnt] = ($depth == 0) ? $to_save[0] : clone $to_save[0];
-        $raList[$cnt]->No = $cnt;
-        $raList[$cnt]->PrevPps = 0xFFFFFFFF;
-        $raList[$cnt]->NextPps = 0xFFFFFFFF;
-        $raList[$cnt]->DirPps  = self::_savePpsSetPnt($raList, @$raList[$cnt]->children, $depth++);
+        if (! is_array($to_save) || (count($to_save) == 0)) {
+            return 0xFFFFFFFF;
+        }
 
-        return $cnt;
-      }
-      else {
+        if (count($to_save) == 1) {
+            $cnt = count($raList);
+            // If the first entry, it's the root... Don't clone it!
+            $raList[$cnt] = ($depth == 0) ? $to_save[0] : clone $to_save[0];
+            $raList[$cnt]->No = $cnt;
+            $raList[$cnt]->PrevPps = 0xFFFFFFFF;
+            $raList[$cnt]->NextPps = 0xFFFFFFFF;
+            $raList[$cnt]->DirPps  = self::_savePpsSetPnt($raList, @$raList[$cnt]->children, $depth++);
+
+            return $cnt;
+        }
+
         $iPos  = floor(count($to_save) / 2);
         $aPrev = array_slice($to_save, 0, $iPos);
         $aNext = array_slice($to_save, $iPos + 1);
@@ -231,6 +234,5 @@ class Excel_OLE_PPS
         $raList[$cnt]->DirPps  = self::_savePpsSetPnt($raList, @$raList[$cnt]->children, $depth++);
 
         return $cnt;
-      }
     }
 }

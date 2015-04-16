@@ -1,81 +1,6 @@
 <?php
 
 /**
- * @const SPREADSHEET_EXCEL_WRITER_ADD token identifier for character "+"
- */
-define('SPREADSHEET_EXCEL_WRITER_ADD', "+");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_SUB token identifier for character "-"
- */
-define('SPREADSHEET_EXCEL_WRITER_SUB', "-");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_MUL token identifier for character "*"
- */
-define('SPREADSHEET_EXCEL_WRITER_MUL', "*");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_DIV token identifier for character "/"
- */
-define('SPREADSHEET_EXCEL_WRITER_DIV', "/");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_OPEN token identifier for character "("
- */
-define('SPREADSHEET_EXCEL_WRITER_OPEN', "(");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_CLOSE token identifier for character ")"
- */
-define('SPREADSHEET_EXCEL_WRITER_CLOSE', ")");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_COMA token identifier for character ","
- */
-define('SPREADSHEET_EXCEL_WRITER_COMA', ",");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_SEMICOLON token identifier for character ";"
- */
-define('SPREADSHEET_EXCEL_WRITER_SEMICOLON', ";");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_GT token identifier for character ">"
- */
-define('SPREADSHEET_EXCEL_WRITER_GT', ">");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_LT token identifier for character "<"
- */
-define('SPREADSHEET_EXCEL_WRITER_LT', "<");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_LE token identifier for character "<="
- */
-define('SPREADSHEET_EXCEL_WRITER_LE', "<=");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_GE token identifier for character ">="
- */
-define('SPREADSHEET_EXCEL_WRITER_GE', ">=");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_EQ token identifier for character "="
- */
-define('SPREADSHEET_EXCEL_WRITER_EQ', "=");
-
-/**
- * @const SPREADSHEET_EXCEL_WRITER_NE token identifier for character "<>"
- */
-define('SPREADSHEET_EXCEL_WRITER_NE', "<>");
-
-/**
- * * @const SPREADSHEET_EXCEL_WRITER_CONCAT token identifier for character "&"
- */
-define('SPREADSHEET_EXCEL_WRITER_CONCAT', "&");
-
-/**
  * Class for parsing Excel formulas
  *
  * @author   Xavier Noguer <xnoguer@rezebra.com>
@@ -85,6 +10,22 @@ define('SPREADSHEET_EXCEL_WRITER_CONCAT', "&");
 
 class Excel_Writer_Parser
 {
+    const SPREADSHEET_EXCEL_WRITER_ADD          = '+';
+    const SPREADSHEET_EXCEL_WRITER_SUB          = '-';
+    const SPREADSHEET_EXCEL_WRITER_MUL          = '*';
+    const SPREADSHEET_EXCEL_WRITER_DIV          = '/';
+    const SPREADSHEET_EXCEL_WRITER_OPEN         = '(';
+    const SPREADSHEET_EXCEL_WRITER_CLOSE        = ')';
+    const SPREADSHEET_EXCEL_WRITER_COMA         = ',';
+    const SPREADSHEET_EXCEL_WRITER_SEMICOLON    = ';';
+    const SPREADSHEET_EXCEL_WRITER_GT           = '>';
+    const SPREADSHEET_EXCEL_WRITER_LT           = '<';
+    const SPREADSHEET_EXCEL_WRITER_LE           = '<=';
+    const SPREADSHEET_EXCEL_WRITER_GE           = '>=';
+    const SPREADSHEET_EXCEL_WRITER_EQ           = '=';
+    const SPREADSHEET_EXCEL_WRITER_NE           = '<>';
+    const SPREADSHEET_EXCEL_WRITER_CONCAT       = '&';
+
     /**
      * The index of the character we are currently looking at
      *
@@ -1112,38 +1053,38 @@ class Excel_Writer_Parser
     public function _match($token)
     {
         switch($token) {
-            case SPREADSHEET_EXCEL_WRITER_ADD:
+            case self::SPREADSHEET_EXCEL_WRITER_ADD:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_SUB:
+            case self::SPREADSHEET_EXCEL_WRITER_SUB:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_MUL:
+            case self::SPREADSHEET_EXCEL_WRITER_MUL:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_DIV:
+            case self::SPREADSHEET_EXCEL_WRITER_DIV:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_OPEN:
+            case self::SPREADSHEET_EXCEL_WRITER_OPEN:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_CLOSE:
+            case self::SPREADSHEET_EXCEL_WRITER_CLOSE:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_COMA:
+            case self::SPREADSHEET_EXCEL_WRITER_COMA:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_SEMICOLON:
+            case self::SPREADSHEET_EXCEL_WRITER_SEMICOLON:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_GT:
+            case self::SPREADSHEET_EXCEL_WRITER_GT:
                 if ($this->_lookahead == '=') { // it's a GE token
                     break;
                 }
 
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_LT:
+            case self::SPREADSHEET_EXCEL_WRITER_LT:
                 // it's a LE or a NE token
                 if (($this->_lookahead == '=') or ($this->_lookahead == '>')) {
                     break;
@@ -1151,19 +1092,19 @@ class Excel_Writer_Parser
 
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_GE:
+            case self::SPREADSHEET_EXCEL_WRITER_GE:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_LE:
+            case self::SPREADSHEET_EXCEL_WRITER_LE:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_EQ:
+            case self::SPREADSHEET_EXCEL_WRITER_EQ:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_NE:
+            case self::SPREADSHEET_EXCEL_WRITER_NE:
                 return $token;
                 break;
-            case SPREADSHEET_EXCEL_WRITER_CONCAT:
+            case self::SPREADSHEET_EXCEL_WRITER_CONCAT:
                 return $token;
                 break;
             default:
@@ -1267,31 +1208,31 @@ class Excel_Writer_Parser
     public function _condition()
     {
         $result = $this->_expression();
-        if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_LT) {
+        if ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_LT) {
             $this->_advance();
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgLT', $result, $result2);
-        } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_GT) {
+        } elseif ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_GT) {
             $this->_advance();
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgGT', $result, $result2);
-        } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_LE) {
+        } elseif ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_LE) {
             $this->_advance();
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgLE', $result, $result2);
-        } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_GE) {
+        } elseif ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_GE) {
             $this->_advance();
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgGE', $result, $result2);
-        } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_EQ) {
+        } elseif ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_EQ) {
             $this->_advance();
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgEQ', $result, $result2);
-        } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_NE) {
+        } elseif ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_NE) {
             $this->_advance();
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgNE', $result, $result2);
-        } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_CONCAT) {
+        } elseif ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_CONCAT) {
             $this->_advance();
             $result2 = $this->_expression();
             $result = $this->_createTree('ptgConcat', $result, $result2);
@@ -1318,7 +1259,7 @@ class Excel_Writer_Parser
             $this->_advance();
 
             return $result;
-        } elseif ($this->_current_token == SPREADSHEET_EXCEL_WRITER_SUB) {
+        } elseif ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_SUB) {
             // catch "-" Term
             $this->_advance();
             $result2 = $this->_expression();
@@ -1327,10 +1268,10 @@ class Excel_Writer_Parser
             return $result;
         }
         $result = $this->_term();
-        while (($this->_current_token == SPREADSHEET_EXCEL_WRITER_ADD) or
-               ($this->_current_token == SPREADSHEET_EXCEL_WRITER_SUB)) {
+        while (($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_ADD) or
+               ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_SUB)) {
         /**/
-            if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_ADD) {
+            if ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_ADD) {
                 $this->_advance();
                 $result2 = $this->_term();
                 $result = $this->_createTree('ptgAdd', $result, $result2);
@@ -1372,10 +1313,10 @@ class Excel_Writer_Parser
     public function _term()
     {
         $result = $this->_fact();
-        while (($this->_current_token == SPREADSHEET_EXCEL_WRITER_MUL) or
-               ($this->_current_token == SPREADSHEET_EXCEL_WRITER_DIV)) {
+        while (($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_MUL) or
+               ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_DIV)) {
         /**/
-            if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_MUL) {
+            if ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_MUL) {
                 $this->_advance();
                 $result2 = $this->_fact();
                 $result = $this->_createTree('ptgMul', $result, $result2);
@@ -1403,10 +1344,10 @@ class Excel_Writer_Parser
      */
     public function _fact()
     {
-        if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_OPEN) {
+        if ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_OPEN) {
             $this->_advance();         // eat the "("
             $result = $this->_parenthesizedExpression();
-            if ($this->_current_token != SPREADSHEET_EXCEL_WRITER_CLOSE) {
+            if ($this->_current_token != self::SPREADSHEET_EXCEL_WRITER_CLOSE) {
                 throw new Excel_Exception_RuntimeException("')' token expected.");
             }
             $this->_advance();         // eat the ")"
@@ -1502,8 +1443,8 @@ class Excel_Writer_Parser
         while ($this->_current_token != ')') {
         /**/
             if ($num_args > 0) {
-                if ($this->_current_token == SPREADSHEET_EXCEL_WRITER_COMA or
-                    $this->_current_token == SPREADSHEET_EXCEL_WRITER_SEMICOLON)
+                if ($this->_current_token == self::SPREADSHEET_EXCEL_WRITER_COMA or
+                    $this->_current_token == self::SPREADSHEET_EXCEL_WRITER_SEMICOLON)
                 {
                     $this->_advance();  // eat the "," or ";"
                 } else {

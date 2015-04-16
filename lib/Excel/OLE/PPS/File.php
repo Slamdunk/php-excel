@@ -31,7 +31,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
         $this->Excel_OLE_PPS(
             null,
             $name,
-            Excel_OLE_PPS_TYPE_FILE,
+            Excel_OLE::Excel_OLE_PPS_TYPE_FILE,
             null,
             null,
             null,

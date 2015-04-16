@@ -9,7 +9,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
         $vfs = vfs\vfsStream::setup('root', 0770);
         $filename = vfs\vfsStream::url('root/test.xls');
 
-        $filename = TMP_PATH . '/stock.xls';
+        // $filename = TMP_PATH . '/stock.xls';
 
         Excel_OLE::$gmmktime = gmmktime('01','01','01','01','01','2000');
 
@@ -67,10 +67,10 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
         $this->assertSame($lettera . '2', $xls->rowcolToCell(1, $indice));
 
         $this->setExpectedException('Excel_Exception_InvalidArgumentException');
-        
+
         $xls->rowcolToCell(1, 50000);
     }
-    
+
     public function dataProviderTestIndiceColonnaInNumero()
     {
         return array(
