@@ -837,7 +837,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         } // added by Dan Lynn <dan@spiderweblabs.com) on 2006-12-06
         // regenerate keys
         $this->_colinfo = array_values($this->_colinfo);
-        $this->_colinfo[] = array($firstcol, $lastcol, $width, &$format, $hidden, $level);
+        $this->_colinfo[] = array($firstcol, $lastcol, $width, $format, $hidden, $level);
         // Set width to zero if column is hidden
         $width = ($hidden) ? 0 : $width;
         for ($col = $firstcol; $col <= $lastcol; $col++)
@@ -1344,17 +1344,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
      *
      * @access private
      *
-     * @param mixed &$format The optional XF format
+     * @param mixed $format The optional XF format
      *
      * @return integer The XF record index
      */
-    public function _XF(&$format)
+    public function _XF(Excel_Writer_Format $format = null)
     {
         if ($format) {
-            return($format->getXfIndex());
+            return $format->getXfIndex();
         }
 
-        return(0x0F);
+        return 0x0F;
     }
 
     /******************************************************************************
@@ -2449,10 +2449,9 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         } else {
             $coldx = 8.43;
         }
+        $format = null;
         if (isset($col_array[3])) {
             $format = $col_array[3];
-        } else {
-            $format = 0;
         }
         if (isset($col_array[4])) {
             $grbit = $col_array[4];
@@ -3586,15 +3585,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header      = pack("vv", $record, $length);
         $data        = pack("vv", $this->_zoom, 100);
         $this->_append($header . $data);
-    }
-
-    /**
-     * FIXME: add comments
-     */
-    public function setValidation($row1, $col1, $row2, $col2, &$validator)
-    {
-        $this->_dv[] = $validator->_getData() .
-                       pack("vvvvv", 1, $row1, $row2, $col1, $col2);
     }
 
     /**

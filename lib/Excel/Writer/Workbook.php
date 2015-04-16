@@ -177,7 +177,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $this->_string_sizeinfo  = 3;
 
         // Add the default format for hyperlinks
-        $this->_url_format = & $this->addFormat(array('color' => 'blue', 'underline' => 1));
+        $this->_url_format      = $this->addFormat(array('color' => 'blue', 'underline' => 1));
         $this->_str_total       = 0;
         $this->_str_unique      = 0;
         $this->_str_table       = array();
@@ -258,7 +258,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
      * @return mixed reference to a worksheet object on success, Excel_PEAR_Error
      *               on failure
      */
-    public function &addWorksheet($name = '')
+    public function addWorksheet($name = '')
     {
         $index     = count($this->_worksheets);
         $sheetname = $this->_sheetname;
@@ -287,7 +287,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
                                    $this->_str_table, $this->_url_format,
                                    $this->_parser, $this->_tmp_dir);
 
-        $this->_worksheets[$index] = &$worksheet;    // Store ref for iterator
+        $this->_worksheets[$index] = $worksheet;     // Store ref for iterator
         $this->_sheetnames[$index] = $name;          // Store EXTERNSHEET names
         $this->_parser->setExtSheet($name, $index);  // Register worksheet name with parser
         return $worksheet;
@@ -301,13 +301,13 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
      *
      * @param array $properties array with properties for initializing the format.
      *
-     * @return &Excel_Writer_Format reference to an Excel Format
+     * @return Excel_Writer_Format reference to an Excel Format
      */
-    public function &addFormat($properties = array())
+    public function addFormat($properties = array())
     {
         $format = new Excel_Writer_Format($this->_xf_index, $properties);
         $this->_xf_index += 1;
-        $this->_formats[] = &$format;
+        $this->_formats[] = $format;
 
         return $format;
     }
