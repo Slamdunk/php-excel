@@ -13,79 +13,79 @@ class Excel_OLE_PPS
     * The PPS index
     * @var integer
     */
-    var $No;
+    public $No;
 
     /**
     * The PPS name (in Unicode)
     * @var string
     */
-    var $Name;
+    public $Name;
 
     /**
     * The PPS type. Dir, Root or File
     * @var integer
     */
-    var $Type;
+    public $Type;
 
     /**
     * The index of the previous PPS
     * @var integer
     */
-    var $PrevPps;
+    public $PrevPps;
 
     /**
     * The index of the next PPS
     * @var integer
     */
-    var $NextPps;
+    public $NextPps;
 
     /**
     * The index of it's first child if this is a Dir or Root PPS
     * @var integer
     */
-    var $DirPps;
+    public $DirPps;
 
     /**
     * A timestamp
     * @var integer
     */
-    var $Time1st;
+    public $Time1st;
 
     /**
     * A timestamp
     * @var integer
     */
-    var $Time2nd;
+    public $Time2nd;
 
     /**
     * Starting block (small or big) for this PPS's data  inside the container
     * @var integer
     */
-    var $_StartBlock;
+    public $_StartBlock;
 
     /**
     * The size of the PPS's data (in bytes)
     * @var integer
     */
-    var $Size;
+    public $Size;
 
     /**
     * The PPS's data (only used if it's not using a temporary file)
     * @var string
     */
-    var $_data;
+    public $_data;
 
     /**
     * Array of child PPS's (only used by Root and Dir PPS's)
     * @var array
     */
-    var $children = array();
+    public $children = array();
 
     /**
     * Pointer to Excel_OLE container
     * @var Excel_OLE
     */
-    var $ole;
+    public $ole;
 
     /**
     * The constructor
@@ -102,7 +102,7 @@ class Excel_OLE_PPS
     * @param string  $data  The (usually binary) source data of the PPS
     * @param array   $children Array containing children PPS for this PPS
     */
-    function Excel_OLE_PPS($No, $name, $type, $prev, $next, $dir, $time_1st, $time_2nd, $data, $children)
+    public function Excel_OLE_PPS($No, $name, $type, $prev, $next, $dir, $time_1st, $time_2nd, $data, $children)
     {
         $this->No      = $No;
         $this->Name    = $name;
@@ -127,7 +127,7 @@ class Excel_OLE_PPS
     * @access private
     * @return integer The amount of data (in bytes)
     */
-    function _DataLen()
+    public function _DataLen()
     {
         if (! isset($this->_data)) {
             return 0;
@@ -148,7 +148,7 @@ class Excel_OLE_PPS
     * @access private
     * @return string The binary string
     */
-    function _getPpsWk()
+    public function _getPpsWk()
     {
         $ret = $this->Name;
         for ($i = 0; $i < (64 - strlen($this->Name)); $i++) {
@@ -183,7 +183,7 @@ class Excel_OLE_PPS
     *                          container
     * @return integer          The index for this PPS
     */
-    static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
+    public static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
     {
       if ( ! is_array($to_save) || (count($to_save) == 0) ) {
         return 0xFFFFFFFF;

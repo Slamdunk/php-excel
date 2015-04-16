@@ -32,43 +32,43 @@ class Excel_OLE
     * The file handle for reading an Excel_OLE container
     * @var resource
     */
-    var $_file_handle;
+    public $_file_handle;
 
     /**
     * Array of PPS's found on the Excel_OLE container
     * @var array
     */
-    var $_list;
+    public $_list;
 
     /**
     * Root directory of Excel_OLE container
     * @var Excel_OLE_PPS_Root
     */
-    var $root;
+    public $root;
 
     /**
     * Big Block Allocation Table
     * @var array  (blockId => nextBlockId)
     */
-    var $bbat;
+    public $bbat;
 
     /**
     * Short Block Allocation Table
     * @var array  (blockId => nextBlockId)
     */
-    var $sbat;
+    public $sbat;
 
     /**
     * Size of big blocks. This is usually 512.
     * @var  int  number of octets per block.
     */
-    var $bigBlockSize;
+    public $bigBlockSize;
 
     /**
     * Size of small blocks. This is usually 64.
     * @var  int  number of octets per block
     */
-    var $smallBlockSize;
+    public $smallBlockSize;
 
     // Per unitTests
     public static $gmmktime;
@@ -76,7 +76,7 @@ class Excel_OLE
     * Creates a new Excel_OLE object
     * @access public
     */
-    function Excel_OLE()
+    public function Excel_OLE()
     {
         $this->_list = array();
     }
@@ -87,7 +87,7 @@ class Excel_OLE
     *
     * @access private
     */
-    function _Excel_OLE()
+    public function _Excel_OLE()
     {
         fclose($this->_file_handle);
     }
@@ -99,7 +99,7 @@ class Excel_OLE
     * @param string $file
     * @return mixed true on success, PEAR_Error on failure
     */
-    function read($file)
+    public function read($file)
     {
         $fh = @fopen($file, "r");
         if (! $fh) {
@@ -194,7 +194,7 @@ class Excel_OLE
      * @return int byte offset from beginning of file
      * @access private
      */
-    function _getBlockOffset($blockId)
+    public function _getBlockOffset($blockId)
     {
         return 512 + $blockId * $this->bigBlockSize;
     }
@@ -205,7 +205,7 @@ class Excel_OLE
      * @param int|PPS $blockIdOrPps block id or PPS
      * @return resource read-only stream
      */
-    function getStream($blockIdOrPps)
+    public function getStream($blockIdOrPps)
     {
         include_once 'Excel_OLE/ChainedBlockStream.php';
         static $isRegistered = false;
@@ -238,7 +238,7 @@ class Excel_OLE
      * @return int
      * @access private
      */
-    function _readInt1($fh)
+    public function _readInt1($fh)
     {
         list(, $tmp) = unpack("c", fread($fh, 1));
 
@@ -251,7 +251,7 @@ class Excel_OLE
      * @return int
      * @access private
      */
-    function _readInt2($fh)
+    public function _readInt2($fh)
     {
         list(, $tmp) = unpack("v", fread($fh, 2));
 
@@ -264,7 +264,7 @@ class Excel_OLE
      * @return  int
      * @access private
      */
-    function _readInt4($fh)
+    public function _readInt4($fh)
     {
         list(, $tmp) = unpack("V", fread($fh, 4));
 
@@ -279,7 +279,7 @@ class Excel_OLE
     * @param integer $blockId the block id of the first block
     * @return mixed true on success, PEAR_Error on failure
     */
-    function _readPpsWks($blockId)
+    public function _readPpsWks($blockId)
     {
         $fh = $this->getStream($blockId);
         for ($pos = 0;; $pos += 128) {
@@ -358,7 +358,7 @@ class Excel_OLE
     * @param integer $index The index of the PPS from which we are checking
     * @return boolean Whether the PPS tree for the given PPS is complete
     */
-    function _ppsTreeComplete($index)
+    public function _ppsTreeComplete($index)
     {
         return isset($this->_list[$index]) &&
                ($pps = $this->_list[$index]) &&
@@ -377,7 +377,7 @@ class Excel_OLE
     * @return bool true if it's a File PPS, false otherwise
     * @access public
     */
-    function isFile($index)
+    public function isFile($index)
     {
         if (isset($this->_list[$index])) {
             return ($this->_list[$index]->Type == Excel_OLE_PPS_TYPE_FILE);
@@ -393,7 +393,7 @@ class Excel_OLE
     * @return bool true if it's a Root PPS, false otherwise
     * @access public
     */
-    function isRoot($index)
+    public function isRoot($index)
     {
         if (isset($this->_list[$index])) {
             return ($this->_list[$index]->Type == Excel_OLE_PPS_TYPE_ROOT);
@@ -407,7 +407,7 @@ class Excel_OLE
     * @return integer The total number of PPS's found in the Excel_OLE container
     * @access public
     */
-    function ppsTotal()
+    public function ppsTotal()
     {
         return count($this->_list);
     }
@@ -423,7 +423,7 @@ class Excel_OLE
     * @access public
     * @see Excel_OLE_PPS_File::getStream()
     */
-    function getData($index, $position, $length)
+    public function getData($index, $position, $length)
     {
         // if position is not valid return empty string
         if (! isset($this->_list[$index]) ||
@@ -446,7 +446,7 @@ class Excel_OLE
     * @return integer The amount of bytes in data the PPS has
     * @access public
     */
-    function getDataLength($index)
+    public function getDataLength($index)
     {
         if (isset($this->_list[$index])) {
             return $this->_list[$index]->Size;
@@ -463,7 +463,7 @@ class Excel_OLE
     * @param string $ascii The ASCII string to transform
     * @return string The string in Unicode
     */
-    static function Asc2Ucs($ascii)
+    public static function Asc2Ucs($ascii)
     {
         $rawname = '';
         for ($i = 0; $i < strlen($ascii); $i++) {
@@ -482,7 +482,7 @@ class Excel_OLE
     * @param integer $date A timestamp
     * @return string The string for the Excel_OLE container
     */
-    static function LocalDate2Excel_OLE($date = null)
+    public static function LocalDate2Excel_OLE($date = null)
     {
         if (! isset($date)) {
             return "\x00\x00\x00\x00\x00\x00\x00\x00";
@@ -533,7 +533,7 @@ class Excel_OLE
     * @access public
     * @static
     */
-    static function Excel_OLE2LocalDate($string)
+    public static function Excel_OLE2LocalDate($string)
     {
         if (strlen($string) != 8) {
             return new Excel_PEAR_Error("Expecting 8 byte string");

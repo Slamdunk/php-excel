@@ -13,7 +13,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     * The temporary dir for storing the Excel_OLE file
     * @var string
     */
-    var $_tmp_dir;
+    public $_tmp_dir;
 
     /**
     * The constructor
@@ -22,7 +22,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     * @param string $name The name of the file (in Unicode)
     * @see Excel_OLE::Asc2Ucs()
     */
-    function Excel_OLE_PPS_File($name)
+    public function Excel_OLE_PPS_File($name)
     {
         $this->_tmp_dir = sys_get_temp_dir();
         $this->Excel_OLE_PPS(
@@ -45,7 +45,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     * @param string $dir The dir to be used as temp dir
     * @return true if given dir is valid, false otherwise
     */
-    function setTempDir($dir)
+    public function setTempDir($dir)
     {
         if (is_dir($dir)) {
             $this->_tmp_dir = $dir;
@@ -62,7 +62,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     * @access public
     * @return mixed true on success. PEAR_Error on failure
     */
-    function init()
+    public function init()
     {
         $this->_tmp_filename = tempnam($this->_tmp_dir, "Excel_OLE_PPS_File");
         $fh = @fopen($this->_tmp_filename, "w+b");
@@ -83,7 +83,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
     * @access public
     * @param string $data The data to append
     */
-    function append($data)
+    public function append($data)
     {
         if ($this->_PPS_FILE) {
             fwrite($this->_PPS_FILE, $data);
@@ -96,7 +96,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
      * Returns a stream for reading this file using fread() etc.
      * @return  resource  a read-only stream
      */
-    function getStream()
+    public function getStream()
     {
         $this->ole->getStream($this);
     }

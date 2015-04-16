@@ -16,7 +16,7 @@ class Excel_Writer extends Excel_Writer_Workbook
     * @param string $filename The optional filename for the Workbook.
     * @return Excel_Writer_Workbook The Workbook created
     */
-    function Excel_Writer($filename = '')
+    public function Excel_Writer($filename = '')
     {
         $this->_filename = $filename;
         $this->Excel_Writer_Workbook($filename);
@@ -28,7 +28,7 @@ class Excel_Writer extends Excel_Writer_Workbook
     * @param string $filename The filename to use for HTTP headers
     * @access public
     */
-    function send($filename)
+    public function send($filename)
     {
         header("Content-type: application/vnd.ms-excel");
         header("Content-Disposition: attachment; filename=\"$filename\"");
@@ -47,7 +47,7 @@ class Excel_Writer extends Excel_Writer_Workbook
     * @param integer $col Column for the cell to convert (0-indexed).
     * @return string The cell identifier in A1 format
     */
-    function rowcolToCell($row, $col)
+    public function rowcolToCell($row, $col)
     {
         if ($col > 255) { //maximum column value exceeded
             return new Excel_PEAR_Error("Maximum column value exceeded: $col");

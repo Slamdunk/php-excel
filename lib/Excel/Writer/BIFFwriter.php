@@ -29,45 +29,45 @@ class Excel_Writer_BIFFwriter
     * The byte order of this architecture. 0 => little endian, 1 => big endian
     * @var integer
     */
-    var $_byte_order;
+    public $_byte_order;
 
     /**
     * The string containing the data of the BIFF stream
     * @var string
     */
-    var $_data;
+    public $_data;
 
     /**
     * The size of the data in bytes. Should be the same as strlen($this->_data)
     * @var integer
     */
-    var $_datasize;
+    public $_datasize;
 
     /**
     * The maximun length for a BIFF record. See _addContinue()
     * @var integer
     * @see _addContinue()
     */
-    var $_limit;
+    public $_limit;
 
     /**
     * The temporary dir for storing the Excel_OLE file
     * @var string
     */
-    var $_tmp_dir;
+    public $_tmp_dir;
 
     /**
     * The temporary file for storing the Excel_OLE file
     * @var string
     */
-    var $_tmp_file;
+    public $_tmp_file;
 
     /**
     * Constructor
     *
     * @access public
     */
-    function Excel_Writer_BIFFwriter()
+    public function Excel_Writer_BIFFwriter()
     {
         $this->_byte_order = '';
         $this->_data       = '';
@@ -84,7 +84,7 @@ class Excel_Writer_BIFFwriter
     *
     * @access private
     */
-    function _setByteOrder()
+    public function _setByteOrder()
     {
         // Check if "pack" gives the required IEEE 64bit float
         $teststr = pack("d", 1.2345);
@@ -107,7 +107,7 @@ class Excel_Writer_BIFFwriter
     * @param string $data binary data to prepend
     * @access private
     */
-    function _prepend($data)
+    public function _prepend($data)
     {
         if (strlen($data) > $this->_limit) {
             $data = $this->_addContinue($data);
@@ -122,7 +122,7 @@ class Excel_Writer_BIFFwriter
     * @param string $data binary data to append
     * @access private
     */
-    function _append($data)
+    public function _append($data)
     {
         if (strlen($data) > $this->_limit) {
             $data = $this->_addContinue($data);
@@ -139,7 +139,7 @@ class Excel_Writer_BIFFwriter
     *                       0x0010 Worksheet.
     * @access private
     */
-    function _storeBof($type)
+    public function _storeBof($type)
     {
         $record  = 0x0809;        // Record identifier
 
@@ -162,7 +162,7 @@ class Excel_Writer_BIFFwriter
     *
     * @access private
     */
-    function _storeEof()
+    public function _storeEof()
     {
         $record    = 0x000A;   // Record identifier
         $length    = 0x0000;   // Number of bytes to follow
@@ -182,7 +182,7 @@ class Excel_Writer_BIFFwriter
     * @return string        A very convenient string of continue blocks
     * @access private
     */
-    function _addContinue($data)
+    public function _addContinue($data)
     {
         $limit  = $this->_limit;
         $record = 0x003C;         // Record identifier
@@ -215,7 +215,7 @@ class Excel_Writer_BIFFwriter
     * @param string $dir The dir to be used as temp dir
     * @return true if given dir is valid, false otherwise
     */
-    function setTempDir($dir)
+    public function setTempDir($dir)
     {
         if (is_dir($dir)) {
             $this->_tmp_dir = $dir;

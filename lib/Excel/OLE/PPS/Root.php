@@ -13,13 +13,13 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * Flag to enable new logic
     * @var bool
     */
-    var $new_func = true;
+    public $new_func = true;
 
     /**
     * The temporary dir for storing the Excel_OLE file
     * @var string
     */
-    var $_tmp_dir;
+    public $_tmp_dir;
 
     /**
     * Constructor
@@ -28,7 +28,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @param integer $time_1st A timestamp
     * @param integer $time_2nd A timestamp
     */
-    function Excel_OLE_PPS_Root($time_1st, $time_2nd, $raChild)
+    public function Excel_OLE_PPS_Root($time_1st, $time_2nd, $raChild)
     {
         $this->_tmp_dir = sys_get_temp_dir();
         $this->Excel_OLE_PPS(
@@ -51,7 +51,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @param string $dir The dir to be used as temp dir
     * @return true if given dir is valid, false otherwise
     */
-    function setTempDir($dir)
+    public function setTempDir($dir)
     {
         if (is_dir($dir)) {
             $this->_tmp_dir = $dir;
@@ -71,7 +71,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @access public
     * @return mixed true on success, PEAR_Error on failure
     */
-    function save($filename)
+    public function save($filename)
     {
         // Initial Setting for saving
         $this->_BIG_BLOCK_SIZE  = pow(2,
@@ -130,7 +130,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @param array $raList Reference to an array of PPS's
     * @return array The array of numbers
     */
-    function _calcSize(&$raList)
+    public function _calcSize(&$raList)
     {
         // Calculate Basic Setting
         list($iSBDcnt, $iBBcnt, $iPPScnt) = array(0,0,0);
@@ -168,7 +168,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @see save()
     * @return integer
     */
-    function _adjust2($i2)
+    public function _adjust2($i2)
     {
         $iWk = log($i2)/log(2);
 
@@ -183,7 +183,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @param integer $iBBcnt
     * @param integer $iPPScnt
     */
-    function _saveHeader($iSBDcnt, $iBBcnt, $iPPScnt)
+    public function _saveHeader($iSBDcnt, $iBBcnt, $iPPScnt)
     {
         $FILE = $this->_FILEH_;
 
@@ -263,7 +263,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @param integer $iStBlk
     * @param array &$raList Reference to array of PPS's
     */
-    function _saveBigData($iStBlk, &$raList)
+    public function _saveBigData($iStBlk, &$raList)
     {
         $FILE = $this->_FILEH_;
 
@@ -313,7 +313,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @access private
     * @param array &$raList Reference to array of PPS's
     */
-    function _makeSmallData(&$raList)
+    public function _makeSmallData(&$raList)
     {
         $sRes = '';
         $FILE = $this->_FILEH_;
@@ -370,7 +370,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @access private
     * @param array $raList Reference to an array with all PPS's
     */
-    function _savePps(&$raList)
+    public function _savePps(&$raList)
     {
         // Save each PPS WK
         for ($i = 0; $i < count($raList); $i++) {
@@ -394,7 +394,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     * @param integer $iBsize
     * @param integer $iPpsCnt
     */
-    function _saveBbd($iSbdSize, $iBsize, $iPpsCnt)
+    public function _saveBbd($iSbdSize, $iBsize, $iPpsCnt)
     {
       if($this->new_func)
         return $this->_create_big_block_chain($iSbdSize, $iBsize, $iPpsCnt);
@@ -484,7 +484,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      * @param integer $num_bb_blocks - number of Bigblock depot blocks
      * @param integer $num_pps_blocks - number of PropertySetStorage blocks
      */
-    function _create_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
+    public function _create_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
       $FILE = $this->_FILEH_;
 
@@ -566,7 +566,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      * @param integer $num_bb_blocks - number of Bigblock depot blocks
      * @param integer $num_pps_blocks - number of PropertySetStorage blocks
      */
-    function _create_header($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
+    public function _create_header($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
       $FILE = $this->_FILEH_;
 
@@ -637,7 +637,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      * @param integer $num_bb_blocks - number of Bigblock depot blocks
      * @param integer $num_pps_blocks - number of PropertySetStorage blocks
      */
-    function _calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
+    public function _calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
       $bbd_info["entries_per_block"] = $this->_BIG_BLOCK_SIZE / Excel_OLE_LONG_INT_SIZE;
       $bbd_info["header_blockchain_list_entries"] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel_OLE_LONG_INT_SIZE;
@@ -669,7 +669,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      * @access public
      * @param integer $num_pointers - number of pointers
      */
-    function get_number_of_pointer_blocks($num_pointers)
+    public function get_number_of_pointer_blocks($num_pointers)
     {
       $pointers_per_block = $this->_BIG_BLOCK_SIZE / Excel_OLE_LONG_INT_SIZE;
 
@@ -684,7 +684,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      * @param integer $from - Start offset of data to dump
      * @param integer $to - Target offset of data to dump
      */
-    function dump($data, $from, $to)
+    public function dump($data, $from, $to)
     {
       $chars = array();
       $i = 0;
