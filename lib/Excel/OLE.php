@@ -102,7 +102,7 @@ class Excel_OLE
     function read($file)
     {
         $fh = @fopen($file, "r");
-        if (!$fh) {
+        if (! $fh) {
             throw new Excel_Exception_RuntimeException("Can't open file $file");
         }
         $this->_file_handle = $fh;
@@ -174,7 +174,7 @@ class Excel_OLE
         $this->sbat = array();
         $shortBlockCount = $sbbatBlockCount * $this->bigBlockSize / 4;
         $sbatFh = $this->getStream($sbatFirstBlockId);
-        if (!$sbatFh) {
+        if (! $sbatFh) {
             // Avoid an infinite loop if ChainedBlockStream.php somehow is
             // missing
             return false;
@@ -209,7 +209,7 @@ class Excel_OLE
     {
         include_once 'Excel_OLE/ChainedBlockStream.php';
         static $isRegistered = false;
-        if (!$isRegistered) {
+        if (! $isRegistered) {
             stream_wrapper_register('ole-chainedblockstream',
                                     'Excel_OLE_ChainedBlockStream');
             $isRegistered = true;
@@ -426,7 +426,7 @@ class Excel_OLE
     function getData($index, $position, $length)
     {
         // if position is not valid return empty string
-        if (!isset($this->_list[$index]) ||
+        if (! isset($this->_list[$index]) ||
             $position >= $this->_list[$index]->Size ||
             $position < 0) {
 
@@ -484,7 +484,7 @@ class Excel_OLE
     */
     static function LocalDate2Excel_OLE($date = null)
     {
-        if (!isset($date)) {
+        if (! isset($date)) {
             return "\x00\x00\x00\x00\x00\x00\x00\x00";
         }
 
@@ -558,10 +558,10 @@ class Excel_OLE
         $big_date = ($high_part * $factor) + $low_part;
         // translate to seconds
         $big_date /= 10000000;
-        
+
         // days from 1-1-1601 until the beggining of UNIX era
         $days = 134774;
-        
+
         // translate to seconds from beggining of UNIX era
         $big_date -= $days * 24 * 3600;
 

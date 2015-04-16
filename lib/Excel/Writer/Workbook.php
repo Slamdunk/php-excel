@@ -237,7 +237,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $sheetname = $this->_sheetname;
 
         if ($name == '') {
-            $name = $sheetname.($index+1);
+            $name = $sheetname . ($index+1);
         }
 
         // Check that sheetname is <= 31 chars (Excel limit before BIFF8).
@@ -573,7 +573,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             // Also check for a string of zeros, which is a valid format string
             // but would evaluate to zero.
             //
-            if (!preg_match("/^0+\d/", $num_format)) {
+            if (! preg_match("/^0+\d/", $num_format)) {
                 if (preg_match("/^\d+$/", $num_format)) { // built-in format
                     continue;
                 }
@@ -725,9 +725,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         }
     }
 
-
-
-
     /******************************************************************************
     *
     * BIFF RECORDS
@@ -793,14 +790,14 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     {
         $record    = 0x0085;                    // Record identifier
         $length = 0x07 + strlen($sheetname); // Number of bytes to follow
-        
+
         $grbit     = 0x0000;                    // Visibility and sheet type
         $cch       = strlen($sheetname);        // Length of sheet name
-        
+
         $header    = pack("vv",  $record, $length);
         $data      = pack("VvC", $offset, $grbit, $cch);
-        
-        $this->_append($header.$data.$sheetname);
+
+        $this->_append($header . $data . $sheetname);
     }
 
     /**
@@ -859,7 +856,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $this->_append($header . $data);
     }
 
-
     /**
     * Writes Excel FORMAT record for non "built-in" numerical formats.
     *
@@ -872,7 +868,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $record    = 0x041E;                      // Record identifier
 
         $length    = 3 + strlen($format);      // Number of bytes to follow
-        
+
         $encoding = 0;
         $cch  = strlen($format);             // Length of format string
 
@@ -901,7 +897,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $this->_append($header . $data);
     }
 
-
     /**
     * Write BIFF record EXTERNCOUNT to indicate the number of external sheet
     * references in the workbook.
@@ -925,7 +920,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $this->_append($header . $data);
     }
 
-
     /**
     * Writes the Excel BIFF EXTERNSHEET record. These references are used by
     * formulas. NAME record is required to define the print area and the repeat
@@ -948,7 +942,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $data        = pack("CC", $cch, $rgch);
         $this->_append($header . $data . $sheetname);
     }
-
 
     /**
     * Store the NAME record in the short format that is used for storing the print
@@ -1012,7 +1005,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $data              .= pack("C", $colmax);
         $this->_append($header . $data);
     }
-
 
     /**
     * Store the NAME record in the long format that is used for storing the repeat
@@ -1190,7 +1182,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
                 $header_length   = 3; // Min string + header size -1
                 $space_remaining = $continue_limit - $written - $continue;
 
-
                 /* TODO: Unicode data should only be split on char (2 byte)
                 boundaries. Therefore, in some cases we need to reduce the
                 amount of available
@@ -1204,7 +1195,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
 
                     if ($space_remaining > $header_length) {
                         // String contains 3 byte header => split on odd boundary
-                        if (!$split_string && $space_remaining % 2 != 1) {
+                        if (! $split_string && $space_remaining % 2 != 1) {
                             $space_remaining--;
                             $align = 1;
                         }
@@ -1217,7 +1208,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
                         $split_string = 1;
                     }
                 }
-
 
                 if ($space_remaining > $header_length) {
                     // Write as much as possible of the string in the current block
@@ -1263,7 +1253,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             $this->_block_sizes[] = $written + $continue;
         }
 
-
         /* Calculate the total length of the SST and associated CONTINUEs (if any).
          The SST record will have a length even if it contains no strings.
          This length is required to set the offsets in the BOUNDSHEET records since
@@ -1274,10 +1263,10 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $tmp_block_sizes = $this->_block_sizes;
 
         $length  = 12;
-        if (!empty($tmp_block_sizes)) {
+        if (! empty($tmp_block_sizes)) {
             $length += array_shift($tmp_block_sizes); // SST
         }
-        while (!empty($tmp_block_sizes)) {
+        while (! empty($tmp_block_sizes)) {
             $length += 4 + array_shift($tmp_block_sizes); // CONTINUEs
         }
 
@@ -1314,7 +1303,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         // The SST record is required even if it contains no strings. Thus we will
         // always have a length
         //
-        if (!empty($tmp_block_sizes)) {
+        if (! empty($tmp_block_sizes)) {
             $length = 8 + array_shift($tmp_block_sizes);
         }
         else {
@@ -1322,15 +1311,10 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             $length = 8;
         }
 
-
-
         // Write the SST block header information
         $header      = pack("vv", $record, $length);
         $data        = pack("VV", $this->_str_total, $this->_str_unique);
         $this->_append($header . $data);
-
-
-
 
         /* TODO: not good for performance */
         foreach (array_keys($this->_str_table) as $string) {
@@ -1344,7 +1328,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             // written out in a single SST or CONTINUE block.
             //
             $block_length += $string_length;
-
 
             // We can write the string if it doesn't cross a CONTINUE boundary
             if ($block_length < $continue_limit) {
@@ -1365,7 +1348,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
                 $header_length   = 3; // Min string + header size -1
                 $space_remaining = $continue_limit - $written - $continue;
 
-
                 // Unicode data should only be split on char (2 byte) boundaries.
                 // Therefore, in some cases we need to reduce the amount of available
                 // space by 1 byte to ensure the correct alignment.
@@ -1378,7 +1360,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
 
                     if ($space_remaining > $header_length) {
                         // String contains 3 byte header => split on odd boundary
-                        if (!$split_string && $space_remaining % 2 != 1) {
+                        if (! $split_string && $space_remaining % 2 != 1) {
                             $space_remaining--;
                             $align = 1;
                         }
@@ -1391,7 +1373,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
                         $split_string = 1;
                     }
                 }
-
 
                 if ($space_remaining > $header_length) {
                     // Write as much as possible of the string in the current block
@@ -1420,7 +1401,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
                 }
 
                 // Write the CONTINUE block header
-                if (!empty($this->_block_sizes)) {
+                if (! empty($this->_block_sizes)) {
                     $record  = 0x003C;
                     $length  = array_shift($tmp_block_sizes);
 
@@ -1444,6 +1425,5 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             }
         }
     }
-
 
 }

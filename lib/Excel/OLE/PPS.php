@@ -20,31 +20,31 @@ class Excel_OLE_PPS
     * @var string
     */
     var $Name;
- 
+
     /**
     * The PPS type. Dir, Root or File
     * @var integer
     */
     var $Type;
- 
+
     /**
     * The index of the previous PPS
     * @var integer
     */
     var $PrevPps;
- 
+
     /**
     * The index of the next PPS
     * @var integer
     */
     var $NextPps;
- 
+
     /**
     * The index of it's first child if this is a Dir or Root PPS
     * @var integer
     */
     var $DirPps;
- 
+
     /**
     * A timestamp
     * @var integer
@@ -129,7 +129,7 @@ class Excel_OLE_PPS
     */
     function _DataLen()
     {
-        if (!isset($this->_data)) {
+        if (! isset($this->_data)) {
             return 0;
         }
         if (isset($this->_PPS_FILE)) {
@@ -167,8 +167,8 @@ class Excel_OLE_PPS
               . "\x00\x00\x00\x00"                  // 100
               . Excel_OLE::LocalDate2Excel_OLE($this->Time1st)       // 108
               . Excel_OLE::LocalDate2Excel_OLE($this->Time2nd)       // 116
-              . pack("V", isset($this->_StartBlock)?
-                        $this->_StartBlock:0)        // 120
+              . pack("V", isset($this->_StartBlock) ?
+                        $this->_StartBlock : 0)        // 120
               . pack("V", $this->Size)               // 124
               . pack("V", 0);                        // 128
         return $ret;
@@ -185,7 +185,7 @@ class Excel_OLE_PPS
     */
     static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
     {
-      if ( !is_array($to_save) || (count($to_save) == 0) ) {
+      if ( ! is_array($to_save) || (count($to_save) == 0) ) {
         return 0xFFFFFFFF;
       }
       elseif( count($to_save) == 1 ) {

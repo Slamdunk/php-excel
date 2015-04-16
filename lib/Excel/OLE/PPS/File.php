@@ -76,7 +76,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
 
         return true;
     }
-    
+
     /**
     * Append data to PPS
     *

@@ -95,7 +95,7 @@ class Excel_Writer_BIFFwriter
             $byte_order = 1;    // Big Endian
         } else {
             // Give up. I'll fix this in a later version.
-            return $this->raiseError("Required floating point format ".
+            return $this->raiseError("Required floating point format " .
                                      "not supported on this platform.");
         }
         $this->_byte_order = $byte_order;
@@ -112,7 +112,7 @@ class Excel_Writer_BIFFwriter
         if (strlen($data) > $this->_limit) {
             $data = $this->_addContinue($data);
         }
-        $this->_data      = $data.$this->_data;
+        $this->_data      = $data . $this->_data;
         $this->_datasize += strlen($data);
     }
 
@@ -127,7 +127,7 @@ class Excel_Writer_BIFFwriter
         if (strlen($data) > $this->_limit) {
             $data = $this->_addContinue($data);
         }
-        $this->_data      = $this->_data.$data;
+        $this->_data      = $this->_data . $data;
         $this->_datasize += strlen($data);
     }
 
@@ -189,7 +189,7 @@ class Excel_Writer_BIFFwriter
 
         // The first 2080/8224 bytes remain intact. However, we have to change
         // the length field of the record.
-        $tmp = substr($data, 0, 2).pack("v", $limit-4).substr($data, 4, $limit - 4);
+        $tmp = substr($data, 0, 2) . pack("v", $limit-4) . substr($data, 4, $limit - 4);
 
         $header = pack("vv", $record, $limit);  // Headers for continue records
 

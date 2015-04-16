@@ -559,7 +559,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         //  Prepend GUTS
         $this->_storeGuts();
-        
+
         // Prepend PRINTGRIDLINES
         $this->_storePrintGridlines();
 
@@ -574,9 +574,9 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         // Prepend the EXTERNCOUNT of external references.
         $this->_storeExterncount($num_sheets);
-        
+
         // Prepend the COLINFO records if they exist
-        if (!empty($this->_colinfo)) {
+        if (! empty($this->_colinfo)) {
             $colcount = count($this->_colinfo);
             for ($i = 0; $i < $colcount; $i++) {
                 $this->_storeColinfo($this->_colinfo[$i]);
@@ -594,7 +594,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         // Append
         $this->_storeWindow2();
         $this->_storeZoom();
-        if (!empty($this->_panes)) {
+        if (! empty($this->_panes)) {
             $this->_storePanes($this->_panes);
         }
         $this->_storeSelection($this->_selection);
@@ -861,7 +861,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_paper_size = $size;
     }
 
-
     /**
     * Set the page header caption and optional margin.
     *
@@ -1051,7 +1050,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->print_colmax  = $last_col;
     }
 
-
     /**
     * Set the option to hide gridlines on the printed page.
     *
@@ -1126,7 +1124,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             array_push($this->_vbreaks, $break);
         }
     }
-
 
     /**
     * Set the worksheet zoom factor.
@@ -1278,13 +1275,11 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         }
     }
 
-
     /******************************************************************************
     *******************************************************************************
     *
     * Internal methods
     */
-
 
     /**
     * Store Worksheet data in memory using the parent's class append() or to a
@@ -1323,8 +1318,8 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         // Convert a column range: 'A:A' or 'B:G'
         if (preg_match("/([A-I]?[A-Z]):([A-I]?[A-Z])/", $cell, $match)) {
-            list($no_use, $col1) =  $this->_cellToRowcol($match[1] .'1'); // Add a dummy row
-            list($no_use, $col2) =  $this->_cellToRowcol($match[2] .'1'); // Add a dummy row
+            list($no_use, $col1) =  $this->_cellToRowcol($match[1] . '1'); // Add a dummy row
+            list($no_use, $col2) =  $this->_cellToRowcol($match[2] . '1'); // Add a dummy row
             return(array($col1, $col2));
         }
 
@@ -1445,7 +1440,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     * BIFF RECORDS
     */
 
-
     /**
     * Write a double to the specified row and column (zero indexed).
     * An integer can be written as a double. Excel will display an
@@ -1495,7 +1489,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             $xl_double = strrev($xl_double);
         }
 
-        $this->_append($header.$data.$xl_double);
+        $this->_append($header . $data . $xl_double);
 
         return(0);
     }
@@ -1566,7 +1560,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     */
     function setInputEncoding($encoding)
     {
-         if ($encoding != 'UTF-16LE' && !function_exists('iconv')) {
+         if ($encoding != 'UTF-16LE' && ! function_exists('iconv')) {
              $this->raiseError("Using an input encoding other than UTF-16LE requires PHP support for iconv");
          }
          $this->_input_encoding = $encoding;
@@ -1621,17 +1615,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             return -2;
         }
 
-        $str = pack('vC', $strlen, $encoding).$str;
+        $str = pack('vC', $strlen, $encoding) . $str;
 
         /* check if string is already present */
-        if (!isset($this->_str_table[$str])) {
+        if (! isset($this->_str_table[$str])) {
             $this->_str_table[$str] = $this->_str_unique++;
         }
         $this->_str_total++;
 
         $header    = pack('vv',   $record, $length);
         $data      = pack('vvvV', $row, $col, $xf, $this->_str_table[$str]);
-        $this->_append($header.$data);
+        $this->_append($header . $data);
 
         return $str_error;
     }
@@ -1717,7 +1711,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             $length = 0x0006 + strlen($chunk);
             $header = pack("vv",   $record, $length);
             $data   = pack("vvv", -1, 0, strlen($chunk));
-            $this->_append($header.$data.$chunk);
+            $this->_append($header . $data . $chunk);
         }
 
         return(0);
@@ -1743,7 +1737,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     function writeBlank($row, $col, $format)
     {
         // Don't write a blank cell unless it has a format
-        if (!$format) {
+        if (! $format) {
             return(0);
         }
 
@@ -1914,7 +1908,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         return($this->_writeUrlWeb($row1, $col1, $row2, $col2, $url, $string, $format));
     }
 
-
     /**
     * Used to write http, ftp and mailto hyperlinks.
     * The link type ($options) is 0x03 is the same as absolute dir ref without
@@ -1936,7 +1929,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $record      = 0x01B8;                       // Record identifier
         $length      = 0x00000;                      // Bytes to follow
 
-        if (!$format) {
+        if (! $format) {
             $format = $this->_url_format;
         }
 
@@ -1997,7 +1990,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $record      = 0x01B8;                       // Record identifier
         $length      = 0x00000;                      // Bytes to follow
 
-        if (!$format) {
+        if (! $format) {
             $format = $this->_url_format;
         }
 
@@ -2070,7 +2063,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $record      = 0x01B8;                       // Record identifier
         $length      = 0x00000;                      // Bytes to follow
 
-        if (!$format) {
+        if (! $format) {
             $format = $this->_url_format;
         }
 
@@ -2094,7 +2087,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         //   otherwise, absolute
 
         $absolute    = 0x02; // Bit mask
-        if (!preg_match("/\\\/", $url)) {
+        if (! preg_match("/\\\/", $url)) {
             $absolute    = 0x00;
         }
         if (preg_match("/^\.\.\\\/", $url)) {
@@ -2124,8 +2117,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         if (preg_match("/\#/", $url)) {
             $link_type |= 0x08;
         }
-
-
 
         // Pack the link type
         $link_type   = pack("V", $link_type);
@@ -2158,7 +2149,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
                           $link_type    .
                           $unknown2     .
                           $up_count     .
-                          $dir_short_len.
+                          $dir_short_len .
                           $dir_short    .
                           $unknown3     .
                           $stream_len   ;/*.
@@ -2173,11 +2164,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header   = pack("vv", $record, $length);
 
         // Write the packed data
-        $this->_append($header. $data);
+        $this->_append($header . $data);
 
         return($str_error);
     }
-
 
     /**
     * This method is used to set the height and format for a row.
@@ -2215,7 +2205,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $level = max(0, min($level, 7));  // level should be between 0 and 7
         $this->_outline_row_level = max($level, $this->_outline_row_level);
 
-
         // Set the options flags. fUnsynced is used to show that the font and row
         // heights are not compatible. This is usually the case for WriteExcel.
         // The collapsed flag 0x10 doesn't seem to be used to indicate that a row
@@ -2235,7 +2224,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header   = pack("vv",       $record, $length);
         $data     = pack("vvvvvvvv", $row, $colMic, $colMac, $miyRw,
                                      $irwMac,$reserved, $grbit, $ixfe);
-        $this->_append($header.$data);
+        $this->_append($header . $data);
     }
 
     /**
@@ -2257,7 +2246,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
                                    $col_min, $col_max, $reserved);
 
         $header = pack("vv", $record, $length);
-        $this->_prepend($header.$data);
+        $this->_prepend($header . $data);
     }
 
     /**
@@ -2269,7 +2258,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     {
         $record         = 0x023E;     // Record identifier
         $length         = 0x000A;     // Number of bytes to follow
-        
+
         $grbit          = 0x00B6;     // Option flags
         $rwTop          = 0x0000;     // Top row visible in window
         $colLeft        = 0x0000;     // Leftmost column visible in window
@@ -2306,7 +2295,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $rgbHdr         = 0x00000000; // Row/column heading and gridline color
         $data .= pack("V", $rgbHdr);
 
-        $this->_append($header.$data);
+        $this->_append($header . $data);
     }
 
     /**
@@ -2383,7 +2372,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header   = pack("vv",     $record, $length);
         $data     = pack("vvvvvC", $colFirst, $colLast, $coldx,
                                    $ixfe, $grbit, $reserved);
-        $this->_prepend($header.$data);
+        $this->_prepend($header . $data);
     }
 
     /**
@@ -2405,10 +2394,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $irefAct  = 0;                       // Active cell ref
         $cref     = 1;                       // Number of refs
 
-        if (!isset($rwLast)) {
+        if (! isset($rwLast)) {
             $rwLast   = $rwFirst;       // Last  row in reference
         }
-        if (!isset($colLast)) {
+        if (! isset($colLast)) {
             $colLast  = $colFirst;      // Last  col in reference
         }
 
@@ -2448,7 +2437,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             $data     = pack('v',  count($ranges));
             foreach ($ranges as $range)
               $data .= pack('vvvv', $range[0], $range[2], $range[1], $range[3]);
-            $string = $header.$data;
+            $string = $header . $data;
             $this->_append($string, true);
           }
     }
@@ -2539,18 +2528,18 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         // Code specific to frozen or thawed panes.
         if ($this->_frozen) {
             // Set default values for $rwTop and $colLeft
-            if (!isset($rwTop)) {
+            if (! isset($rwTop)) {
                 $rwTop   = $y;
             }
-            if (!isset($colLeft)) {
+            if (! isset($colLeft)) {
                 $colLeft = $x;
             }
         } else {
             // Set default values for $rwTop and $colLeft
-            if (!isset($rwTop)) {
+            if (! isset($rwTop)) {
                 $rwTop   = 0;
             }
-            if (!isset($colLeft)) {
+            if (! isset($colLeft)) {
                 $colLeft = 0;
             }
 
@@ -2563,11 +2552,10 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             $x = 113.879*$x + 390;
         }
 
-
         // Determine which pane should be active. There is also the undocumented
         // option to override this should it be necessary: may be removed later.
         //
-        if (!isset($pnnAct)) {
+        if (! isset($pnnAct)) {
             if ($x != 0 && $y != 0) {
                 $pnnAct = 0; // Bottom right
             }
@@ -2645,7 +2633,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
                                    $grbit,
                                    $iRes,
                                    $iVRes);
-        $data2  = $numHdr.$numFtr;
+        $data2  = $numHdr . $numFtr;
         $data3  = pack("v", $iCopies);
         $this->_prepend($header . $data1 . $data2 . $data3);
     }
@@ -2666,7 +2654,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header   = pack("vv", $record, $length);
         $data      = pack("C",  $cch);
 
-        $this->_prepend($header.$data.$str);
+        $this->_prepend($header . $data . $str);
     }
 
     /**
@@ -2703,7 +2691,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header    = pack("vv", $record, $length);
         $data      = pack("v",  $fHCenter);
 
-        $this->_prepend($header.$data);
+        $this->_prepend($header . $data);
     }
 
     /**
@@ -2837,7 +2825,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $data     = pack("vvvvv", $cref, $first_row, $last_row,
                                   $first_col, $last_col);
 
-        $this->_append($header.$data);
+        $this->_append($header . $data);
     }
 
     /**
@@ -2886,7 +2874,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $record      = 0x0082;                        // Record identifier
         $length      = 0x0002;                        // Bytes to follow
 
-        $fGridSet    = !($this->_print_gridlines);     // Boolean flag
+        $fGridSet    = ! ($this->_print_gridlines);     // Boolean flag
 
         $header      = pack("vv",  $record, $length);
         $data        = pack("v",   $fGridSet);
@@ -2936,9 +2924,8 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header = pack("vv",   $record, $length);
         $data   = pack("vvvv", $dxRwGut, $dxColGut, $row_level, $col_level);
 
-        $this->_prepend($header.$data);
+        $this->_prepend($header . $data);
     }
-
 
     /**
     * Write the WSBOOL BIFF record, mainly for fit-to-page. Used in conjunction
@@ -3015,9 +3002,8 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             $data .= pack("v", $break);
         }
 
-        $this->_prepend($header.$data);
+        $this->_prepend($header . $data);
     }
-
 
     /**
     * Write the VERTICALPAGEBREAKS BIFF record.
@@ -3044,7 +3030,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $record  = 0x001a;               // Record identifier
         $cbrk    = count($breaks);       // Number of page breaks
         $length  = 2 + 2*$cbrk;      // Bytes to follow
-        
+
         $header  = pack("vv",  $record, $length);
         $data    = pack("v",   $cbrk);
 
@@ -3076,7 +3062,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header      = pack("vv", $record, $length);
         $data        = pack("v",  $fLock);
 
-        $this->_prepend($header.$data);
+        $this->_prepend($header . $data);
     }
 
     /**
@@ -3087,7 +3073,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     function _storePassword()
     {
         // Exit unless sheet protection and password have been specified
-        if (($this->_protect == 0) || (!isset($this->_password))) {
+        if (($this->_protect == 0) || (! isset($this->_password))) {
             return;
         }
 
@@ -3101,7 +3087,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         $this->_prepend($header . $data);
     }
-
 
     /**
     * Insert a 24bit bitmap image in a worksheet.
@@ -3140,7 +3125,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $lcb         = $size;
 
         $header      = pack("vvvvV", $record, $length, $cf, $env, $lcb);
-        $this->_append($header.$data);
+        $this->_append($header . $data);
     }
 
     /**
@@ -3391,7 +3376,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     {
         // Open file.
         $bmp_fd = @fopen($bitmap,"rb");
-        if (!$bmp_fd) {
+        if (! $bmp_fd) {
             $this->raiseError("Couldn't import $bitmap");
         }
 
@@ -3513,7 +3498,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $header      = pack('vv', $record, $length);
         $data        = pack('vVVVV', $grbit, $horPos, $verPos, $objId,
                                      count($this->_dv));
-        $this->_append($header.$data);
+        $this->_append($header . $data);
 
         $record = 0x01be;              // Record identifier
         foreach ($this->_dv as $dv) {

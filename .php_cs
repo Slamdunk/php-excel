@@ -1,17 +1,12 @@
 <?php
 
 $finder = Symfony\CS\Finder\DefaultFinder::create()
-    ->in(__DIR__ . '/app')
+    ->in(__DIR__ . '/lib')
     ->in(__DIR__ . '/tests')
-    // ->in(__DIR__ . '/tests/ColTest/Report')
-    ->name('*.phtml')
-    ->name('*.css')
-    ->name('*.js')
 ;
 
 $fixers = array(
     'concat_with_spaces',
-    'css-order',
     'elseif',
     'empty_return',
     'encoding',
@@ -31,21 +26,21 @@ $fixers = array(
     'namespace_no_leading_whitespace',
     'negation-spacer',
     'new_with_braces',
-    'object_operator',
+    // 'object_operator',
     'operators_spaces',
     'use-order',
-    'parenthesis',
+    // 'parenthesis',
     'php_closing_tag',
-    'phpdoc_indent',
-    'phpdoc_no_empty_return',
-    'phpdoc_no_package',
-    'phpdoc_order',
-    'phpdoc_params',
-    'phpdoc_separation',
-    'phpdoc_trim',
-    'phpdoc_type_to_var',
-    'phpdoc_var_to_type',
-    'phpdoc_var_without_name',
+    // 'phpdoc_indent',
+    // 'phpdoc_no_empty_return',
+    // 'phpdoc_no_package',
+    // 'phpdoc_order',
+    // 'phpdoc_params',
+    // 'phpdoc_separation',
+    // 'phpdoc_trim',
+    // 'phpdoc_type_to_var',
+    // 'phpdoc_var_to_type',
+    // 'phpdoc_var_without_name',
     'psr0',
     'remove_leading_slash_use',
     'remove_lines_between_uses',
@@ -56,7 +51,7 @@ $fixers = array(
     'spaces_before_semicolon',
     'spaces_cast',
     'standardize_not_equal',
-    'strict',
+    // 'strict',
     'ternary_spaces',
     'trailing_spaces',
     'unused_use',

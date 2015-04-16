@@ -8,9 +8,9 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
     {
         $vfs = vfs\vfsStream::setup('root', 0770);
         $filename = vfs\vfsStream::url('root/test.xls');
-        
+
         $filename = TMP_PATH . '/stock.xls';
-        
+
         Excel_OLE::$gmmktime = gmmktime('01','01','01','01','01','2000');
 
         $xls = new Excel_Writer($filename);
@@ -37,7 +37,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
         $sheet->freezePanes(array(2, 0));
 
         $sheet->writeString(2, 1, '0123');
-        
+
         $format2 = $xls->addFormat();
         $format2->setColor('red');
         $format2->setItalic();
@@ -46,9 +46,9 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
         $format2->setNumFormat('#,##0.00');
         $format2->setFgColor(62);
         $format2->setAlign('top');
-        
+
         $sheet->write(3, 2, '95000', $format2);
-        
+
         $xls->close();
 
         $this->assertSame('e388a682417769036b8b910a981957e590475f53', hash('sha1', file_get_contents($filename)));

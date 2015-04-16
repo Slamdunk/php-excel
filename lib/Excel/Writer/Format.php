@@ -263,13 +263,12 @@ class Excel_Writer_Format
         // Set properties passed to Excel_Writer_Workbook::addFormat()
         foreach ($properties as $property => $value)
         {
-            if (method_exists($this, 'set'.ucwords($property))) {
-                $method_name = 'set'.ucwords($property);
+            if (method_exists($this, 'set' . ucwords($property))) {
+                $method_name = 'set' . ucwords($property);
                 $this->$method_name($value);
             }
         }
     }
-
 
     /**
     * Generate an Excel BIFF XF record (style or cell).
@@ -288,16 +287,16 @@ class Excel_Writer_Format
         }
 
         // Flags to indicate if attributes have been set.
-        $atr_num     = ($this->_num_format != 0)?1:0;
-        $atr_fnt     = ($this->font_index != 0)?1:0;
-        $atr_alc     = ($this->_text_wrap)?1:0;
+        $atr_num     = ($this->_num_format != 0) ? 1 : 0;
+        $atr_fnt     = ($this->font_index != 0) ? 1 : 0;
+        $atr_alc     = ($this->_text_wrap) ? 1 : 0;
         $atr_bdr     = ($this->_bottom   ||
                         $this->_top      ||
                         $this->_left     ||
-                        $this->_right)?1:0;
+                        $this->_right) ? 1 : 0;
         $atr_pat     = (($this->_fg_color != 0x40) ||
                         ($this->_bg_color != 0x41) ||
-                        $this->_pattern)?1:0;
+                        $this->_pattern) ? 1 : 0;
         $atr_prot    = $this->_locked | $this->_hidden;
 
         // Zero the default border colour if the border has not been set.
@@ -319,7 +318,7 @@ class Excel_Writer_Format
 
         $record         = 0x00E0;              // Record identifier
         $length         = 0x0010;              // Number of bytes to follow
-        
+
         $ifnt           = $this->font_index;   // Index to FONT record
         $ifmt           = $this->_num_format;  // Index to FORMAT record
 
@@ -578,7 +577,6 @@ class Excel_Writer_Format
         $this->_bold = $bold;
     }
 
-
     /************************************
     * FUNCTIONS FOR SETTING CELLS BORDERS
     */
@@ -627,7 +625,6 @@ class Excel_Writer_Format
         $this->_right = $style;
     }
 
-
     /**
     * Set cells borders to the same style
     *
@@ -641,7 +638,6 @@ class Excel_Writer_Format
         $this->setLeft($style);
         $this->setRight($style);
     }
-
 
     /*******************************************
     * FUNCTIONS FOR SETTING CELLS BORDERS COLORS
@@ -709,7 +705,6 @@ class Excel_Writer_Format
         $value = $this->_getColor($color);
         $this->_right_color = $value;
     }
-
 
     /**
     * Sets the cell's foreground color

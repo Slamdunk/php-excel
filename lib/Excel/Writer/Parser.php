@@ -599,7 +599,7 @@ class Excel_Writer_Parser
             throw new Excel_Exception_RuntimeException("String is too long");
         }
 
-        return pack("CC", $this->ptg['ptgStr'], strlen($string)).$string;
+        return pack("CC", $this->ptg['ptgStr'], strlen($string)) . $string;
     }
 
     /**
@@ -665,7 +665,7 @@ class Excel_Writer_Parser
             return $this->raiseError("Unknown class $class", 0, Excel_PEAR_ERROR_DIE);
         }
 
-        return $ptgArea . $row1 . $row2 . $col1. $col2;
+        return $ptgArea . $row1 . $row2 . $col1 . $col2;
     }
 
     /**
@@ -696,7 +696,7 @@ class Excel_Writer_Parser
             $cell_array2 = $this->_cellToPackedRowcol($cell2);
             list($row2, $col2) = $cell_array2;
         } else { // It's a rows range (like 26:27)
-             $cells_array = $this->_rangeToPackedRange($cell1.':'.$cell2);
+             $cells_array = $this->_rangeToPackedRange($cell1 . ':' . $cell2);
              list($row1, $col1, $row2, $col2) = $cells_array;
         }
 
@@ -711,7 +711,7 @@ class Excel_Writer_Parser
             return $this->raiseError("Unknown class $class", 0, Excel_PEAR_ERROR_DIE);
         }
 
-        return $ptgArea . $ext_ref . $row1 . $row2 . $col1. $col2;
+        return $ptgArea . $ext_ref . $row1 . $row2 . $col1 . $col2;
     }
 
     /**
@@ -741,7 +741,7 @@ class Excel_Writer_Parser
             throw new Excel_Exception_RuntimeException("Unknown class $class");
         }
 
-        return $ptgRef.$row.$col;
+        return $ptgRef . $row . $col;
     }
 
     /**
@@ -776,7 +776,7 @@ class Excel_Writer_Parser
             return $this->raiseError("Unknown class $class", 0, Excel_PEAR_ERROR_DIE);
         }
 
-        return $ptgRef . $ext_ref. $row . $col;
+        return $ptgRef . $ext_ref . $row . $col;
     }
 
     /**
@@ -893,7 +893,7 @@ class Excel_Writer_Parser
     */
     function _getSheetIndex($sheet_name)
     {
-        if (!isset($this->_ext_sheets[$sheet_name])) {
+        if (! isset($this->_ext_sheets[$sheet_name])) {
             return -1;
         } else {
             return $this->_ext_sheets[$sheet_name];
@@ -1133,7 +1133,7 @@ class Excel_Writer_Parser
             default:
                 // if it's a reference
                 if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?[0-9]+$/',$token) and
-                   !preg_match("/[0-9]/",$this->_lookahead) and
+                   ! preg_match("/[0-9]/",$this->_lookahead) and
                    ($this->_lookahead != ':') and ($this->_lookahead != '.') and
                    ($this->_lookahead != '!'))
                 {
@@ -1141,45 +1141,45 @@ class Excel_Writer_Parser
                 }
                 // If it's an external reference (Sheet1!A1 or Sheet1:Sheet2!A1)
                 elseif (preg_match("/^\w+(\:\w+)?\![A-Ia-i]?[A-Za-z][0-9]+$/u",$token) and
-                       !preg_match("/[0-9]/",$this->_lookahead) and
+                       ! preg_match("/[0-9]/",$this->_lookahead) and
                        ($this->_lookahead != ':') and ($this->_lookahead != '.'))
                 {
                     return $token;
                 }
                 // If it's an external reference ('Sheet1'!A1 or 'Sheet1:Sheet2'!A1)
                 elseif (preg_match("/^'[\w -]+(\:[\w -]+)?'\![A-Ia-i]?[A-Za-z][0-9]+$/u",$token) and
-                       !preg_match("/[0-9]/",$this->_lookahead) and
+                       ! preg_match("/[0-9]/",$this->_lookahead) and
                        ($this->_lookahead != ':') and ($this->_lookahead != '.'))
                 {
                     return $token;
                 }
                 // if it's a range (A1:A2)
                 elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and
-                       !preg_match("/[0-9]/",$this->_lookahead))
+                       ! preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
                 // if it's a range (A1..A2)
                 elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and
-                       !preg_match("/[0-9]/",$this->_lookahead))
+                       ! preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
                 // If it's an external range like Sheet1!A1 or Sheet1:Sheet2!A1:B2
                 elseif (preg_match("/^\w+(\:\w+)?\!([A-Ia-i]?[A-Za-z])?[0-9]+:([A-Ia-i]?[A-Za-z])?[0-9]+$/u",$token) and
-                       !preg_match("/[0-9]/",$this->_lookahead))
+                       ! preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
                 // If it's an external range like 'Sheet1'!A1 or 'Sheet1:Sheet2'!A1:B2
                 elseif (preg_match("/^'[\w -]+(\:[\w -]+)?'\!([A-Ia-i]?[A-Za-z])?[0-9]+:([A-Ia-i]?[A-Za-z])?[0-9]+$/u",$token) and
-                       !preg_match("/[0-9]/",$this->_lookahead))
+                       ! preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
                 // If it's a number (check that it's not a sheet name or range)
                 elseif (is_numeric($token) and
-                        (!is_numeric($token.$this->_lookahead) or ($this->_lookahead == '')) and
+                        (! is_numeric($token . $this->_lookahead) or ($this->_lookahead == '')) and
                         ($this->_lookahead != '!') and ($this->_lookahead != ':'))
                 {
                     return $token;
@@ -1432,9 +1432,9 @@ class Excel_Writer_Parser
             return $result;
         }
 
-        return $this->raiseError("Syntax error: ".$this->_current_token.
-                                 ", lookahead: ".$this->_lookahead.
-                                 ", current char: ".$this->_current_char);
+        return $this->raiseError("Syntax error: " . $this->_current_token .
+                                 ", lookahead: " . $this->_lookahead .
+                                 ", current char: " . $this->_current_char);
     }
 
     /**
@@ -1459,7 +1459,7 @@ class Excel_Writer_Parser
                 {
                     $this->_advance();  // eat the "," or ";"
                 } else {
-                    return $this->raiseError("Syntax error: comma expected in ".
+                    return $this->raiseError("Syntax error: comma expected in " .
                                       "function $function, arg #{$num_args}");
                 }
                 $result2 = $this->_condition();
@@ -1470,7 +1470,7 @@ class Excel_Writer_Parser
             }
             $num_args++;
         }
-        if (!isset($this->_functions[$function])) {
+        if (! isset($this->_functions[$function])) {
             throw new Excel_Exception_RuntimeException("Function $function() doesn't exist");
         }
         $args = $this->_functions[$function][1];
@@ -1548,10 +1548,10 @@ class Excel_Writer_Parser
         }
         // if it's a function convert it here (so we can set it's arguments)
         if (preg_match("/^[A-Z0-9\xc0-\xdc\.]+$/",$tree['value']) and
-            !preg_match('/^([A-Ia-i]?[A-Za-z])(\d+)$/',$tree['value']) and
-            !preg_match("/^[A-Ia-i]?[A-Za-z](\d+)\.\.[A-Ia-i]?[A-Za-z](\d+)$/",$tree['value']) and
-            !is_numeric($tree['value']) and
-            !isset($this->ptg[$tree['value']]))
+            ! preg_match('/^([A-Ia-i]?[A-Za-z])(\d+)$/',$tree['value']) and
+            ! preg_match("/^[A-Ia-i]?[A-Za-z](\d+)\.\.[A-Ia-i]?[A-Za-z](\d+)$/",$tree['value']) and
+            ! is_numeric($tree['value']) and
+            ! isset($this->ptg[$tree['value']]))
         {
             // left subtree for a function is always an array.
             if ($tree['left'] != '') {
@@ -1560,7 +1560,7 @@ class Excel_Writer_Parser
                 $left_tree = '';
             }
             // add it's left subtree and return.
-            return $left_tree.$this->_convertFunction($tree['value'], $tree['right']);
+            return $left_tree . $this->_convertFunction($tree['value'], $tree['right']);
         } else {
             $converted_tree = $this->_convert($tree['value']);
         }
