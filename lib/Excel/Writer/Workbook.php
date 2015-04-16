@@ -281,15 +281,17 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         }
 
         $worksheet = new Excel_Writer_Worksheet(
-                                   $name, $index,
-                                   $this->_activesheet, $this->_firstsheet,
-                                   $this->_str_total, $this->_str_unique,
-                                   $this->_str_table, $this->_url_format,
-                                   $this->_parser, $this->_tmp_dir);
+            $name, $index,
+            $this->_activesheet, $this->_firstsheet,
+            $this->_str_total, $this->_str_unique,
+            $this->_str_table, $this->_url_format,
+            $this->_parser, $this->_tmp_dir
+        );
 
         $this->_worksheets[$index] = $worksheet;     // Store ref for iterator
         $this->_sheetnames[$index] = $name;          // Store EXTERNSHEET names
         $this->_parser->setExtSheet($name, $index);  // Register worksheet name with parser
+
         return $worksheet;
     }
 
