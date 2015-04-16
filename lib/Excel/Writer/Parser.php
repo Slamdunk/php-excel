@@ -659,7 +659,7 @@ class Excel_Writer_Parser
 
         } else {
             // TODO: use real error codes
-            return $this->raiseError("Unknown range separator", 0, Excel_PEAR_ERROR_DIE);
+            throw new Excel_Exception_RuntimeException("Unknown range separator");
         }
 
         // Convert the cell references
@@ -677,7 +677,7 @@ class Excel_Writer_Parser
             $ptgArea = pack("C", $this->ptg['ptgAreaA']);
         } else {
             // TODO: use real error codes
-            return $this->raiseError("Unknown class $class", 0, Excel_PEAR_ERROR_DIE);
+            throw new Excel_Exception_RuntimeException("Unknown class $class");
         }
 
         return $ptgArea . $row1 . $row2 . $col1 . $col2;
@@ -725,7 +725,7 @@ class Excel_Writer_Parser
         } elseif ($class == 2) {
             $ptgArea = pack("C", $this->ptg['ptgArea3dA']);
         } else {
-            return $this->raiseError("Unknown class $class", 0, Excel_PEAR_ERROR_DIE);
+            throw new Excel_Exception_RuntimeException("Unknown class $class");
         }
 
         return $ptgArea . $ext_ref . $row1 . $row2 . $col1 . $col2;
@@ -794,7 +794,7 @@ class Excel_Writer_Parser
         } elseif ($class == 2) {
             $ptgRef = pack("C", $this->ptg['ptgRef3dA']);
         } else {
-            return $this->raiseError("Unknown class $class", 0, Excel_PEAR_ERROR_DIE);
+            throw new Excel_Exception_RuntimeException("Unknown class $class");
         }
 
         return $ptgRef . $ext_ref . $row . $col;
@@ -1476,9 +1476,12 @@ class Excel_Writer_Parser
             return $result;
         }
 
-        return $this->raiseError("Syntax error: " . $this->_current_token .
-                                 ", lookahead: " . $this->_lookahead .
-                                 ", current char: " . $this->_current_char);
+        throw new Excel_Exception_RuntimeException(sprintf(
+            "Syntax error: %s, lookahead: %s, current char: %s",
+            $this->_current_token,
+            $this->_lookahead,
+            $this->_current_char
+        ));
     }
 
     /**
@@ -1504,8 +1507,7 @@ class Excel_Writer_Parser
                 {
                     $this->_advance();  // eat the "," or ";"
                 } else {
-                    return $this->raiseError("Syntax error: comma expected in " .
-                                      "function $function, arg #{$num_args}");
+                    throw new Excel_Exception_RuntimeException("Syntax error: comma expected in function $function, arg #{$num_args}");
                 }
                 $result2 = $this->_condition();
                 $result = $this->_createTree('arg', $result, $result2);

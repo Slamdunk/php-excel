@@ -24,21 +24,6 @@ class Excel_Writer extends Excel_Writer_Workbook
     }
 
     /**
-     * Send HTTP headers for the Excel file.
-     *
-     * @param string $filename The filename to use for HTTP headers
-     * @access public
-     */
-    public function send($filename)
-    {
-        header("Content-type: application/vnd.ms-excel");
-        header("Content-Disposition: attachment; filename=\"$filename\"");
-        header("Expires: 0");
-        header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
-        header("Pragma: public");
-    }
-
-    /**
      * Utility function for writing formulas
      * Converts a cell's coordinates to the A1 format.
      *
@@ -53,7 +38,7 @@ class Excel_Writer extends Excel_Writer_Workbook
     public function rowcolToCell($row, $col)
     {
         if ($col > 255) { //maximum column value exceeded
-            return new Excel_PEAR_Error("Maximum column value exceeded: $col");
+            throw new Excel_Exception_InvalidArgumentException("Maximum column value exceeded: $col");
         }
 
         $int = (int) ($col / 26);

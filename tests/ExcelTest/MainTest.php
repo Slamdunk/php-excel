@@ -53,4 +53,26 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('e388a682417769036b8b910a981957e590475f53', hash('sha1', file_get_contents($filename)));
     }
+
+    /**
+     * @dataProvider dataProviderTestIndiceColonnaInNumero
+     */
+    public function testIndiceColonnaInNumero($indice, $lettera)
+    {
+        $xls = new Excel_Writer();
+        $this->assertSame($lettera . '2', $xls->rowcolToCell(1, $indice));
+
+        $this->setExpectedException('Excel_Exception_InvalidArgumentException');
+        
+        $xls->rowcolToCell(1, 50000);
+    }
+    
+    public function dataProviderTestIndiceColonnaInNumero()
+    {
+        return array(
+            array(0, 'A'),
+            array(30, 'AE'),
+            array(231, 'HX'),
+        );
+    }
 }

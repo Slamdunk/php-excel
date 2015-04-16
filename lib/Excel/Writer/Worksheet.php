@@ -528,7 +528,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             // ToDo: Let the error actually have an effect somewhere
             $this->_using_tmpfile = false;
 
-            return new Excel_PEAR_Error('Temp file could not be opened since open_basedir restriction in effect - please use setTmpDir() - using memory storage instead');
+            throw new Excel_Exception_RuntimeException('Temp file could not be opened since open_basedir restriction in effect - please use setTmpDir() - using memory storage instead');
         }
 
         // Open tmp file for storing Worksheet data
@@ -1223,8 +1223,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     {
         // Confine the scale to Excel's range
         if ($scale < 10 || $scale > 400) {
-            $this->raiseError("Zoom factor $scale outside range: 10 <= zoom <= 400");
-            $scale = 100;
+            throw new Excel_Exception_InvalidArgumentException("Zoom factor $scale outside range: 10 <= zoom <= 400");
         }
 
         $this->_zoom = floor($scale);
@@ -1242,8 +1241,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     {
         // Confine the scale to Excel's range
         if ($scale < 10 || $scale > 400) {
-            $this->raiseError("Print scale $scale outside range: 10 <= zoom <= 400");
-            $scale = 100;
+            throw new Excel_Exception_InvalidArgumentException("Print scale $scale outside range: 10 <= zoom <= 400");
         }
 
         // Turn off "fit to page" option
@@ -1267,7 +1265,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         // Check for a cell reference in A1 notation and substitute row and column
         /*if ($_[0] =~ /^\D/) {
             @_ = $this->_substituteCellref(@_);
-    }*/
+        }*/
 
         if (preg_match("/^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/", $token)) {
             // Match number
@@ -1287,10 +1285,9 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         } elseif ($token == '') {
             // Match blank
             return $this->writeBlank($row, $col, $format);
-        } else {
-            // Default: match string
-            return $this->writeString($row, $col, $token, $format);
         }
+
+        return $this->writeString($row, $col, $token, $format);
     }
 
     /**
@@ -1302,27 +1299,22 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
      * @param integer $col    The first col (leftmost col) we are writing to
      * @param array   $val    The array of values to write
      * @param mixed   $format The optional format to apply to the cell
-     *
-     * @return mixed Excel_PEAR_Error on failure
      */
 
-    public function writeRow($row, $col, $val, $format = null)
+    public function writeRow($row, $col, array $val, $format = null)
     {
         $retval = '';
-        if (is_array($val)) {
-            foreach ($val as $v) {
-                if (is_array($v)) {
-                    $this->writeCol($row, $col, $v, $format);
-                } else {
-                    $this->write($row, $col, $v, $format);
-                }
-                $col++;
+
+        foreach ($val as $v) {
+            if (is_array($v)) {
+                $this->writeCol($row, $col, $v, $format);
+            } else {
+                $this->write($row, $col, $v, $format);
             }
-        } else {
-            $retval = new Excel_PEAR_Error('$val needs to be an array');
+            $col++;
         }
 
-        return($retval);
+        return $retval;
     }
 
     /**
@@ -1334,23 +1326,17 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
      * @param integer $col    The col we are writing to
      * @param array   $val    The array of values to write
      * @param mixed   $format The optional format to apply to the cell
-     *
-     * @return mixed Excel_PEAR_Error on failure
      */
 
-    public function writeCol($row, $col, $val, $format = null)
+    public function writeCol($row, $col, array $val, $format = null)
     {
         $retval = '';
-        if (is_array($val)) {
-            foreach ($val as $v) {
-                $this->write($row, $col, $v, $format);
-                $row++;
-            }
-        } else {
-            $retval = new Excel_PEAR_Error('$val needs to be an array');
+        foreach ($val as $v) {
+            $this->write($row, $col, $v, $format);
+            $row++;
         }
 
-        return($retval);
+        return $retval;
     }
 
     /**
@@ -1366,9 +1352,9 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     {
         if ($format) {
             return($format->getXfIndex());
-        } else {
-            return(0x0F);
         }
+
+        return(0x0F);
     }
 
     /******************************************************************************
@@ -1437,8 +1423,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             return(array($row1, $col1));
         }
 
-        // TODO use real error codes
-        $this->raiseError("Unknown cell reference $cell", 0, Excel_PEAR_ERROR_DIE);
+        throw new Excel_Exception_RuntimeException("Unknown cell reference $cell");
     }
 
     /**
@@ -1669,8 +1654,9 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     public function setInputEncoding($encoding)
     {
          if ($encoding != 'UTF-16LE' && ! function_exists('iconv')) {
-             $this->raiseError("Using an input encoding other than UTF-16LE requires PHP support for iconv");
+             throw new Excel_Exception_RuntimeException("Using an input encoding other than UTF-16LE requires PHP support for iconv");
          }
+
          $this->_input_encoding = $encoding;
     }
 
@@ -3524,7 +3510,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         // Open file.
         $bmp_fd = @fopen($bitmap,"rb");
         if (! $bmp_fd) {
-            $this->raiseError("Couldn't import $bitmap");
+            throw new Excel_Exception_RuntimeException("Couldn't import $bitmap");
         }
 
         // Slurp the file into a string.
@@ -3532,13 +3518,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         // Check that the file is big enough to be a bitmap.
         if (strlen($data) <= 0x36) {
-            $this->raiseError("$bitmap doesn't contain enough data.\n");
+            throw new Excel_Exception_RuntimeException("$bitmap doesn't contain enough data");
         }
 
         // The first 2 bytes are used to identify the bitmap.
         $identity = unpack("A2ident", $data);
         if ($identity['ident'] != "BM") {
-            $this->raiseError("$bitmap doesn't apExcel_PEAR to be a valid bitmap image.\n");
+            throw new Excel_Exception_RuntimeException("$bitmap doesn't apExcel_PEAR to be a valid bitmap image");
         }
 
         // Remove bitmap data: ID.
@@ -3562,20 +3548,20 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $height = $width_and_height[2];
         $data   = substr($data, 8);
         if ($width > 0xFFFF) {
-            $this->raiseError("$bitmap: largest image width supported is 65k.\n");
+            throw new Excel_Exception_RuntimeException("$bitmap: largest image width supported is 65k.\n");
         }
         if ($height > 0xFFFF) {
-            $this->raiseError("$bitmap: largest image height supported is 65k.\n");
+            throw new Excel_Exception_RuntimeException("$bitmap: largest image height supported is 65k.\n");
         }
 
         // Read and remove the bitmap planes and bpp data. Verify them.
         $planes_and_bitcount = unpack("v2", substr($data, 0, 4));
         $data = substr($data, 4);
         if ($planes_and_bitcount[2] != 24) { // Bitcount
-            $this->raiseError("$bitmap isn't a 24bit true color bitmap.\n");
+            throw new Excel_Exception_RuntimeException("$bitmap isn't a 24bit true color bitmap.\n");
         }
         if ($planes_and_bitcount[1] != 1) {
-            $this->raiseError("$bitmap: only 1 plane supported in bitmap image.\n");
+            throw new Excel_Exception_RuntimeException("$bitmap: only 1 plane supported in bitmap image.\n");
         }
 
         // Read and remove the bitmap compression. Verify compression.
@@ -3584,7 +3570,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         //$compression = 0;
         if ($compression['comp'] != 0) {
-            $this->raiseError("$bitmap: compression not supported in bitmap image.\n");
+            throw new Excel_Exception_RuntimeException("$bitmap: compression not supported in bitmap image.\n");
         }
 
         // Remove bitmap data: data size, hres, vres, colours, imp. colours.

@@ -883,10 +883,7 @@ class Excel_Writer_Format
                 $this->_rotation = 1;
                 break;
             default :
-                return $this->raiseError("Invalid value for angle.".
-                                  " Possible values are: 0, 90, 270 and -1 ".
-                                  "for stacking top-to-bottom.");
-                $this->_rotation = 0;
+                throw new Excel_Exception_RuntimeException("Invalid value for angle. Possible values are: 0, 90, 270 and -1 for stacking top-to-bottom.");
                 break;
         }
     }

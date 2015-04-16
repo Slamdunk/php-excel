@@ -576,7 +576,7 @@ class Excel_OLE
     public static function Excel_OLE2LocalDate($string)
     {
         if (strlen($string) != 8) {
-            return new Excel_PEAR_Error("Expecting 8 byte string");
+            throw new Excel_Exception_InvalidArgumentException("Expecting 8 byte string");
         }
 
         // factor used for separating numbers into 4 bytes parts

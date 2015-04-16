@@ -103,8 +103,7 @@ class Excel_Writer_BIFFwriter
             $byte_order = 1;    // Big Endian
         } else {
             // Give up. I'll fix this in a later version.
-            return $this->raiseError("Required floating point format " .
-                                     "not supported on this platform.");
+            throw new Excel_Exception_RuntimeException("Required floating point format not supported on this platform.");
         }
         $this->_byte_order = $byte_order;
     }
