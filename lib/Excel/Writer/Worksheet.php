@@ -408,15 +408,15 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
      * @param string  $tmp_dir      The path to the directory for temporary files
      * @access private
      */
-    public function Excel_Writer_Worksheet($name,
-                                                $index, &$activesheet,
-                                                &$firstsheet, &$str_total,
-                                                &$str_unique, &$str_table,
-                                                &$url_format, &$parser,
-                                                $tmp_dir)
-    {
-        // It needs to call its parent's constructor explicitly
-        $this->Excel_Writer_BIFFwriter();
+    public function __construct($name,
+        $index, &$activesheet,
+        &$firstsheet, &$str_total,
+        &$str_unique, &$str_table,
+        &$url_format, &$parser,
+        $tmp_dir
+    ) {
+        parent::__construct();
+
         $rowmax                = 65536; // 16384 in Excel 5
         $colmax                = 256;
 

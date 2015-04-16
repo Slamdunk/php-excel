@@ -31,10 +31,11 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      * @param integer $time_1st A timestamp
      * @param integer $time_2nd A timestamp
      */
-    public function Excel_OLE_PPS_Root($time_1st, $time_2nd, $raChild)
+    public function __construct($time_1st, $time_2nd, $raChild)
     {
         $this->_tmp_dir = sys_get_temp_dir();
-        $this->Excel_OLE_PPS(
+
+        parent::__construct(
            null,
            Excel_OLE::Asc2Ucs('Root Entry'),
            Excel_OLE::Excel_OLE_PPS_TYPE_ROOT,
@@ -44,7 +45,8 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
            $time_1st,
            $time_2nd,
            null,
-           $raChild);
+           $raChild
+       );
     }
 
     /**

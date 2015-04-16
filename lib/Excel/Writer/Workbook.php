@@ -153,10 +153,9 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
      * @param string filename for storing the workbook. "-" for writing to stdout.
      * @access public
      */
-    public function Excel_Writer_Workbook($filename = '')
+    public function __construct($filename = '')
     {
-        // It needs to call its parent's constructor explicitly
-        $this->Excel_Writer_BIFFwriter();
+        parent::__construct();
 
         $this->_filename         = $filename;
         $this->_parser           = new Excel_Writer_Parser($this->_byte_order);

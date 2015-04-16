@@ -116,7 +116,7 @@ class Excel_OLE_PPS
      * @param string  $data     The (usually binary) source data of the PPS
      * @param array   $children Array containing children PPS for this PPS
      */
-    public function Excel_OLE_PPS($No, $name, $type, $prev, $next, $dir, $time_1st, $time_2nd, $data, $children)
+    public function __construct($No, $name, $type, $prev, $next, $dir, $time_1st, $time_2nd, $data, $children)
     {
         $this->No      = $No;
         $this->Name    = $name;

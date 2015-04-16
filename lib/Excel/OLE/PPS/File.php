@@ -25,10 +25,11 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
      *
      * @see Excel_OLE::Asc2Ucs()
      */
-    public function Excel_OLE_PPS_File($name)
+    public function __construct($name)
     {
         $this->_tmp_dir = sys_get_temp_dir();
-        $this->Excel_OLE_PPS(
+
+        parent::__construct(
             null,
             $name,
             Excel_OLE::Excel_OLE_PPS_TYPE_FILE,
@@ -38,7 +39,8 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
             null,
             null,
             '',
-            array());
+            array()
+        );
     }
 
     /**

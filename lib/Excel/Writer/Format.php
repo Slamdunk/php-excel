@@ -249,7 +249,7 @@ class Excel_Writer_Format
      * @param integer $index      the XF index for the format.
      * @param array   $properties array with properties to be set on initialization.
      */
-    public function Excel_Writer_Format($index = 0, $properties =  array())
+    public function __construct($index = 0, $properties =  array())
     {
         $this->_xf_index       = $index;
         $this->font_index      = 0;
@@ -295,8 +295,7 @@ class Excel_Writer_Format
         $this->_diag_color     = 0x40;
 
         // Set properties passed to Excel_Writer_Workbook::addFormat()
-        foreach ($properties as $property => $value)
-        {
+        foreach ($properties as $property => $value) {
             if (method_exists($this, 'set' . ucwords($property))) {
                 $method_name = 'set' . ucwords($property);
                 $this->$method_name($value);

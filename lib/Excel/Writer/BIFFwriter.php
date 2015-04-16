@@ -75,7 +75,7 @@ class Excel_Writer_BIFFwriter
      *
      * @access public
      */
-    public function Excel_Writer_BIFFwriter()
+    public function __construct()
     {
         $this->_byte_order = '';
         $this->_data       = '';

@@ -87,7 +87,7 @@ class Excel_Writer_Parser
      *
      * @param integer $byte_order The byte order (Little endian or Big endian) of the architecture
      */
-    public function Excel_Writer_Parser($byte_order)
+    public function __construct($byte_order)
     {
         $this->_current_char  = 0;
         $this->_current_token = '';       // The token we are working on.
