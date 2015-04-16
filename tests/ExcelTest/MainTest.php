@@ -13,7 +13,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         Excel_OLE::$gmmktime = gmmktime('01','01','01','01','01','2000');
 
-        $xls = new Excel_Writer($filename);
+        $xls = new Excel_Writer_Workbook($filename);
 
         $xls->setCustomColor(60, hexdec('7f'), hexdec('7f'), hexdec('7f'));
         $xls->setCustomColor(61, hexdec('e8'), hexdec('e8'), hexdec('e8'));
@@ -49,9 +49,13 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         $sheet->write(3, 2, '95000', $format2);
 
+        $sheet->write(7, 3, 1.1);
+        $sheet->write(8, 3, 2);
+        $sheet->writeFormula(9, 3, sprintf('=SUM(%s:%s)', $xls->rowcolToCell(7, 3), $xls->rowcolToCell(8, 3)));
+
         $xls->close();
 
-        $this->assertSame('e388a682417769036b8b910a981957e590475f53', hash('sha1', file_get_contents($filename)));
+        $this->assertSame('43093f883818e44f4dd62f0382d95ecf6b689004', hash('sha1', file_get_contents($filename)));
     }
 
     /**
@@ -59,7 +63,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
      */
     public function testIndiceColonnaInNumero($indice, $lettera)
     {
-        $xls = new Excel_Writer();
+        $xls = new Excel_Writer_Workbook();
         $this->assertSame($lettera . '2', $xls->rowcolToCell(1, $indice));
 
         $this->setExpectedException('Excel_Exception_InvalidArgumentException');

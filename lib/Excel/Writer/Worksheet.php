@@ -1924,18 +1924,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         // Parse the formula using the parser in Parser.php
         $error = $this->_parser->parse($formula);
-        if ($this->isError($error)) {
-            $this->writeString($row, $col, $error->getMessage());
-
-            return -1;
-        }
-
         $formula = $this->_parser->toReversePolish();
-        if ($this->isError($formula)) {
-            $this->writeString($row, $col, $formula->getMessage());
-
-            return -1;
-        }
 
         $formlen    = strlen($formula);    // Length of the binary string
         $length     = 0x16 + $formlen;     // Length of the record data
@@ -3228,11 +3217,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     public function insertBitmap($row, $col, $bitmap, $x = 0, $y = 0, $scale_x = 1, $scale_y = 1)
     {
         $bitmap_array = $this->_processBitmap($bitmap);
-        if ($this->isError($bitmap_array)) {
-            $this->writeString($row, $col, $bitmap_array->getMessage());
-
-            return;
-        }
         list($width, $height, $size, $data) = $bitmap_array; //$this->_processBitmap($bitmap);
 
         // Scale the frame of the image.
