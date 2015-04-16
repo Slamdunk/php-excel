@@ -944,15 +944,15 @@ class Excel_Writer_Format
         $this->_font_script = $script;
     }
 
-     /**
-      * Locks a cell.
-      *
-      * @access public
-      */
-     public function setLocked()
-     {
-         $this->_locked = 1;
-     }
+    /**
+     * Locks a cell.
+     *
+     * @access public
+     */
+    public function setLocked()
+    {
+        $this->_locked = 1;
+    }
 
     /**
      * Unlocks a cell. Useful for unprotecting particular cells of a protected sheet.
