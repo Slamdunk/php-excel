@@ -15,5 +15,9 @@
     },
     "autoload-dev": {
         "psr-0": { "ExcelTest_\\": "tests/" }
+    },
+    "require-dev": {
+        "mikey179/vfsStream":   "*",
+        "phpunit/PHPUnit":      "*"
     }
 }
