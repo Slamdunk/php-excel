@@ -168,7 +168,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
             $pps->Size = $pps->_DataLen();
             if (
                     $pps->Size >= Excel_OLE::Excel_OLE_DATA_SIZE_SMALL
-                ||  ($pps->Type == Excel_OLE::Excel_OLE_PPS_TYPE_ROOT && isset($pps->_data))
+                or  ($pps->Type == Excel_OLE::Excel_OLE_PPS_TYPE_ROOT and isset($pps->_data))
             ) {
                 // Write Data
                 if (isset($pps->_PPS_FILE)) {
