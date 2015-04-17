@@ -12,7 +12,7 @@ install:
   - composer install --prefer-dist --optimize-autoloader
 
 script:
-  - php ./vendor/bin/phpunit -c phpunit.xml --coverage-text
+  - phpunit --coverage-text
 
 notifications:
   email: false
