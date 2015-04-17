@@ -20,6 +20,16 @@ class Excel_OLE
     // Per unitTests
     public static $gmmktime;
 
+    public static function getTmpfile()
+    {
+        $resource = tmpfile();
+        if (! is_resource($resource)) {
+            throw new Excel_Exception_RuntimeException('Can\'t create temporary file');
+        }
+
+        return $resource;
+    }
+
     /**
      * Utility function to transform ASCII text to Unicode
      *

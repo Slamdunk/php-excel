@@ -33,10 +33,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
             array()
         );
 
-        $this->_PPS_FILE = tmpfile();
-        if (! is_resource($this->_PPS_FILE)) {
-            throw new Excel_Exception_RuntimeException('Can\'t create temporary file');
-        }
+        $this->_PPS_FILE = Excel_OLE::getTmpfile();
     }
 
     /**

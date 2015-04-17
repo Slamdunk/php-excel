@@ -56,20 +56,6 @@ class Excel_Writer_BIFFwriter
     protected $_limit;
 
     /**
-     * The temporary dir for storing the Excel_OLE file
-     *
-     * @var string
-     */
-    protected $_tmp_dir;
-
-    /**
-     * The temporary file for storing the Excel_OLE file
-     *
-     * @var string
-     */
-    protected $_tmp_file;
-
-    /**
      * Constructor
      *
      * @access public
@@ -80,7 +66,6 @@ class Excel_Writer_BIFFwriter
         $this->_data       = '';
         $this->_datasize   = 0;
         $this->_limit      = 2080;
-        $this->_tmp_dir    = '';
         // Set the byte order
         $this->_setByteOrder();
     }
@@ -213,25 +198,5 @@ class Excel_Writer_BIFFwriter
         $tmp    .= substr($data, $i, strlen($data) - $i);
 
         return $tmp;
-    }
-
-    /**
-     * Sets the temp dir used for storing the Excel_OLE file
-     *
-     * @access public
-     *
-     * @param string $dir The dir to be used as temp dir
-     *
-     * @return true if given dir is valid, false otherwise
-     */
-    public function setTempDir($dir)
-    {
-        if (is_dir($dir)) {
-            $this->_tmp_dir = $dir;
-
-            return true;
-        }
-
-        return false;
     }
 }

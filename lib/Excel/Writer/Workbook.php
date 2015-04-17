@@ -284,7 +284,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             $this->_activesheet, $this->_firstsheet,
             $this->_str_total, $this->_str_unique,
             $this->_str_table, $this->_url_format,
-            $this->_parser, $this->_tmp_dir
+            $this->_parser
         );
 
         $this->_worksheets[$index] = $worksheet;     // Store ref for iterator

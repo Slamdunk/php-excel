@@ -45,13 +45,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     protected $_filehandle;
 
     /**
-     * Boolean indicating if we are using a temporary file for storing data
-     *
-     * @var bool
-     */
-    protected $_using_tmpfile;
-
-    /**
      * Maximum number of rows for an Excel spreadsheet (BIFF5)
      *
      * @var integer
@@ -404,15 +397,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
      * @param mixed   &$firstsheet  The first worksheet in the workbook we belong to
      * @param mixed   &$url_format  The default format for hyperlinks
      * @param mixed   &$parser      The formula parser created for the Workbook
-     * @param string  $tmp_dir      The path to the directory for temporary files
      * @access private
      */
     public function __construct($name,
         $index, &$activesheet,
         &$firstsheet, &$str_total,
         &$str_unique, &$str_table,
-        &$url_format, &$parser,
-        $tmp_dir
+        &$url_format, &$parser
     ) {
         parent::__construct();
 
@@ -430,8 +421,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_parser         = &$parser;
 
         //$this->ext_sheets      = array();
-        $this->_filehandle     = '';
-        $this->_using_tmpfile  = true;
+        $this->_filehandle     = Excel_OLE::getTmpfile();
         //$this->fileclosed      = 0;
         //$this->offset          = 0;
         $this->_xls_rowmax     = $rowmax;
@@ -502,50 +492,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_input_encoding    = '';
 
         $this->_dv                = array();
-
-        $this->_tmp_dir           = $tmp_dir;
-        $this->_tmp_file          = '';
-
-        $this->_initialize();
-    }
-
-    /**
-     * Open a tmp file to store the majority of the Worksheet data. If this fails,
-     * for example due to write permissions, store the data in memory. This can be
-     * slow for large files.
-     *
-     * @access private
-     */
-    protected function _initialize()
-    {
-        if ($this->_using_tmpfile == false) {
-            return;
-        }
-
-        if ($this->_tmp_dir === '' && ini_get('open_basedir') === true) {
-            // open_basedir restriction in effect - store data in memory
-            // ToDo: Let the error actually have an effect somewhere
-            $this->_using_tmpfile = false;
-
-            throw new Excel_Exception_RuntimeException('Temp file could not be opened since open_basedir restriction in effect - please use setTmpDir() - using memory storage instead');
-        }
-
-        // Open tmp file for storing Worksheet data
-        if ($this->_tmp_dir === '') {
-            $fh = tmpfile();
-        } else {
-            // For people with open base dir restriction
-            $this->_tmp_file = tempnam($this->_tmp_dir, "Excel_Writer");
-            $fh = @fopen($this->_tmp_file, "w+b");
-        }
-
-        if ($fh === false) {
-            // If tmpfile() fails store data in memory
-            $this->_using_tmpfile = false;
-        } else {
-            // Store filehandle
-            $this->_filehandle = $fh;
-        }
     }
 
     /**
@@ -660,16 +606,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_storeMergedCells();
 
         $this->_storeEof();
-
-        if ($this->_tmp_file != '') {
-          if ($this->_filehandle) {
-            fclose($this->_filehandle);
-            $this->_filehandle = '';
-          }
-          @unlink($this->_tmp_file);
-          $this->_tmp_file      = '';
-          $this->_using_tmpfile = true;
-        }
     }
 
     /**
@@ -700,17 +636,14 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             $tmp   = $this->_data;
             unset($this->_data);
             $fh    = $this->_filehandle;
-            if ($this->_using_tmpfile) {
-                fseek($fh, 0);
-            }
+            fseek($fh, 0);
 
             return $tmp;
         }
-        // Return data stored on disk
-        if ($this->_using_tmpfile) {
-            if ($tmp = fread($this->_filehandle, $buffer)) {
-                return $tmp;
-            }
+
+
+        if ($tmp = fread($this->_filehandle, $buffer)) {
+            return $tmp;
         }
 
         // No data to return
@@ -1369,16 +1302,12 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
      */
     protected function _append($data)
     {
-        if ($this->_using_tmpfile) {
-            // Add CONTINUE records if necessary
-            if (strlen($data) > $this->_limit) {
-                $data = $this->_addContinue($data);
-            }
-            fwrite($this->_filehandle, $data);
-            $this->_datasize += strlen($data);
-        } else {
-            parent::_append($data);
+        // Add CONTINUE records if necessary
+        if (strlen($data) > $this->_limit) {
+            $data = $this->_addContinue($data);
         }
+        fwrite($this->_filehandle, $data);
+        $this->_datasize += strlen($data);
     }
 
     /**
