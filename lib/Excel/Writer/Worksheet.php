@@ -7,7 +7,6 @@
  *
  * @category FileFormats
  */
-
 class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 {
     /**
@@ -813,25 +812,23 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     public function setColumn($firstcol, $lastcol, $width, $format = null, $hidden = 0, $level = 0)
     { // added by Dan Lynn <dan@spiderweblabs.com) on 2006-12-06
         // look for any ranges this might overlap and remove, size or split where necessary
-        foreach ($this->_colinfo as $key => $colinfo)
-        {
+        foreach ($this->_colinfo as $key => $colinfo) {
             $existing_start = $colinfo[0]; $existing_end = $colinfo[1];
             // if the new range starts within another range
-            if ($firstcol > $existing_start && $firstcol < $existing_end)
-            { // trim the existing range to the beginning of the new range
+            if ($firstcol > $existing_start && $firstcol < $existing_end) {
+                // trim the existing range to the beginning of the new range
                 $this->_colinfo[$key][1] = $firstcol - 1;
                 // if the new range lies WITHIN the existing range
-                if ($lastcol < $existing_end)
-                { // split the existing range by adding a range after our new range
+                if ($lastcol < $existing_end) {
+                    // split the existing range by adding a range after our new range
                     $this->_colinfo[] = array($lastcol+1, $existing_end, $colinfo[2], &$colinfo[3], $colinfo[4], $colinfo[5]);
                 }
             } // if the new range ends inside an existing range
-            elseif ($lastcol > $existing_start && $lastcol < $existing_end)
-            { // trim the existing range to the end of the new range
+            elseif ($lastcol > $existing_start && $lastcol < $existing_end) {
+                // trim the existing range to the end of the new range
                 $this->_colinfo[$key][0] = $lastcol + 1;
             } // if the new range completely overlaps the existing range
-            elseif ($firstcol <= $existing_start && $lastcol >= $existing_end)
-            {
+            elseif ($firstcol <= $existing_start && $lastcol >= $existing_end) {
                 unset($this->_colinfo[$key]);
             }
         } // added by Dan Lynn <dan@spiderweblabs.com) on 2006-12-06
@@ -840,8 +837,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_colinfo[] = array($firstcol, $lastcol, $width, $format, $hidden, $level);
         // Set width to zero if column is hidden
         $width = ($hidden) ? 0 : $width;
-        for ($col = $firstcol; $col <= $lastcol; $col++)
-        {
+        for ($col = $firstcol; $col <= $lastcol; $col++) {
             $this->col_sizes[$col] = $width;
         }
     }
@@ -1684,19 +1680,14 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         // (apparently the length is expected to be the number of 16-bit code points, not the number of characters).
         // Instead, always use the byte length divided by two for Unicode strings, and if mb_strlen() exists use
         // mb_strlen($str, '8bit') just in case mbstring.func_overload is set to overload strlen().
-        if ($this->_input_encoding == 'UTF-16LE')
-        {
+        if ($this->_input_encoding == 'UTF-16LE') {
             $strlen = (function_exists('mb_strlen') ? mb_strlen($str, '8bit') : strlen($str)) / 2;
             $encoding  = 0x1;
-        }
-        elseif ($this->_input_encoding != '')
-        {
+        } elseif ($this->_input_encoding != '') {
             $str = iconv($this->_input_encoding, 'UTF-16LE', $str);
             $strlen = (function_exists('mb_strlen') ? mb_strlen($str, '8bit') : strlen($str)) / 2;
             $encoding  = 0x1;
-        }
-        else
-        {
+        } else {
             $strlen    = function_exists('mb_strlen') ? mb_strlen($str, '8bit') : strlen($str);
             $encoding  = 0x0;
         }
@@ -2538,16 +2529,16 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             return;
         }
         $record   = 0x00E5;
-        foreach($this->_merged_ranges as $ranges)
-          {
+        foreach($this->_merged_ranges as $ranges) {
             $length   = 2 + count($ranges) * 8;
             $header   = pack('vv', $record, $length);
             $data     = pack('v',  count($ranges));
-            foreach ($ranges as $range)
-              $data .= pack('vvvv', $range[0], $range[2], $range[1], $range[3]);
+            foreach ($ranges as $range) {
+                $data .= pack('vvvv', $range[0], $range[2], $range[1], $range[3]);
+            }
             $string = $header . $data;
             $this->_append($string, true);
-          }
+        }
     }
 
     /**
@@ -2628,10 +2619,9 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $x       = $panes[1];
         $rwTop   = isset($panes[2]) ? $panes[2] : null;
         $colLeft = isset($panes[3]) ? $panes[3] : null;
+        $pnnAct = null;
         if (count($panes) > 4) { // if Active pane was received
             $pnnAct = $panes[4];
-        } else {
-            $pnnAct = null;
         }
         $record  = 0x0041;       // Record identifier
         $length  = 0x000A;       // Number of bytes to follow

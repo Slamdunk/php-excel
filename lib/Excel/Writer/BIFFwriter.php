@@ -16,7 +16,6 @@
  *
  * @category FileFormats
  */
-
 class Excel_Writer_BIFFwriter
 {
     /**

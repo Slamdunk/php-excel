@@ -1,10 +1,6 @@
 <?php
 
 /**
- * Constants for Excel_OLE package
- */
-
-/**
  * Excel_OLE package base class.
  *
  * @category Structures

@@ -7,7 +7,6 @@
  *
  * @category FileFormats
  */
-
 class Excel_Writer_Parser
 {
     const SPREADSHEET_EXCEL_WRITER_ADD          = '+';
