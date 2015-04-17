@@ -627,7 +627,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         // Prepend EXTERNSHEET references
         for ($i = $num_sheets; $i > 0; $i--) {
-            $sheetname = $sheetnames[$i-1];
+            $sheetname = $sheetnames[$i - 1];
             $this->_storeExternsheet($sheetname);
         }
 
@@ -821,7 +821,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
                 // if the new range lies WITHIN the existing range
                 if ($lastcol < $existing_end) {
                     // split the existing range by adding a range after our new range
-                    $this->_colinfo[] = array($lastcol+1, $existing_end, $colinfo[2], &$colinfo[3], $colinfo[4], $colinfo[5]);
+                    $this->_colinfo[] = array($lastcol + 1, $existing_end, $colinfo[2], &$colinfo[3], $colinfo[4], $colinfo[5]);
                 }
             } // if the new range ends inside an existing range
             elseif ($lastcol > $existing_start && $lastcol < $existing_end) {
@@ -1445,7 +1445,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         while ($chars) {
             $char = array_pop($chars);        // LS char first
-            $col += (ord($char) -ord('A') +1) * pow(26,$expn);
+            $col += (ord($char) - ord('A') + 1) * pow(26,$expn);
             $expn++;
         }
 
@@ -2110,7 +2110,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $url         = $url . "\0\0\0";
 
         // Pack the length of the URL as chars (not wchars)
-        $url_len     = pack("V", floor(strlen($url)/2));
+        $url_len     = pack("V", floor(strlen($url) / 2));
 
         // Calculate the data length
         $length      = 0x24 + strlen($url);
@@ -2649,8 +2649,8 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             // The default column width is 8.43
             // The following slope and intersection values were interpolated.
             //
-            $y = 20*$y      + 255;
-            $x = 113.879*$x + 390;
+            $y = 20 * $y      + 255;
+            $x = 113.879 * $x + 390;
         }
 
         // Determine which pane should be active. There is also the undocumented
@@ -3093,7 +3093,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         $record  = 0x001b;               // Record identifier
         $cbrk    = count($breaks);       // Number of page breaks
-        $length  = 2 + 2*$cbrk;      // Bytes to follow
+        $length  = 2 + 2 * $cbrk;      // Bytes to follow
 
 
         $header  = pack("vv", $record, $length);
@@ -3131,7 +3131,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         $record  = 0x001a;               // Record identifier
         $cbrk    = count($breaks);       // Number of page breaks
-        $length  = 2 + 2*$cbrk;      // Bytes to follow
+        $length  = 2 + 2 * $cbrk;      // Bytes to follow
 
         $header  = pack("vv",  $record, $length);
         $data    = pack("v",   $cbrk);
@@ -3292,8 +3292,8 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             $y1 = 0;
         }
 
-        $width      = $width  + $x1 -1;
-        $height     = $height + $y1 -1;
+        $width      = $width  + $x1 - 1;
+        $height     = $height + $y1 - 1;
 
         // Subtract the underlying cell widths to find the end cell of the image
         while ($width >= $this->_sizeCol($col_end)) {
@@ -3379,7 +3379,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             if ($this->_row_sizes[$row] == 0) {
                 return(0);
             } else {
-                return(floor(4/3 * $this->_row_sizes[$row]));
+                return(floor(4 / 3 * $this->_row_sizes[$row]));
             }
         } else {
             return(17);

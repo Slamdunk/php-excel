@@ -10,13 +10,6 @@
 class Excel_OLE_PPS_Root extends Excel_OLE_PPS
 {
     /**
-     * The temporary dir for storing the Excel_OLE file
-     *
-     * @var string
-     */
-    private $_tmp_dir;
-
-    /**
      * Constructor
      *
      * @access public
@@ -26,8 +19,6 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     public function __construct($time_1st, $time_2nd, $raChild)
     {
-        $this->_tmp_dir = sys_get_temp_dir();
-
         parent::__construct(
            null,
            Excel_OLE::Asc2Ucs('Root Entry'),
@@ -43,26 +34,6 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     }
 
     /**
-     * Sets the temp dir used for storing the Excel_OLE file
-     *
-     * @access public
-     *
-     * @param string $dir The dir to be used as temp dir
-     *
-     * @return true if given dir is valid, false otherwise
-     */
-    public function setTempDir($dir)
-    {
-        if (is_dir($dir)) {
-            $this->_tmp_dir = $dir;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * Method for saving the whole Excel_OLE container (including files).
      * In fact, if called with an empty argument (or '-'), it saves to a
      * temporary file and then outputs it's contents to stdout.
@@ -74,25 +45,12 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     public function save($filename)
     {
-        // Initial Setting for saving
-        $this->_BIG_BLOCK_SIZE  = pow(2,
-                      ((isset($this->_BIG_BLOCK_SIZE)) ? $this->_adjust2($this->_BIG_BLOCK_SIZE)  : 9));
-        $this->_SMALL_BLOCK_SIZE = pow(2,
-                      ((isset($this->_SMALL_BLOCK_SIZE)) ?  $this->_adjust2($this->_SMALL_BLOCK_SIZE) : 6));
+        $this->_FILEH_ = fopen($filename, 'wb');
 
-        // Open temp file if we are sending output to stdout
-        if (($filename == '-') || ($filename == '')) {
-            $this->_tmp_filename = tempnam($this->_tmp_dir, "Excel_OLE_PPS_Root");
-            $this->_FILEH_ = @fopen($this->_tmp_filename,"w+b");
-            if ($this->_FILEH_ == false) {
-                throw new Excel_Exception_RuntimeException("Can't create temporary file " . $this->_tmp_filename);
-            }
-        } else {
-            $this->_FILEH_ = @fopen($filename, "wb");
-            if ($this->_FILEH_ == false) {
-                throw new Excel_Exception_RuntimeException("Can't open $filename. It may be in use or protected.");
-            }
-        }
+        // Initial Setting for saving
+        $this->_BIG_BLOCK_SIZE  = pow(2, ((isset($this->_BIG_BLOCK_SIZE)) ? $this->_adjust2($this->_BIG_BLOCK_SIZE) : 9));
+        $this->_SMALL_BLOCK_SIZE = pow(2, ((isset($this->_SMALL_BLOCK_SIZE)) ? $this->_adjust2($this->_SMALL_BLOCK_SIZE) : 6));
+
         // Make an array of PPS's (for Save)
         $aList = array();
         Excel_OLE_PPS_Root::_savePpsSetPnt($aList, array($this));
@@ -110,16 +68,9 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         $this->_savePps($aList);
         // Write Big Block Depot and BDList and Adding Header informations
         $this->_saveBbd($iSBDcnt, $iBBcnt, $iPPScnt);
+
         // Close File, send it to stdout if necessary
-        if (($filename == '-') || ($filename == '')) {
-            fseek($this->_FILEH_, 0);
-            fpassthru($this->_FILEH_);
-            @fclose($this->_FILEH_);
-            // Delete the temporary file.
-            @unlink($this->_tmp_filename);
-        } else {
-            @fclose($this->_FILEH_);
-        }
+        fclose($this->_FILEH_);
 
         return true;
     }
@@ -139,15 +90,15 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         list($iSBDcnt, $iBBcnt, $iPPScnt) = array(0,0,0);
         $iSmallLen = 0;
         $iSBcnt = 0;
-        for ($i = 0; $i < count($raList); $i++) {
-            if ($raList[$i]->Type == Excel_OLE::Excel_OLE_PPS_TYPE_FILE) {
-                $raList[$i]->Size = $raList[$i]->_DataLen();
-                if ($raList[$i]->Size < Excel_OLE::Excel_OLE_DATA_SIZE_SMALL) {
-                    $iSBcnt += floor($raList[$i]->Size / $this->_SMALL_BLOCK_SIZE)
-                                  + (($raList[$i]->Size % $this->_SMALL_BLOCK_SIZE) ? 1 : 0);
+        foreach ($raList as $pps) {
+            if ($pps->Type == Excel_OLE::Excel_OLE_PPS_TYPE_FILE) {
+                $pps->Size = $pps->_DataLen();
+                if ($pps->Size < Excel_OLE::Excel_OLE_DATA_SIZE_SMALL) {
+                    $iSBcnt += floor($pps->Size / $this->_SMALL_BLOCK_SIZE)
+                                  + (($pps->Size % $this->_SMALL_BLOCK_SIZE) ? 1 : 0);
                 } else {
-                    $iBBcnt += (floor($raList[$i]->Size / $this->_BIG_BLOCK_SIZE) +
-                        (($raList[$i]->Size % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
+                    $iBBcnt += (floor($pps->Size / $this->_BIG_BLOCK_SIZE) +
+                        (($pps->Size % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
                 }
             }
         }
@@ -158,7 +109,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
                       (($iSmallLen % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
         $iCnt = count($raList);
         $iBdCnt = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_PPS_SIZE;
-        $iPPScnt = (floor($iCnt/$iBdCnt) + (($iCnt % $iBdCnt) ? 1 : 0));
+        $iPPScnt = (floor($iCnt / $iBdCnt) + (($iCnt % $iBdCnt) ? 1 : 0));
 
         return array($iSBDcnt, $iBBcnt, $iPPScnt);
     }
@@ -176,9 +127,9 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     private function _adjust2($i2)
     {
-        $iWk = log($i2)/log(2);
+        $iWk = log($i2) / log(2);
 
-        return ($iWk > floor($iWk)) ? floor($iWk)+1 : $iWk;
+        return ($iWk > floor($iWk)) ? floor($iWk) + 1 : $iWk;
     }
 
     /**
@@ -210,41 +161,36 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         $FILE = $this->_FILEH_;
 
         // cycle through PPS's
-        for ($i = 0; $i < count($raList); $i++) {
-            if ($raList[$i]->Type != Excel_OLE::Excel_OLE_PPS_TYPE_DIR) {
-                $raList[$i]->Size = $raList[$i]->_DataLen();
-                if (($raList[$i]->Size >= Excel_OLE::Excel_OLE_DATA_SIZE_SMALL) ||
-                    (($raList[$i]->Type == Excel_OLE::Excel_OLE_PPS_TYPE_ROOT) && isset($raList[$i]->_data)))
-                {
-                    // Write Data
-                    if (isset($raList[$i]->_PPS_FILE)) {
-                        $iLen = 0;
-                        fseek($raList[$i]->_PPS_FILE, 0); // To The Top
-                        while($sBuff = fread($raList[$i]->_PPS_FILE, 4096)) {
-                            $iLen += strlen($sBuff);
-                            fwrite($FILE, $sBuff);
-                        }
-                    } else {
-                        fwrite($FILE, $raList[$i]->_data);
+        foreach ($raList as $pps) {
+            if ($pps->Type == Excel_OLE::Excel_OLE_PPS_TYPE_DIR) {
+                continue;
+            }
+            $pps->Size = $pps->_DataLen();
+            if (
+                    $pps->Size >= Excel_OLE::Excel_OLE_DATA_SIZE_SMALL
+                ||  ($pps->Type == Excel_OLE::Excel_OLE_PPS_TYPE_ROOT && isset($pps->_data))
+            ) {
+                // Write Data
+                if (isset($pps->_PPS_FILE)) {
+                    fseek($pps->_PPS_FILE, 0); // To The Top
+                    while($sBuff = fread($pps->_PPS_FILE, 4096)) {
+                        fwrite($FILE, $sBuff);
                     }
+                } else {
+                    fwrite($FILE, $pps->_data);
+                }
 
-                    if ($raList[$i]->Size % $this->_BIG_BLOCK_SIZE) {
-                        for ($j = 0; $j < ($this->_BIG_BLOCK_SIZE - ($raList[$i]->Size % $this->_BIG_BLOCK_SIZE)); $j++) {
-                            fwrite($FILE, "\x00");
-                        }
+                if ($pps->Size % $this->_BIG_BLOCK_SIZE) {
+                    for ($j = 0; $j < ($this->_BIG_BLOCK_SIZE - ($pps->Size % $this->_BIG_BLOCK_SIZE)); $j++) {
+                        fwrite($FILE, "\x00");
                     }
-                    // Set For PPS
-                    $raList[$i]->_StartBlock = $iStBlk;
-                    $iStBlk +=
-                            (floor($raList[$i]->Size / $this->_BIG_BLOCK_SIZE) +
-                                (($raList[$i]->Size % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
                 }
-                // Close file for each PPS, and unlink it
-                if (isset($raList[$i]->_PPS_FILE)) {
-                    @fclose($raList[$i]->_PPS_FILE);
-                    $raList[$i]->_PPS_FILE = null;
-                    @unlink($raList[$i]->_tmp_filename);
-                }
+                // Set For PPS
+                $pps->_StartBlock = $iStBlk;
+                $iStBlk += (
+                        floor($pps->Size / $this->_BIG_BLOCK_SIZE)
+                    +   (($pps->Size % $this->_BIG_BLOCK_SIZE) ? 1 : 0)
+                );
             }
         }
     }
@@ -262,41 +208,43 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         $FILE = $this->_FILEH_;
         $iSmBlk = 0;
 
-        for ($i = 0; $i < count($raList); $i++) {
+        foreach ($raList as $pps) {
             // Make SBD, small data string
-            if ($raList[$i]->Type == Excel_OLE::Excel_OLE_PPS_TYPE_FILE) {
-                if ($raList[$i]->Size <= 0) {
-                    continue;
-                }
-                if ($raList[$i]->Size < Excel_OLE::Excel_OLE_DATA_SIZE_SMALL) {
-                    $iSmbCnt = floor($raList[$i]->Size / $this->_SMALL_BLOCK_SIZE)
-                                  + (($raList[$i]->Size % $this->_SMALL_BLOCK_SIZE) ? 1 : 0);
-                    // Add to SBD
-                    for ($j = 0; $j < ($iSmbCnt-1); $j++) {
-                        fwrite($FILE, pack("V", $j+$iSmBlk+1));
-                    }
-                    fwrite($FILE, pack("V", -2));
+            if (
+                    $pps->Type != Excel_OLE::Excel_OLE_PPS_TYPE_FILE
+                or  $pps->Size <= 0
+                or  $pps->Size >= Excel_OLE::Excel_OLE_DATA_SIZE_SMALL
+            ) {
+                continue;
+            }
 
-                    // Add to Data String(this will be written for RootEntry)
-                    if ($raList[$i]->_PPS_FILE) {
-                        fseek($raList[$i]->_PPS_FILE, 0); // To The Top
-                        while ($sBuff = fread($raList[$i]->_PPS_FILE, 4096)) {
-                            $sRes .= $sBuff;
-                        }
-                    } else {
-                        $sRes .= $raList[$i]->_data;
-                    }
-                    if ($raList[$i]->Size % $this->_SMALL_BLOCK_SIZE) {
-                        for ($j = 0; $j < ($this->_SMALL_BLOCK_SIZE - ($raList[$i]->Size % $this->_SMALL_BLOCK_SIZE)); $j++) {
-                            $sRes .= "\x00";
-                        }
-                    }
-                    // Set for PPS
-                    $raList[$i]->_StartBlock = $iSmBlk;
-                    $iSmBlk += $iSmbCnt;
+            $iSmbCnt = (
+                    floor($pps->Size / $this->_SMALL_BLOCK_SIZE)
+                +   (($pps->Size % $this->_SMALL_BLOCK_SIZE) ? 1 : 0)
+            );
+            ;
+            // Add to SBD
+            for ($j = 0; $j < ($iSmbCnt - 1); $j++) {
+                fwrite($FILE, pack("V", $j + $iSmBlk + 1));
+            }
+            fwrite($FILE, pack("V", -2));
+
+            // Add to Data String(this will be written for RootEntry)
+            fseek($pps->_PPS_FILE, 0); // To The Top
+            while ($sBuff = fread($pps->_PPS_FILE, 4096)) {
+                $sRes .= $sBuff;
+            }
+
+            if ($pps->Size % $this->_SMALL_BLOCK_SIZE) {
+                for ($j = 0; $j < ($this->_SMALL_BLOCK_SIZE - ($pps->Size % $this->_SMALL_BLOCK_SIZE)); $j++) {
+                    $sRes .= "\x00";
                 }
             }
+            // Set for PPS
+            $pps->_StartBlock = $iSmBlk;
+            $iSmBlk += $iSmbCnt;
         }
+
         $iSbCnt = floor($this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE);
         if ($iSmBlk % $iSbCnt) {
             for ($i = 0; $i < ($iSbCnt - ($iSmBlk % $iSbCnt)); $i++) {
@@ -317,8 +265,8 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     private function _savePps(&$raList)
     {
         // Save each PPS WK
-        for ($i = 0; $i < count($raList); $i++) {
-            fwrite($this->_FILEH_, $raList[$i]->_getPpsWk());
+        foreach ($raList as $pps) {
+            fwrite($this->_FILEH_, $pps->_getPpsWk());
         }
         // Adjust for Block
         $iCnt = count($raList);
@@ -355,68 +303,69 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     private function _create_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
-      $FILE = $this->_FILEH_;
+        $FILE = $this->_FILEH_;
 
-      $bbd_info = $this->_calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks);
+        $bbd_info = $this->_calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks);
 
-      $data = "";
+        $data = "";
 
-      if($num_sb_blocks > 0)
-        {
-          for($i = 0; $i<($num_sb_blocks-1); $i++)
-            $data .= pack("V", $i+1);
-          $data .= pack("V", -2);
-        }
-
-      for($i = 0; $i<($num_bb_blocks-1); $i++)
-        $data .= pack("V", $i + $num_sb_blocks + 1);
-      $data .= pack("V", -2);
-
-      for($i = 0; $i<($num_pps_blocks-1); $i++)
-        $data .= pack("V", $i + $num_sb_blocks + $num_bb_blocks + 1);
-      $data .= pack("V", -2);
-
-      for($i = 0; $i < $bbd_info["0xFFFFFFFD_blockchain_entries"]; $i++)
-        $data .= pack("V", 0xFFFFFFFD);
-
-      for($i = 0; $i < $bbd_info["0xFFFFFFFC_blockchain_entries"]; $i++)
-        $data .= pack("V", 0xFFFFFFFC);
-
-      // Adjust for Block
-      $all_entries = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"];
-      if($all_entries % $bbd_info["entries_per_block"])
-        {
-          $rest = $bbd_info["entries_per_block"] - ($all_entries % $bbd_info["entries_per_block"]);
-          for($i = 0; $i < $rest; $i++)
-            $data .= pack("V", -1);
-        }
-
-      // Extra BDList
-      if($bbd_info["blockchain_list_entries"] > $bbd_info["header_blockchain_list_entries"])
-        {
-          $iN = 0;
-          $iNb = 0;
-          for($i = $bbd_info["header_blockchain_list_entries"]; $i < $bbd_info["blockchain_list_entries"]; $i++, $iN++)
-            {
-              if($iN >= ($bbd_info["entries_per_block"]-1))
-                {
-                  $iN = 0;
-                  $iNb++;
-                  $data .= pack("V", $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $iNb);
-                }
-
-              $data .= pack("V", $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i);
+        if($num_sb_blocks > 0) {
+            for($i = 0; $i < ($num_sb_blocks - 1); $i++) {
+                $data .= pack("V", $i + 1);
             }
+            $data .= pack("V", -2);
+        }
 
-          $all_entries = $bbd_info["blockchain_list_entries"] - $bbd_info["header_blockchain_list_entries"];
-          if(($all_entries % ($bbd_info["entries_per_block"] - 1)))
-            {
-              $rest = ($bbd_info["entries_per_block"] - 1) - ($all_entries % ($bbd_info["entries_per_block"] - 1));
-              for($i = 0; $i < $rest; $i++)
+        for($i = 0; $i < ($num_bb_blocks - 1); $i++) {
+            $data .= pack("V", $i + $num_sb_blocks + 1);
+        }
+        $data .= pack("V", -2);
+
+        for($i = 0; $i < ($num_pps_blocks - 1); $i++) {
+            $data .= pack("V", $i + $num_sb_blocks + $num_bb_blocks + 1);
+        }
+        $data .= pack("V", -2);
+
+        for($i = 0; $i < $bbd_info["0xFFFFFFFD_blockchain_entries"]; $i++) {
+            $data .= pack("V", 0xFFFFFFFD);
+        }
+
+        for($i = 0; $i < $bbd_info["0xFFFFFFFC_blockchain_entries"]; $i++) {
+            $data .= pack("V", 0xFFFFFFFC);
+        }
+
+        // Adjust for Block
+        $all_entries = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"];
+        if($all_entries % $bbd_info["entries_per_block"]) {
+            $rest = $bbd_info["entries_per_block"] - ($all_entries % $bbd_info["entries_per_block"]);
+            for($i = 0; $i < $rest; $i++) {
                 $data .= pack("V", -1);
             }
+        }
 
-          $data .= pack("V", -2);
+        // Extra BDList
+        if ($bbd_info["blockchain_list_entries"] > $bbd_info["header_blockchain_list_entries"]) {
+            $iN = 0;
+            $iNb = 0;
+            for ($i = $bbd_info["header_blockchain_list_entries"]; $i < $bbd_info["blockchain_list_entries"]; $i++, $iN++) {
+                if ($iN >= ($bbd_info["entries_per_block"] - 1)) {
+                    $iN = 0;
+                    $iNb++;
+                    $data .= pack("V", $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $iNb);
+                }
+
+                $data .= pack("V", $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i);
+            }
+
+            $all_entries = $bbd_info["blockchain_list_entries"] - $bbd_info["header_blockchain_list_entries"];
+            if (($all_entries % ($bbd_info["entries_per_block"] - 1))) {
+                $rest = ($bbd_info["entries_per_block"] - 1) - ($all_entries % ($bbd_info["entries_per_block"] - 1));
+                for($i = 0; $i < $rest; $i++) {
+                    $data .= pack("V", -1);
+                }
+            }
+
+            $data .= pack("V", -2);
         }
 
         fwrite($FILE, $data);
@@ -433,63 +382,58 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     private function _create_header($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
-      $FILE = $this->_FILEH_;
+        $FILE = $this->_FILEH_;
 
-      $bbd_info = $this->_calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks);
+        $bbd_info = $this->_calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks);
 
-      // Save Header
-      fwrite($FILE,
-             "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1"
-             . "\x00\x00\x00\x00"
-             . "\x00\x00\x00\x00"
-             . "\x00\x00\x00\x00"
-             . "\x00\x00\x00\x00"
-             . pack("v", 0x3b)
-             . pack("v", 0x03)
-             . pack("v", -2)
-             . pack("v", 9)
-             . pack("v", 6)
-             . pack("v", 0)
-             . "\x00\x00\x00\x00"
-             . "\x00\x00\x00\x00"
-             . pack("V", $bbd_info["blockchain_list_entries"])
-             . pack("V", $num_sb_blocks + $num_bb_blocks) //ROOT START
-             . pack("V", 0)
-             . pack("V", 0x1000)
-             );
+        // Save Header
+        fwrite($FILE,
+            "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1"
+            . "\x00\x00\x00\x00"
+            . "\x00\x00\x00\x00"
+            . "\x00\x00\x00\x00"
+            . "\x00\x00\x00\x00"
+            . pack("v", 0x3b)
+            . pack("v", 0x03)
+            . pack("v", -2)
+            . pack("v", 9)
+            . pack("v", 6)
+            . pack("v", 0)
+            . "\x00\x00\x00\x00"
+            . "\x00\x00\x00\x00"
+            . pack("V", $bbd_info["blockchain_list_entries"])
+            . pack("V", $num_sb_blocks + $num_bb_blocks) //ROOT START
+            . pack("V", 0)
+            . pack("V", 0x1000)
+         );
 
-      //Small Block Depot
-      if($num_sb_blocks > 0)
-        fwrite($FILE, pack("V", 0));
-      else
-        fwrite($FILE, pack("V", -2));
-
-      fwrite($FILE, pack("V", $num_sb_blocks));
-
-      // Extra BDList Start, Count
-      if($bbd_info["blockchain_list_entries"] < $bbd_info["header_blockchain_list_entries"])
-        {
-          fwrite($FILE,
-                 pack("V", -2) .      // Extra BDList Start
-                 pack("V", 0)        // Extra BDList Count
-                 );
-        }
-      else
-        {
-          fwrite($FILE, pack("V", $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"]) . pack("V", $bbd_info["0xFFFFFFFC_blockchain_entries"]));
+        //Small Block Depot
+        if($num_sb_blocks > 0) {
+            fwrite($FILE, pack("V", 0));
+        } else {
+            fwrite($FILE, pack("V", -2));
         }
 
-      // BDList
-      for ($i = 0; $i < $bbd_info["header_blockchain_list_entries"] and $i < $bbd_info["blockchain_list_entries"]; $i++)
-        {
-          fwrite($FILE, pack("V", $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i));
+        fwrite($FILE, pack("V", $num_sb_blocks));
+
+        // Extra BDList Start, Count
+        if($bbd_info["blockchain_list_entries"] < $bbd_info["header_blockchain_list_entries"]) {
+            fwrite($FILE,
+                pack("V", -2) .      // Extra BDList Start
+                pack("V", 0)        // Extra BDList Count
+            );
+        } else {
+            fwrite($FILE, pack("V", $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"]) . pack("V", $bbd_info["0xFFFFFFFC_blockchain_entries"]));
         }
 
-      if($i < $bbd_info["header_blockchain_list_entries"])
-        {
-          for($j = 0; $j < ($bbd_info["header_blockchain_list_entries"]-$i); $j++)
-            {
-              fwrite($FILE, (pack("V", -1)));
+        // BDList
+        for ($i = 0; $i < $bbd_info["header_blockchain_list_entries"] and $i < $bbd_info["blockchain_list_entries"]; $i++) {
+            fwrite($FILE, pack("V", $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i));
+        }
+
+        if($i < $bbd_info["header_blockchain_list_entries"]) {
+            for($j = 0; $j < ($bbd_info["header_blockchain_list_entries"] - $i); $j++) {
+                fwrite($FILE, (pack("V", -1)));
             }
         }
     }
@@ -505,28 +449,25 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     private function _calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
-      $bbd_info["entries_per_block"] = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
-      $bbd_info["header_blockchain_list_entries"] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
-      $bbd_info["blockchain_entries"] = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks;
-      $bbd_info["0xFFFFFFFD_blockchain_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"]);
-      $bbd_info["blockchain_list_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"]);
+        $bbd_info["entries_per_block"] = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
+        $bbd_info["header_blockchain_list_entries"] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
+        $bbd_info["blockchain_entries"] = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks;
+        $bbd_info["0xFFFFFFFD_blockchain_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"]);
+        $bbd_info["blockchain_list_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"]);
 
-      // do some magic
-      $bbd_info["ext_blockchain_list_entries"] = 0;
-      $bbd_info["0xFFFFFFFC_blockchain_entries"] = 0;
-      if($bbd_info["blockchain_list_entries"] > $bbd_info["header_blockchain_list_entries"])
-        {
-          do
-            {
-              $bbd_info["blockchain_list_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]);
-              $bbd_info["ext_blockchain_list_entries"] = $bbd_info["blockchain_list_entries"] - $bbd_info["header_blockchain_list_entries"];
-              $bbd_info["0xFFFFFFFC_blockchain_entries"] = $this->get_number_of_pointer_blocks($bbd_info["ext_blockchain_list_entries"]);
-              $bbd_info["0xFFFFFFFD_blockchain_entries"] = $this->get_number_of_pointer_blocks($num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]);
-            }
-          while($bbd_info["blockchain_list_entries"] < $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]));
+        // do some magic
+        $bbd_info["ext_blockchain_list_entries"] = 0;
+        $bbd_info["0xFFFFFFFC_blockchain_entries"] = 0;
+        if ($bbd_info["blockchain_list_entries"] > $bbd_info["header_blockchain_list_entries"]) {
+            do {
+                $bbd_info["blockchain_list_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]);
+                $bbd_info["ext_blockchain_list_entries"] = $bbd_info["blockchain_list_entries"] - $bbd_info["header_blockchain_list_entries"];
+                $bbd_info["0xFFFFFFFC_blockchain_entries"] = $this->get_number_of_pointer_blocks($bbd_info["ext_blockchain_list_entries"]);
+                $bbd_info["0xFFFFFFFD_blockchain_entries"] = $this->get_number_of_pointer_blocks($num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]);
+            } while ($bbd_info["blockchain_list_entries"] < $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]));
         }
 
-      return $bbd_info;
+        return $bbd_info;
     }
 
     /**
@@ -538,8 +479,8 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     private function get_number_of_pointer_blocks($num_pointers)
     {
-      $pointers_per_block = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
+        $pointers_per_block = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
 
-      return floor($num_pointers / $pointers_per_block) + (($num_pointers % $pointers_per_block) ? 1 : 0);
+        return floor($num_pointers / $pointers_per_block) + (($num_pointers % $pointers_per_block) ? 1 : 0);
     }
 }

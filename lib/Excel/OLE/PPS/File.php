@@ -10,13 +10,6 @@
 class Excel_OLE_PPS_File extends Excel_OLE_PPS
 {
     /**
-     * The temporary dir for storing the Excel_OLE file
-     *
-     * @var string
-     */
-    private $_tmp_dir;
-
-    /**
      * The constructor
      *
      * @access public
@@ -27,8 +20,6 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
      */
     public function __construct($name)
     {
-        $this->_tmp_dir = sys_get_temp_dir();
-
         parent::__construct(
             null,
             $name,
@@ -41,48 +32,11 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
             '',
             array()
         );
-    }
 
-    /**
-     * Sets the temp dir used for storing the Excel_OLE file
-     *
-     * @access public
-     *
-     * @param string $dir The dir to be used as temp dir
-     *
-     * @return true if given dir is valid, false otherwise
-     */
-    public function setTempDir($dir)
-    {
-        if (is_dir($dir)) {
-            $this->_tmp_dir = $dir;
-
-            return true;
+        $this->_PPS_FILE = tmpfile();
+        if (! is_resource($this->_PPS_FILE)) {
+            throw new Excel_Exception_RuntimeException('Can\'t create temporary file');
         }
-
-        return false;
-    }
-
-    /**
-     * Initialization method. Has to be called right after Excel_OLE_PPS_File().
-     *
-     * @access public
-     *
-     * @return mixed true on success. PEAR_Error on failure
-     */
-    public function init()
-    {
-        $this->_tmp_filename = tempnam($this->_tmp_dir, "Excel_OLE_PPS_File");
-        $fh = @fopen($this->_tmp_filename, "w+b");
-        if ($fh == false) {
-            throw new Excel_Exception_RuntimeException("Can't create temporary file: " . $this->_tmp_filename);
-        }
-        $this->_PPS_FILE = $fh;
-        if ($this->_PPS_FILE) {
-            fseek($this->_PPS_FILE, 0);
-        }
-
-        return true;
     }
 
     /**
@@ -94,10 +48,6 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
      */
     public function append($data)
     {
-        if ($this->_PPS_FILE) {
-            fwrite($this->_PPS_FILE, $data);
-        } else {
-            $this->_data .= $data;
-        }
+        fwrite($this->_PPS_FILE, $data);
     }
 }

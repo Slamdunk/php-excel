@@ -4,28 +4,31 @@ use org\bovigo\vfs;
 
 class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 {
-    public function testGenerazioneFileBase()
+    protected function setUp()
     {
-        $vfs = vfs\vfsStream::setup('root', 0770);
-        $filename = vfs\vfsStream::url('root/test.xls');
-
-        // $filename = TMP_PATH . '/stock.xls';
-
         Excel_OLE::$gmmktime = gmmktime('01','01','01','01','01','2000');
 
-        $xls = new Excel_Writer_Workbook($filename);
+        $this->vfs = vfs\vfsStream::setup('root', 0770);
+        $this->filename = vfs\vfsStream::url('root/test.xls');
 
-        $xls->setCustomColor(60, hexdec('7f'), hexdec('7f'), hexdec('7f'));
-        $xls->setCustomColor(61, hexdec('e8'), hexdec('e8'), hexdec('e8'));
-        $xls->setCustomColor(62, hexdec('cc'), hexdec('cc'), hexdec('cc'));
+        // $this->filename = TMP_PATH . '/stock.xls';
 
-        $sheet = $xls->addWorksheet('FoglioCustom');
+        $this->xls = new Excel_Writer_Workbook($this->filename);
+    }
+
+    public function testGenerazioneFileBase()
+    {
+        $this->xls->setCustomColor(60, hexdec('7f'), hexdec('7f'), hexdec('7f'));
+        $this->xls->setCustomColor(61, hexdec('e8'), hexdec('e8'), hexdec('e8'));
+        $this->xls->setCustomColor(62, hexdec('cc'), hexdec('cc'), hexdec('cc'));
+
+        $sheet = $this->xls->addWorksheet('FoglioCustom');
         $sheet->setLandscape();
         $sheet->setMargins(0.2);
         $sheet->hideGridLines();
         $sheet->setColumn(1, 1, 20);
 
-        $header = $xls->addFormat();
+        $header = $this->xls->addFormat();
         $header->setColor('yellow');
         $header->setBold();
         $header->setSize(15);
@@ -38,7 +41,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         $sheet->writeString(2, 1, '0123');
 
-        $format2 = $xls->addFormat();
+        $format2 = $this->xls->addFormat();
         $format2->setColor('red');
         $format2->setItalic();
         $format2->setBorder(2);
@@ -51,11 +54,26 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         $sheet->write(7, 3, 1.1);
         $sheet->write(8, 3, 2);
-        $sheet->writeFormula(9, 3, sprintf('=SUM(%s:%s)', $xls->rowcolToCell(7, 3), $xls->rowcolToCell(8, 3)));
+        $sheet->writeFormula(9, 3, sprintf('=SUM(%s:%s)', $this->xls->rowcolToCell(7, 3), $this->xls->rowcolToCell(8, 3)));
 
-        $xls->close();
+        $this->xls->close();
 
-        $this->assertSame('43093f883818e44f4dd62f0382d95ecf6b689004', hash('sha1', file_get_contents($filename)));
+        $this->assertLessThan(Excel_OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
+        $this->assertSame('43093f883818e44f4dd62f0382d95ecf6b689004', hash('sha1', file_get_contents($this->filename)));
+    }
+
+    public function testFileGrandi()
+    {
+        $sheet = $this->xls->addWorksheet('FoglioCustom');
+
+        for ($i = 0; $i < 1000; $i++) {
+            $sheet->writeString($i, 1, 'foobar' . $i);
+        }
+
+        $this->xls->close();
+
+        $this->assertGreaterThan(Excel_OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
+        $this->assertSame('884f515114705011286817afff99f848f76b0ce2', hash('sha1', file_get_contents($this->filename)));
     }
 
     /**
@@ -63,12 +81,11 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
      */
     public function testIndiceColonnaInNumero($indice, $lettera)
     {
-        $xls = new Excel_Writer_Workbook();
-        $this->assertSame($lettera . '2', $xls->rowcolToCell(1, $indice));
+        $this->assertSame($lettera . '2', $this->xls->rowcolToCell(1, $indice));
 
         $this->setExpectedException('Excel_Exception_InvalidArgumentException');
 
-        $xls->rowcolToCell(1, 50000);
+        $this->xls->rowcolToCell(1, 50000);
     }
 
     public function dataProviderTestIndiceColonnaInNumero()

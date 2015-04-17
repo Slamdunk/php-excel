@@ -1007,7 +1007,7 @@ class Excel_Writer_Parser
             }
 
             if ($i < ($formula_length - 1)) {
-                $this->_lookahead = $this->_formula{$i+1};
+                $this->_lookahead = $this->_formula{$i + 1};
             }
             $token = '';
         }
@@ -1015,7 +1015,7 @@ class Excel_Writer_Parser
         while ($i < $formula_length) {
             $token .= $this->_formula{$i};
             if ($i < ($formula_length - 1)) {
-                $this->_lookahead = $this->_formula{$i+1};
+                $this->_lookahead = $this->_formula{$i + 1};
             } else {
                 $this->_lookahead = '';
             }
@@ -1031,7 +1031,7 @@ class Excel_Writer_Parser
             }
 
             if ($i < ($formula_length - 2)) {
-                $this->_lookahead = $this->_formula{$i+2};
+                $this->_lookahead = $this->_formula{$i + 2};
             } else { // if we run out of characters _lookahead becomes empty
                 $this->_lookahead = '';
             }

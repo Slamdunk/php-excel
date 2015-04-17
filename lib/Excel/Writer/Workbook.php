@@ -152,7 +152,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
      * @param string filename for storing the workbook. "-" for writing to stdout.
      * @access public
      */
-    public function __construct($filename = '')
+    public function __construct($filename)
     {
         parent::__construct();
 
@@ -263,7 +263,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $sheetname = $this->_sheetname;
 
         if ($name == '') {
-            $name = $sheetname . ($index+1);
+            $name = $sheetname . ($index + 1);
         }
 
         // Check that sheetname is <= 31 chars (Excel limit before BIFF8).
@@ -492,11 +492,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     protected function _storeExcel_OLEFile()
     {
         $Excel_OLE = new Excel_OLE_PPS_File(Excel_OLE::Asc2Ucs('Book'));
-        if ($this->_tmp_dir != '') {
-            $Excel_OLE->setTempDir($this->_tmp_dir);
-        }
-        $res = $Excel_OLE->init();
-
         $Excel_OLE->append($this->_data);
 
         $total_worksheets = count($this->_worksheets);
@@ -507,10 +502,6 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         }
 
         $root = new Excel_OLE_PPS_Root(time(), time(), array($Excel_OLE));
-        if ($this->_tmp_dir != '') {
-            $root->setTempDir($this->_tmp_dir);
-        }
-
         $res = $root->save($this->_filename);
 
         return true;
@@ -1008,7 +999,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $rgch            = $type;        // Built-in name type
 
         $unknown03       = 0x3b;
-        $unknown04       = 0xffff-$index;
+        $unknown04       = 0xffff - $index;
         $unknown05       = 0x0000;
         $unknown06       = 0x0000;
         $unknown07       = 0x1087;
@@ -1074,7 +1065,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $unknown01       = 0x29;
         $unknown02       = 0x002b;
         $unknown03       = 0x3b;
-        $unknown04       = 0xffff-$index;
+        $unknown04       = 0xffff - $index;
         $unknown05       = 0x0000;
         $unknown06       = 0x0000;
         $unknown07       = 0x1087;
