@@ -9,96 +9,98 @@
  */
 class Excel_OLE_PPS
 {
+    protected $_PPS_FILE;
+
     /**
      * The PPS index
      *
      * @var integer
      */
-    public $No;
+    protected $No;
 
     /**
      * The PPS name (in Unicode)
      *
      * @var string
      */
-    public $Name;
+    protected $Name;
 
     /**
      * The PPS type. Dir, Root or File
      *
      * @var integer
      */
-    public $Type;
+    protected $Type;
 
     /**
      * The index of the previous PPS
      *
      * @var integer
      */
-    public $PrevPps;
+    protected $PrevPps;
 
     /**
      * The index of the next PPS
      *
      * @var integer
      */
-    public $NextPps;
+    protected $NextPps;
 
     /**
      * The index of it's first child if this is a Dir or Root PPS
      *
      * @var integer
      */
-    public $DirPps;
+    protected $DirPps;
 
     /**
      * A timestamp
      *
      * @var integer
      */
-    public $Time1st;
+    protected $Time1st;
 
     /**
      * A timestamp
      *
      * @var integer
      */
-    public $Time2nd;
+    protected $Time2nd;
 
     /**
      * Starting block (small or big) for this PPS's data  inside the container
      *
      * @var integer
      */
-    public $_StartBlock;
+    protected $_StartBlock;
 
     /**
      * The size of the PPS's data (in bytes)
      *
      * @var integer
      */
-    public $Size;
+    protected $Size;
 
     /**
      * The PPS's data (only used if it's not using a temporary file)
      *
      * @var string
      */
-    public $_data;
+    protected $_data;
 
     /**
      * Array of child PPS's (only used by Root and Dir PPS's)
      *
      * @var array
      */
-    public $children = array();
+    protected $children = array();
 
     /**
      * Pointer to Excel_OLE container
      *
      * @var Excel_OLE
      */
-    public $ole;
+    protected $ole;
 
     /**
      * The constructor
@@ -141,7 +143,7 @@ class Excel_OLE_PPS
      *
      * @return integer The amount of data (in bytes)
      */
-    public function _DataLen()
+    protected function _DataLen()
     {
         if (! isset($this->_data)) {
             return 0;
@@ -164,7 +166,7 @@ class Excel_OLE_PPS
      *
      * @return string The binary string
      */
-    public function _getPpsWk()
+    protected function _getPpsWk()
     {
         $ret = $this->Name;
         for ($i = 0; $i < (64 - strlen($this->Name)); $i++) {
@@ -203,7 +205,7 @@ class Excel_OLE_PPS
      *
      * @return integer The index for this PPS
      */
-    public static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
+    protected static function _savePpsSetPnt(&$raList, $to_save, $depth = 0)
     {
         if (! is_array($to_save) || (count($to_save) == 0)) {
             return 0xFFFFFFFF;
