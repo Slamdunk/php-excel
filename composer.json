@@ -13,9 +13,6 @@
     "autoload": {
         "psr-0": { "Excel_": "lib/" }
     },
-    "autoload-dev": {
-        "psr-0": { "ExcelTest_\\": "tests/" }
-    },
     "require-dev": {
         "mikey179/vfsStream":   "*"
     }
