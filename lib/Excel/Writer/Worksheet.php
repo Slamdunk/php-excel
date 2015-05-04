@@ -608,6 +608,11 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_storeEof();
     }
 
+    public function fclose()
+    {
+        fclose($this->_filehandle);
+    }
+
     /**
      * Retrieve the worksheet name.
      * This is usefull when creating worksheets without a name.

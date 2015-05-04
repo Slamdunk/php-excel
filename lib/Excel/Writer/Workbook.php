@@ -156,30 +156,30 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     {
         parent::__construct();
 
-        $this->_filename         = $filename;
-        $this->_parser           = new Excel_Writer_Parser($this->_byte_order);
-        $this->_1904             = 0;
-        $this->_activesheet      = 0;
-        $this->_firstsheet       = 0;
-        $this->_selected         = 0;
-        $this->_xf_index         = 16; // 15 style XF's and 1 cell XF.
-        $this->_fileclosed       = 0;
-        $this->_biffsize         = 0;
-        $this->_sheetname        = 'Sheet';
-        $this->_tmp_format       = new Excel_Writer_Format();
-        $this->_worksheets       = array();
-        $this->_sheetnames       = array();
-        $this->_formats          = array();
-        $this->_palette          = array();
-        $this->_codepage         = 0x04E4; // FIXME: should change for BIFF8
-        $this->_country_code     = -1;
-        $this->_string_sizeinfo  = 3;
+        $this->_filename            = $filename;
+        $this->_parser              = new Excel_Writer_Parser($this->_byte_order);
+        $this->_1904                = 0;
+        $this->_activesheet         = 0;
+        $this->_firstsheet          = 0;
+        $this->_selected            = 0;
+        $this->_xf_index            = 16; // 15 style XF's and 1 cell XF.
+        $this->_fileclosed          = 0;
+        $this->_biffsize            = 0;
+        $this->_sheetname           = 'Sheet';
+        $this->_tmp_format          = new Excel_Writer_Format();
+        $this->_worksheets          = array();
+        $this->_sheetnames          = array();
+        $this->_formats             = array();
+        $this->_palette             = array();
+        $this->_codepage            = 0x04E4; // FIXME: should change for BIFF8
+        $this->_country_code        = -1;
+        $this->_string_sizeinfo     = 3;
 
         // Add the default format for hyperlinks
-        $this->_url_format      = $this->addFormat(array('color' => 'blue', 'underline' => 1));
-        $this->_str_total       = 0;
-        $this->_str_unique      = 0;
-        $this->_str_table       = array();
+        $this->_url_format          = $this->addFormat(array('color' => 'blue', 'underline' => 1));
+        $this->_str_total           = 0;
+        $this->_str_unique          = 0;
+        $this->_str_table           = array();
         $this->_setPaletteXl97();
     }
 
@@ -199,6 +199,10 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $res = $this->_storeWorkbook();
 
         $this->_fileclosed = 1;
+
+        foreach ($this->_worksheets as $sheet) {
+            $sheet->fclose();
+        }
 
         return true;
     }
