@@ -22,7 +22,7 @@ final class ColonnaCollection implements ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-        throw new Excel\Exception\RuntimeException('Collezione non modificabile');
+        throw new Exception\RuntimeException('Collezione non modificabile');
     }
 
     public function offsetExists($offset)
@@ -32,7 +32,7 @@ final class ColonnaCollection implements ArrayAccess
 
     public function offsetUnset($offset)
     {
-        throw new Excel\Exception\RuntimeException('Collezione non modificabile');
+        throw new Exception\RuntimeException('Collezione non modificabile');
     }
 
     public function offsetGet($offset)

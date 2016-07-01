@@ -143,7 +143,7 @@ final class Tabella
     public function isEmpty()
     {
         if ($this->isEmpty === null) {
-            throw new Excel\Exception\RuntimeException('Il workbook deve impostare il flag vuota sulla tabella');
+            throw new Exception\RuntimeException('Il workbook deve impostare il flag vuota sulla tabella');
         }
 
         return $this->isEmpty;

@@ -26,7 +26,7 @@ class OLE
     {
         $resource = tmpfile();
         if (! is_resource($resource)) {
-            throw new Excel\Exception\RuntimeException('Can\'t create temporary file');
+            throw new Exception\RuntimeException('Can\'t create temporary file');
         }
 
         return $resource;
