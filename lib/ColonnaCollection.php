@@ -2,6 +2,8 @@
 
 namespace Excel;
 
+use ArrayAccess;
+
 final class ColonnaCollection implements ArrayAccess
 {
     private $colonne = array();

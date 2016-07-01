@@ -2,6 +2,8 @@
 
 namespace Excel;
 
+use Iterator;
+
 final class Tabella
 {
     private $activeSheet;
