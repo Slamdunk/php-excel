@@ -1,6 +1,8 @@
 <?php
 
-final class Excel_Workbook extends Excel_Writer_Workbook
+namespace Excel;
+
+final class Workbook extends Writer\Workbook
 {
     const GRIGIO_SCURO = 60;
     const GRIGIO_MEDIO = 61;
@@ -20,7 +22,7 @@ final class Excel_Workbook extends Excel_Writer_Workbook
         $this->setCustomColor(self::GRIGIO_MEDIO,   hexdec('cc'), hexdec('cc'), hexdec('cc'));
         $this->setCustomColor(self::GRIGIO_CHIARO,  hexdec('e8'), hexdec('e8'), hexdec('e8'));
 
-        $this->identita = new Excel_StileCella_Testo();
+        $this->identita = new StileCella\Testo();
     }
 
     public function setRighePerPagina($righePerPagina)
@@ -28,7 +30,7 @@ final class Excel_Workbook extends Excel_Writer_Workbook
         $this->righePerPagina = (int) $righePerPagina;
     }
 
-    public function scriviTabella(Excel_Tabella $tabella)
+    public function scriviTabella(Tabella $tabella)
     {
         $this->scriviIntestazioneTabella($tabella);
         $tabelle = array($tabella);
@@ -85,14 +87,14 @@ final class Excel_Workbook extends Excel_Writer_Workbook
         return end($tabelle);
     }
 
-    private function scriviIntestazioneTabella(Excel_Tabella $tabella)
+    private function scriviIntestazioneTabella(Tabella $tabella)
     {
         $tabella->ripristinaColonna();
         $tabella->getActiveSheet()->writeString($tabella->getRigaCorrente(), $tabella->getColonnaCorrente(), $tabella->getIntestazione());
         $tabella->incrementaRiga();
     }
 
-    private function scriviIntestazioneColonne(Excel_Tabella $tabella, array $riga)
+    private function scriviIntestazioneColonne(Tabella $tabella, array $riga)
     {
         $colonnaCollection = $tabella->getColonnaCollection();
         $chiaviColonne = array_keys($riga);
@@ -118,7 +120,7 @@ final class Excel_Workbook extends Excel_Writer_Workbook
         $this->scriviRiga($tabella, $titoli, 'titolo');
     }
 
-    private function scriviRiga(Excel_Tabella $tabella, array $riga, $tipo = null)
+    private function scriviRiga(Tabella $tabella, array $riga, $tipo = null)
     {
         $tabella->ripristinaColonna();
 
@@ -176,7 +178,7 @@ final class Excel_Workbook extends Excel_Writer_Workbook
         return $value;
     }
 
-    private function generaFormati(array $titoli, Excel_ColonnaCollection $colonnaCollection = null)
+    private function generaFormati(array $titoli, ColonnaCollection $colonnaCollection = null)
     {
         $this->formati = array();
         foreach ($titoli as $chiave) {

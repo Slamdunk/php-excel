@@ -1,5 +1,9 @@
 <?php
 
+namespace Excel\Writer;
+
+use Excel;
+
 /**
  * Class for generating Excel XF records (formats)
  *
@@ -8,7 +12,7 @@
  * @category FileFormats
  */
 
-class Excel_Writer_Format
+class Format
 {
     /**
      * The index given by the workbook when creating a new format.
@@ -882,7 +886,7 @@ class Excel_Writer_Format
                 $this->_rotation = 1;
                 break;
             default :
-                throw new Excel_Exception_RuntimeException("Invalid value for angle. Possible values are: 0, 90, 270 and -1 for stacking top-to-bottom.");
+                throw new Excel\Exception\RuntimeException("Invalid value for angle. Possible values are: 0, 90, 270 and -1 for stacking top-to-bottom.");
                 break;
         }
     }

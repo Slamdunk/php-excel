@@ -1,6 +1,8 @@
 <?php
 
-final class Excel_Colonna implements Excel_ColonnaInterface
+namespace Excel;
+
+final class Colonna implements ColonnaInterface
 {
     private $chiave;
 
@@ -10,7 +12,7 @@ final class Excel_Colonna implements Excel_ColonnaInterface
 
     private $stileCella;
 
-    public function __construct($chiave, $intestazione, $largezza, Excel_StileCellaInterface $stileCella)
+    public function __construct($chiave, $intestazione, $largezza, StileCellaInterface $stileCella)
     {
         $this->chiave       = $chiave;
         $this->intestazione = $intestazione;

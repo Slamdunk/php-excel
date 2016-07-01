@@ -1,5 +1,9 @@
 <?php
 
+namespace Excel\Writer;
+
+use Excel;
+
 /**
  * Class for generating Excel Spreadsheets
  *
@@ -7,7 +11,7 @@
  *
  * @category FileFormats
  */
-class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
+class Worksheet extends BIFFwriter
 {
     /**
      * Name of the Worksheet
@@ -421,7 +425,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $this->_parser         = &$parser;
 
         //$this->ext_sheets      = array();
-        $this->_filehandle     = Excel_OLE::getTmpfile();
+        $this->_filehandle     = Excel\OLE::getTmpfile();
         //$this->fileclosed      = 0;
         //$this->offset          = 0;
         $this->_xls_rowmax     = $rowmax;
@@ -645,7 +649,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
             return $tmp;
         }
-
 
         if ($tmp = fread($this->_filehandle, $buffer)) {
             return $tmp;
@@ -1157,7 +1160,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     {
         // Confine the scale to Excel's range
         if ($scale < 10 || $scale > 400) {
-            throw new Excel_Exception_InvalidArgumentException("Zoom factor $scale outside range: 10 <= zoom <= 400");
+            throw new Excel\Exception\InvalidArgumentException("Zoom factor $scale outside range: 10 <= zoom <= 400");
         }
 
         $this->_zoom = floor($scale);
@@ -1175,7 +1178,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     {
         // Confine the scale to Excel's range
         if ($scale < 10 || $scale > 400) {
-            throw new Excel_Exception_InvalidArgumentException("Print scale $scale outside range: 10 <= zoom <= 400");
+            throw new Excel\Exception\InvalidArgumentException("Print scale $scale outside range: 10 <= zoom <= 400");
         }
 
         // Turn off "fit to page" option
@@ -1282,7 +1285,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
      *
      * @return integer The XF record index
      */
-    protected function _XF(Excel_Writer_Format $format = null)
+    protected function _XF(Format $format = null)
     {
         if ($format) {
             return $format->getXfIndex();
@@ -1353,7 +1356,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
             return(array($row1, $col1));
         }
 
-        throw new Excel_Exception_RuntimeException("Unknown cell reference $cell");
+        throw new Excel\Exception\RuntimeException("Unknown cell reference $cell");
     }
 
     /**
@@ -1584,7 +1587,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
     public function setInputEncoding($encoding)
     {
          if ($encoding != 'UTF-16LE' && ! function_exists('iconv')) {
-             throw new Excel_Exception_RuntimeException("Using an input encoding other than UTF-16LE requires PHP support for iconv");
+             throw new Excel\Exception\RuntimeException("Using an input encoding other than UTF-16LE requires PHP support for iconv");
          }
 
          $this->_input_encoding = $encoding;
@@ -1828,7 +1831,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $num       = 0x00;                // Current value of formula
         $grbit     = 0x03;                // Option flags
         $unknown   = 0x0000;              // Must be zero
-
 
         // Check that row and col are valid and store max and min values
         if ($this->_checkRowCol($row, $col) == false) {
@@ -2175,13 +2177,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         // Pack the main data stream
         $data        = pack("vvvv", $row1, $row2, $col1, $col2) .
-                          $unknown1     .
-                          $link_type    .
-                          $unknown2     .
-                          $up_count     .
+                          $unknown1 .
+                          $link_type .
+                          $unknown2 .
+                          $up_count .
                           $dir_short_len .
-                          $dir_short    .
-                          $unknown3     .
+                          $dir_short .
+                          $unknown3 .
                           $stream_len;/*.
                           $dir_long_len .
                           $unknown4     .
@@ -2293,7 +2295,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $grbit          = 0x00B6;     // Option flags
         $rwTop          = 0x0000;     // Top row visible in window
         $colLeft        = 0x0000;     // Leftmost column visible in window
-
 
         // The options flags that comprise $grbit
         $fDspFmla       = 0;                     // 0 - bit
@@ -3029,7 +3030,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $cbrk    = count($breaks);       // Number of page breaks
         $length  = 2 + 2 * $cbrk;      // Bytes to follow
 
-
         $header  = pack("vv", $record, $length);
         $data    = pack("v",  $cbrk);
 
@@ -3365,7 +3365,6 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $grbit2      = 0x0001;   // Option flags
         $Reserved5   = 0x0000;   // Reserved
 
-
         $header      = pack("vv", $record, $length);
         $data        = pack("V", $cObj);
         $data       .= pack("v", $OT);
@@ -3417,7 +3416,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         // Open file.
         $bmp_fd = @fopen($bitmap,"rb");
         if (! $bmp_fd) {
-            throw new Excel_Exception_RuntimeException("Couldn't import $bitmap");
+            throw new Excel\Exception\RuntimeException("Couldn't import $bitmap");
         }
 
         // Slurp the file into a string.
@@ -3425,13 +3424,13 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         // Check that the file is big enough to be a bitmap.
         if (strlen($data) <= 0x36) {
-            throw new Excel_Exception_RuntimeException("$bitmap doesn't contain enough data");
+            throw new Excel\Exception\RuntimeException("$bitmap doesn't contain enough data");
         }
 
         // The first 2 bytes are used to identify the bitmap.
         $identity = unpack("A2ident", $data);
         if ($identity['ident'] != "BM") {
-            throw new Excel_Exception_RuntimeException("$bitmap doesn't apExcel_PEAR to be a valid bitmap image");
+            throw new Excel\Exception\RuntimeException("$bitmap doesn't apExcel_PEAR to be a valid bitmap image");
         }
 
         // Remove bitmap data: ID.
@@ -3455,20 +3454,20 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
         $height = $width_and_height[2];
         $data   = substr($data, 8);
         if ($width > 0xFFFF) {
-            throw new Excel_Exception_RuntimeException("$bitmap: largest image width supported is 65k.\n");
+            throw new Excel\Exception\RuntimeException("$bitmap: largest image width supported is 65k.\n");
         }
         if ($height > 0xFFFF) {
-            throw new Excel_Exception_RuntimeException("$bitmap: largest image height supported is 65k.\n");
+            throw new Excel\Exception\RuntimeException("$bitmap: largest image height supported is 65k.\n");
         }
 
         // Read and remove the bitmap planes and bpp data. Verify them.
         $planes_and_bitcount = unpack("v2", substr($data, 0, 4));
         $data = substr($data, 4);
         if ($planes_and_bitcount[2] != 24) { // Bitcount
-            throw new Excel_Exception_RuntimeException("$bitmap isn't a 24bit true color bitmap.\n");
+            throw new Excel\Exception\RuntimeException("$bitmap isn't a 24bit true color bitmap.\n");
         }
         if ($planes_and_bitcount[1] != 1) {
-            throw new Excel_Exception_RuntimeException("$bitmap: only 1 plane supported in bitmap image.\n");
+            throw new Excel\Exception\RuntimeException("$bitmap: only 1 plane supported in bitmap image.\n");
         }
 
         // Read and remove the bitmap compression. Verify compression.
@@ -3477,7 +3476,7 @@ class Excel_Writer_Worksheet extends Excel_Writer_BIFFwriter
 
         //$compression = 0;
         if ($compression['comp'] != 0) {
-            throw new Excel_Exception_RuntimeException("$bitmap: compression not supported in bitmap image.\n");
+            throw new Excel\Exception\RuntimeException("$bitmap: compression not supported in bitmap image.\n");
         }
 
         // Remove bitmap data: data size, hres, vres, colours, imp. colours.

@@ -1,19 +1,23 @@
 <?php
 
+namespace ExcelTest;
+
+use Excel;
+use PHPUnit_Framework_TestCase;
 use org\bovigo\vfs;
 
-class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
+class MainTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        Excel_OLE::$gmmktime = gmmktime('01','01','01','01','01','2000');
+        Excel\OLE::$gmmktime = gmmktime('01','01','01','01','01','2000');
 
         $this->vfs = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test.xls');
 
         // $this->filename = TMP_PATH . '/stock.xls';
 
-        $this->xls = new Excel_Writer_Workbook($this->filename);
+        $this->xls = new Excel\Writer\Workbook($this->filename);
     }
 
     public function testGenerazioneFileBase()
@@ -58,7 +62,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         $this->xls->close();
 
-        $this->assertLessThan(Excel_OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
+        $this->assertLessThan(Excel\OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
         $this->assertSame('43093f883818e44f4dd62f0382d95ecf6b689004', hash('sha1', file_get_contents($this->filename)));
     }
 
@@ -72,7 +76,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
 
         $this->xls->close();
 
-        $this->assertGreaterThan(Excel_OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
+        $this->assertGreaterThan(Excel\OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
         $this->assertSame('884f515114705011286817afff99f848f76b0ce2', hash('sha1', file_get_contents($this->filename)));
     }
 
@@ -83,7 +87,7 @@ class ExcelTest_MainTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($lettera . '2', $this->xls->rowcolToCell(1, $indice));
 
-        $this->setExpectedException('Excel_Exception_InvalidArgumentException');
+        $this->setExpectedException('Excel\Exception\InvalidArgumentException');
 
         $this->xls->rowcolToCell(1, 50000);
     }

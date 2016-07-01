@@ -1,5 +1,9 @@
 <?php
 
+namespace Excel\Writer;
+
+use Excel;
+
 /**
  * Class for generating Excel Spreadsheets
  *
@@ -7,7 +11,7 @@
  *
  * @category FileFormats
  */
-class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
+class Workbook extends BIFFwriter
 {
     /**
      * Filename for the Workbook
@@ -157,7 +161,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         parent::__construct();
 
         $this->_filename            = $filename;
-        $this->_parser              = new Excel_Writer_Parser($this->_byte_order);
+        $this->_parser              = new Parser($this->_byte_order);
         $this->_1904                = 0;
         $this->_activesheet         = 0;
         $this->_firstsheet          = 0;
@@ -166,7 +170,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         $this->_fileclosed          = 0;
         $this->_biffsize            = 0;
         $this->_sheetname           = 'Sheet';
-        $this->_tmp_format          = new Excel_Writer_Format();
+        $this->_tmp_format          = new Format();
         $this->_worksheets          = array();
         $this->_sheetnames          = array();
         $this->_formats             = array();
@@ -272,18 +276,18 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
 
         // Check that sheetname is <= 31 chars (Excel limit before BIFF8).
         if (strlen($name) > 31) {
-            throw new Excel_Exception_RuntimeException("Sheetname $name must be <= 31 chars");
+            throw new Excel\Exception\RuntimeException("Sheetname $name must be <= 31 chars");
         }
 
         // Check that the worksheet name doesn't already exist: a fatal Excel error.
         $total_worksheets = count($this->_worksheets);
         for ($i = 0; $i < $total_worksheets; $i++) {
             if ($this->_worksheets[$i]->getName() == $name) {
-                throw new Excel_Exception_RuntimeException("Worksheet '$name' already exists");
+                throw new Excel\Exception\RuntimeException("Worksheet '$name' already exists");
             }
         }
 
-        $worksheet = new Excel_Writer_Worksheet(
+        $worksheet = new Worksheet(
             $name, $index,
             $this->_activesheet, $this->_firstsheet,
             $this->_str_total, $this->_str_unique,
@@ -310,7 +314,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
      */
     public function addFormat($properties = array())
     {
-        $format = new Excel_Writer_Format($this->_xf_index, $properties);
+        $format = new Format($this->_xf_index, $properties);
         $this->_xf_index += 1;
         $this->_formats[] = $format;
 
@@ -339,7 +343,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
         // Check that the colour index is the right range
         if ($index < 8 or $index > 64) {
             // TODO: assign real error codes
-            throw new Excel_Exception_RuntimeException("Color index $index outside range: 8 <= index <= 64");
+            throw new Excel\Exception\RuntimeException("Color index $index outside range: 8 <= index <= 64");
         }
 
         // Check that the colour components are in the right range
@@ -347,7 +351,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             ($green < 0 or $green > 255) ||
             ($blue  < 0 or $blue  > 255))
         {
-            throw new Excel_Exception_RuntimeException("Color component outside range: 0 <= color <= 255");
+            throw new Excel\Exception\RuntimeException("Color component outside range: 0 <= color <= 255");
         }
 
         $index -= 8; // Adjust colour index (wingless dragonfly)
@@ -495,7 +499,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
      */
     protected function _storeExcel_OLEFile()
     {
-        $Excel_OLE = new Excel_OLE_PPS_File(Excel_OLE::Asc2Ucs('Book'));
+        $Excel_OLE = new Excel\OLE\PPS\File(Excel\OLE::Asc2Ucs('Book'));
         $Excel_OLE->append($this->_data);
 
         $total_worksheets = count($this->_worksheets);
@@ -505,7 +509,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
             }
         }
 
-        $root = new Excel_OLE_PPS_Root(time(), time(), array($Excel_OLE));
+        $root = new Excel\OLE\PPS\Root(time(), time(), array($Excel_OLE));
         $res = $root->save($this->_filename);
 
         return true;
@@ -1471,7 +1475,7 @@ class Excel_Writer_Workbook extends Excel_Writer_BIFFwriter
     public function rowcolToCell($row, $col)
     {
         if ($col > 255) { //maximum column value exceeded
-            throw new Excel_Exception_InvalidArgumentException("Maximum column value exceeded: $col");
+            throw new Excel\Exception\InvalidArgumentException("Maximum column value exceeded: $col");
         }
 
         $int = (int) ($col / 26);

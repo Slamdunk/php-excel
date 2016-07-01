@@ -5,7 +5,7 @@
     colors="true"
 >
     <testsuite name="Excel">
-        <directory>./tests/ExcelTest</directory>
+        <directory>./tests</directory>
     </testsuite>
 
     <filter>

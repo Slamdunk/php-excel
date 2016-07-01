@@ -1,13 +1,17 @@
 <?php
 
-final class Excel_StileCella_CodiceFiscale implements Excel_StileCellaInterface
+namespace Excel\StileCella;
+
+use Excel;
+
+final class CodiceFiscale implements Excel\StileCellaInterface
 {
     public function decorateValue($value)
     {
         return $value;
     }
 
-    public function styleCell(Excel_Writer_Format $format)
+    public function styleCell(Excel\Writer\Format $format)
     {
         $format->setNumFormat('00000000000');
         $format->setAlign('left');

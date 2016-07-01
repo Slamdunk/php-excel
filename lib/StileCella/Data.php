@@ -1,6 +1,10 @@
 <?php
 
-final class Excel_StileCella_Data implements Excel_StileCellaInterface
+namespace Excel\StileCella;
+
+use Excel;
+
+final class Data implements Excel\StileCellaInterface
 {
     public function decorateValue($value)
     {
@@ -11,7 +15,7 @@ final class Excel_StileCella_Data implements Excel_StileCellaInterface
         return implode('/', array_reverse(explode('-', $value)));
     }
 
-    public function styleCell(Excel_Writer_Format $format)
+    public function styleCell(Excel\Writer\Format $format)
     {
         $format->setAlign('center');
     }

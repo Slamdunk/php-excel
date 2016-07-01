@@ -1,6 +1,8 @@
 <?php
 
-final class Excel_Tabella
+namespace Excel;
+
+final class Tabella
 {
     private $activeSheet;
 
@@ -22,7 +24,7 @@ final class Excel_Tabella
 
     private $isEmpty;
 
-    public function __construct(Excel_Writer_Worksheet $activeSheet, $riga, $colonna, $intestazione, Iterator $dati)
+    public function __construct(Writer\Worksheet $activeSheet, $riga, $colonna, $intestazione, Iterator $dati)
     {
         $this->activeSheet = $activeSheet;
 
@@ -107,7 +109,7 @@ final class Excel_Tabella
         return $this->dati;
     }
 
-    public function setColonnaCollection(Excel_ColonnaCollection $colonnaCollection = null)
+    public function setColonnaCollection(ColonnaCollection $colonnaCollection = null)
     {
         $this->colonnaCollection = $colonnaCollection;
 
@@ -139,13 +141,13 @@ final class Excel_Tabella
     public function isEmpty()
     {
         if ($this->isEmpty === null) {
-            throw new Excel_Exception_RuntimeException('Il workbook deve impostare il flag vuota sulla tabella');
+            throw new Excel\Exception\RuntimeException('Il workbook deve impostare il flag vuota sulla tabella');
         }
 
         return $this->isEmpty;
     }
 
-    public function dividiTabellaSuNuovoSheet(Excel_Writer_Worksheet $activeSheet)
+    public function dividiTabellaSuNuovoSheet(Writer\Worksheet $activeSheet)
     {
         $nuovaTabella = new self($activeSheet, 0, $this->getColonnaIniziale(), $this->getIntestazione(), $this->getDati());
         $nuovaTabella->setColonnaCollection($this->getColonnaCollection());

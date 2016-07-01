@@ -1,5 +1,9 @@
 <?php
 
+namespace Excel\OLE\PPS;
+
+use Excel;
+
 /**
  * Class for creating Root PPS's for Excel_OLE containers
  *
@@ -7,7 +11,7 @@
  *
  * @category Structures
  */
-class Excel_OLE_PPS_Root extends Excel_OLE_PPS
+class Root extends Excel\OLE\PPS
 {
     /**
      * Constructor
@@ -21,8 +25,8 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     {
         parent::__construct(
            null,
-           Excel_OLE::Asc2Ucs('Root Entry'),
-           Excel_OLE::Excel_OLE_PPS_TYPE_ROOT,
+           Excel\OLE::Asc2Ucs('Root Entry'),
+           Excel\OLE::Excel_OLE_PPS_TYPE_ROOT,
            null,
            null,
            null,
@@ -53,7 +57,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
 
         // Make an array of PPS's (for Save)
         $aList = array();
-        Excel_OLE_PPS_Root::_savePpsSetPnt($aList, array($this));
+        Excel\OLE\PPS\Root::_savePpsSetPnt($aList, array($this));
         // calculate values for header
         list($iSBDcnt, $iBBcnt, $iPPScnt) = $this->_calcSize($aList); //, $rhInfo);
         // Save Header
@@ -91,9 +95,9 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         $iSmallLen = 0;
         $iSBcnt = 0;
         foreach ($raList as $pps) {
-            if ($pps->Type == Excel_OLE::Excel_OLE_PPS_TYPE_FILE) {
+            if ($pps->Type == Excel\OLE::Excel_OLE_PPS_TYPE_FILE) {
                 $pps->Size = $pps->_DataLen();
-                if ($pps->Size < Excel_OLE::Excel_OLE_DATA_SIZE_SMALL) {
+                if ($pps->Size < Excel\OLE::Excel_OLE_DATA_SIZE_SMALL) {
                     $iSBcnt += floor($pps->Size / $this->_SMALL_BLOCK_SIZE)
                                   + (($pps->Size % $this->_SMALL_BLOCK_SIZE) ? 1 : 0);
                 } else {
@@ -103,12 +107,12 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
             }
         }
         $iSmallLen = $iSBcnt * $this->_SMALL_BLOCK_SIZE;
-        $iSlCnt = floor($this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE);
+        $iSlCnt = floor($this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_LONG_INT_SIZE);
         $iSBDcnt = floor($iSBcnt / $iSlCnt) + (($iSBcnt % $iSlCnt) ? 1 : 0);
         $iBBcnt +=  (floor($iSmallLen / $this->_BIG_BLOCK_SIZE) +
                       (($iSmallLen % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
         $iCnt = count($raList);
-        $iBdCnt = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_PPS_SIZE;
+        $iBdCnt = $this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_PPS_SIZE;
         $iPPScnt = (floor($iCnt / $iBdCnt) + (($iCnt % $iBdCnt) ? 1 : 0));
 
         return array($iSBDcnt, $iBBcnt, $iPPScnt);
@@ -149,7 +153,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     }
 
     /**
-     * Saving big data (PPS's with data bigger than Excel_OLE::Excel_OLE_DATA_SIZE_SMALL)
+     * Saving big data (PPS's with data bigger than Excel\OLE::Excel_OLE_DATA_SIZE_SMALL)
      *
      * @access private
      *
@@ -162,13 +166,13 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
 
         // cycle through PPS's
         foreach ($raList as $pps) {
-            if ($pps->Type == Excel_OLE::Excel_OLE_PPS_TYPE_DIR) {
+            if ($pps->Type == Excel\OLE::Excel_OLE_PPS_TYPE_DIR) {
                 continue;
             }
             $pps->Size = $pps->_DataLen();
             if (
-                    $pps->Size >= Excel_OLE::Excel_OLE_DATA_SIZE_SMALL
-                or  ($pps->Type == Excel_OLE::Excel_OLE_PPS_TYPE_ROOT and isset($pps->_data))
+                    $pps->Size >= Excel\OLE::Excel_OLE_DATA_SIZE_SMALL
+                or  ($pps->Type == Excel\OLE::Excel_OLE_PPS_TYPE_ROOT and isset($pps->_data))
             ) {
                 // Write Data
                 if (isset($pps->_PPS_FILE)) {
@@ -196,7 +200,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
     }
 
     /**
-     * get small data (PPS's with data smaller than Excel_OLE::Excel_OLE_DATA_SIZE_SMALL)
+     * get small data (PPS's with data smaller than Excel\OLE::Excel_OLE_DATA_SIZE_SMALL)
      *
      * @access private
      *
@@ -211,9 +215,9 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         foreach ($raList as $pps) {
             // Make SBD, small data string
             if (
-                    $pps->Type != Excel_OLE::Excel_OLE_PPS_TYPE_FILE
+                    $pps->Type != Excel\OLE::Excel_OLE_PPS_TYPE_FILE
                 or  $pps->Size <= 0
-                or  $pps->Size >= Excel_OLE::Excel_OLE_DATA_SIZE_SMALL
+                or  $pps->Size >= Excel\OLE::Excel_OLE_DATA_SIZE_SMALL
             ) {
                 continue;
             }
@@ -245,7 +249,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
             $iSmBlk += $iSmbCnt;
         }
 
-        $iSbCnt = floor($this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE);
+        $iSbCnt = floor($this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_LONG_INT_SIZE);
         if ($iSmBlk % $iSbCnt) {
             for ($i = 0; $i < ($iSbCnt - ($iSmBlk % $iSbCnt)); $i++) {
                 fwrite($FILE, pack("V", -1));
@@ -270,9 +274,9 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
         }
         // Adjust for Block
         $iCnt = count($raList);
-        $iBCnt = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_PPS_SIZE;
+        $iBCnt = $this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_PPS_SIZE;
         if ($iCnt % $iBCnt) {
-            for ($i = 0; $i < (($iBCnt - ($iCnt % $iBCnt)) * Excel_OLE::Excel_OLE_PPS_SIZE); $i++) {
+            for ($i = 0; $i < (($iBCnt - ($iCnt % $iBCnt)) * Excel\OLE::Excel_OLE_PPS_SIZE); $i++) {
                 fwrite($this->_FILEH_, "\x00");
             }
         }
@@ -449,8 +453,8 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     private function _calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
-        $bbd_info["entries_per_block"] = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
-        $bbd_info["header_blockchain_list_entries"] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
+        $bbd_info["entries_per_block"] = $this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_LONG_INT_SIZE;
+        $bbd_info["header_blockchain_list_entries"] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel\OLE::Excel_OLE_LONG_INT_SIZE;
         $bbd_info["blockchain_entries"] = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks;
         $bbd_info["0xFFFFFFFD_blockchain_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"]);
         $bbd_info["blockchain_list_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"]);
@@ -479,7 +483,7 @@ class Excel_OLE_PPS_Root extends Excel_OLE_PPS
      */
     private function get_number_of_pointer_blocks($num_pointers)
     {
-        $pointers_per_block = $this->_BIG_BLOCK_SIZE / Excel_OLE::Excel_OLE_LONG_INT_SIZE;
+        $pointers_per_block = $this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_LONG_INT_SIZE;
 
         return floor($num_pointers / $pointers_per_block) + (($num_pointers % $pointers_per_block) ? 1 : 0);
     }

@@ -1,5 +1,7 @@
 <?php
 
+namespace Excel;
+
 /**
  * Excel_OLE package base class.
  *
@@ -8,7 +10,7 @@
  * @author   Xavier Noguer <xnoguer@php.net>
  * @author   Christian Schmidt <schmidt@php.net>
  */
-class Excel_OLE
+class OLE
 {
     const Excel_OLE_DATA_SIZE_SMALL     = 0x1000;
     const Excel_OLE_LONG_INT_SIZE       = 4;
@@ -24,7 +26,7 @@ class Excel_OLE
     {
         $resource = tmpfile();
         if (! is_resource($resource)) {
-            throw new Excel_Exception_RuntimeException('Can\'t create temporary file');
+            throw new Excel\Exception\RuntimeException('Can\'t create temporary file');
         }
 
         return $resource;

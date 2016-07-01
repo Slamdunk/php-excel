@@ -1,5 +1,9 @@
 <?php
 
+namespace Excel\OLE\PPS;
+
+use Excel;
+
 /**
  * Class for creating File PPS's for Excel_OLE containers
  *
@@ -7,7 +11,7 @@
  *
  * @category Structures
  */
-class Excel_OLE_PPS_File extends Excel_OLE_PPS
+class File extends Excel\OLE\PPS
 {
     /**
      * The constructor
@@ -23,7 +27,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
         parent::__construct(
             null,
             $name,
-            Excel_OLE::Excel_OLE_PPS_TYPE_FILE,
+            Excel\OLE::Excel_OLE_PPS_TYPE_FILE,
             null,
             null,
             null,
@@ -33,7 +37,7 @@ class Excel_OLE_PPS_File extends Excel_OLE_PPS
             array()
         );
 
-        $this->_PPS_FILE = Excel_OLE::getTmpfile();
+        $this->_PPS_FILE = Excel\OLE::getTmpfile();
     }
 
     /**

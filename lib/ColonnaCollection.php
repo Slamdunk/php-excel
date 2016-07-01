@@ -1,6 +1,8 @@
 <?php
 
-final class Excel_ColonnaCollection implements ArrayAccess
+namespace Excel;
+
+final class ColonnaCollection implements ArrayAccess
 {
     private $colonne = array();
 
@@ -11,14 +13,14 @@ final class Excel_ColonnaCollection implements ArrayAccess
         }
     }
 
-    private function addColonna(Excel_ColonnaInterface $colonna)
+    private function addColonna(ColonnaInterface $colonna)
     {
         $this->colonne[$colonna->getChiave()] = $colonna;
     }
 
     public function offsetSet($offset, $value)
     {
-        throw new Excel_Exception_RuntimeException('Collezione non modificabile');
+        throw new Excel\Exception\RuntimeException('Collezione non modificabile');
     }
 
     public function offsetExists($offset)
@@ -28,7 +30,7 @@ final class Excel_ColonnaCollection implements ArrayAccess
 
     public function offsetUnset($offset)
     {
-        throw new Excel_Exception_RuntimeException('Collezione non modificabile');
+        throw new Excel\Exception\RuntimeException('Collezione non modificabile');
     }
 
     public function offsetGet($offset)

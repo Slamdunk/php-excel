@@ -1,5 +1,9 @@
 <?php
 
+namespace Excel\Writer;
+
+use Excel;
+
 /**
  * Class for writing Excel BIFF records.
  *
@@ -16,7 +20,7 @@
  *
  * @category FileFormats
  */
-class Excel_Writer_BIFFwriter
+class BIFFwriter
 {
     /**
      * The BIFF/Excel version (5).
@@ -87,7 +91,7 @@ class Excel_Writer_BIFFwriter
             $byte_order = 1;    // Big Endian
         } else {
             // Give up. I'll fix this in a later version.
-            throw new Excel_Exception_RuntimeException("Required floating point format not supported on this platform.");
+            throw new Excel\Exception\RuntimeException("Required floating point format not supported on this platform.");
         }
         $this->_byte_order = $byte_order;
     }

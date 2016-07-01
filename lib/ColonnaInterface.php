@@ -1,6 +1,8 @@
 <?php
 
-interface Excel_ColonnaInterface
+namespace Excel;
+
+interface ColonnaInterface
 {
     public function getChiave();
 
