@@ -15,7 +15,7 @@ class MainTest extends PHPUnit_Framework_TestCase
         $this->vfs = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test.xls');
 
-        // $this->filename = TMP_PATH . '/stock.xls';
+        // $this->filename = __DIR__ . '/stock.xls';
 
         $this->xls = new Excel\Writer\Workbook($this->filename);
     }

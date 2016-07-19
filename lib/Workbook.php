@@ -173,7 +173,7 @@ final class Workbook extends Writer\Workbook
             array_values($sanitizeMap),
             $value
         );
-        $value = mb_convert_encoding($value, 'Windows-1252', 'UTF-8');
+        $value = mb_convert_encoding($value, 'Windows-1252');
 
         return $value;
     }
