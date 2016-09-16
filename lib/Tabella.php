@@ -2,9 +2,10 @@
 
 namespace Excel;
 
+use Countable;
 use Iterator;
 
-final class Tabella
+final class Tabella implements Countable
 {
     private $activeSheet;
 
@@ -24,7 +25,7 @@ final class Tabella
 
     private $bloccaRiquadri = true;
 
-    private $isEmpty;
+    private $count;
 
     public function __construct(Writer\Worksheet $activeSheet, $riga, $colonna, $intestazione, Iterator $dati)
     {
@@ -135,18 +136,23 @@ final class Tabella
         return $this->bloccaRiquadri;
     }
 
-    public function setEmpty($isEmpty)
+    public function setCount($count)
     {
-        $this->isEmpty = (bool) $isEmpty;
+        $this->count = (int) $count;
+    }
+
+    public function count()
+    {
+        if ($this->count === null) {
+            throw new Exception\RuntimeException('Il workbook deve impostare il count sulla tabella');
+        }
+
+        return $this->count;
     }
 
     public function isEmpty()
     {
-        if ($this->isEmpty === null) {
-            throw new Exception\RuntimeException('Il workbook deve impostare il flag vuota sulla tabella');
-        }
-
-        return $this->isEmpty;
+        return $this->count() === 0;
     }
 
     public function dividiTabellaSuNuovoSheet(Writer\Worksheet $activeSheet)

@@ -35,10 +35,10 @@ final class Workbook extends Writer\Workbook
         $this->scriviIntestazioneTabella($tabella);
         $tabelle = array($tabella);
 
-        $isEmpty = true;
+        $count = 0;
         $rigaIntestazioni = true;
         foreach ($tabella->getDati() as $riga) {
-            $isEmpty = false;
+            ++$count;
 
             if ($tabella->getRigaCorrente() >= $this->righePerPagina) {
                 $tabella = $tabella->dividiTabellaSuNuovoSheet($this->addWorksheet(uniqid()));
@@ -76,13 +76,13 @@ final class Workbook extends Writer\Workbook
             }
         }
 
-        if ($isEmpty) {
+        if ($count === 0) {
             $tabella->incrementaRiga();
             $tabella->getActiveSheet()->writeString($tabella->getRigaCorrente(), $tabella->getColonnaCorrente(), 'Nessun dato per questa estrazione');
             $tabella->incrementaRiga();
         }
 
-        $tabella->setEmpty($isEmpty);
+        $tabella->setCount($count);
 
         return end($tabelle);
     }
