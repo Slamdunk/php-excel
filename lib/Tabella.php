@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Excel;
 
 use Countable;
@@ -27,43 +29,43 @@ final class Tabella implements Countable
 
     private $count;
 
-    public function __construct(Writer\Worksheet $activeSheet, $riga, $colonna, $intestazione, Iterator $dati)
+    public function __construct(Writer\Worksheet $activeSheet, int $riga, int $colonna, string $intestazione, Iterator $dati)
     {
         $this->activeSheet = $activeSheet;
 
         $this->rigaIniziale =
         $this->rigaMassima =
         $this->rigaCorrente =
-            (int) $riga
+            $riga
         ;
 
         $this->colonnaIniziale =
         $this->colonnaMassima =
         $this->colonnaCorrente =
-            (int) $colonna
+            $colonna
         ;
 
-        $this->intestazione = (string) $intestazione;
+        $this->intestazione = $intestazione;
 
         $this->dati = $dati;
     }
 
-    public function getActiveSheet()
+    public function getActiveSheet(): Writer\Worksheet
     {
         return $this->activeSheet;
     }
 
-    public function getRigaIniziale()
+    public function getRigaIniziale(): int
     {
         return $this->rigaIniziale;
     }
 
-    public function getRigaMassima()
+    public function getRigaMassima(): int
     {
         return $this->rigaMassima;
     }
 
-    public function getRigaCorrente()
+    public function getRigaCorrente(): int
     {
         return $this->rigaCorrente;
     }
@@ -75,17 +77,17 @@ final class Tabella implements Countable
         $this->rigaMassima = max($this->rigaMassima, $this->rigaCorrente);
     }
 
-    public function getColonnaIniziale()
+    public function getColonnaIniziale(): int
     {
         return $this->colonnaIniziale;
     }
 
-    public function getColonnaMassima()
+    public function getColonnaMassima(): int
     {
         return $this->colonnaMassima;
     }
 
-    public function getColonnaCorrente()
+    public function getColonnaCorrente(): int
     {
         return $this->colonnaCorrente;
     }
@@ -102,12 +104,12 @@ final class Tabella implements Countable
         $this->colonnaCorrente = $this->colonnaIniziale;
     }
 
-    public function getIntestazione()
+    public function getIntestazione(): string
     {
         return $this->intestazione;
     }
 
-    public function getDati()
+    public function getDati(): Iterator
     {
         return $this->dati;
     }
@@ -124,21 +126,21 @@ final class Tabella implements Countable
         return $this->colonnaCollection;
     }
 
-    public function setBloccaRiquadri($bloccaRiquadri)
+    public function setBloccaRiquadri(bool $bloccaRiquadri)
     {
-        $this->bloccaRiquadri = (bool) $bloccaRiquadri;
+        $this->bloccaRiquadri = $bloccaRiquadri;
 
         return $this;
     }
 
-    public function getBloccaRiquadri()
+    public function getBloccaRiquadri(): bool
     {
         return $this->bloccaRiquadri;
     }
 
-    public function setCount($count)
+    public function setCount(int $count)
     {
-        $this->count = (int) $count;
+        $this->count = $count;
     }
 
     public function count()
@@ -150,12 +152,12 @@ final class Tabella implements Countable
         return $this->count;
     }
 
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->count() === 0;
     }
 
-    public function dividiTabellaSuNuovoSheet(Writer\Worksheet $activeSheet)
+    public function dividiTabellaSuNuovoSheet(Writer\Worksheet $activeSheet): self
     {
         $nuovaTabella = new self($activeSheet, 0, $this->getColonnaIniziale(), $this->getIntestazione(), $this->getDati());
         $nuovaTabella->setColonnaCollection($this->getColonnaCollection());

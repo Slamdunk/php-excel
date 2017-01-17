@@ -30,7 +30,7 @@ final class Workbook extends Writer\Workbook
         $this->righePerPagina = (int) $righePerPagina;
     }
 
-    public function scriviTabella(Tabella $tabella)
+    public function scriviTabella(Tabella $tabella): Tabella
     {
         $this->scriviIntestazioneTabella($tabella);
         $tabelle = array($tabella);
@@ -90,7 +90,7 @@ final class Workbook extends Writer\Workbook
     private function scriviIntestazioneTabella(Tabella $tabella)
     {
         $tabella->ripristinaColonna();
-        $tabella->getActiveSheet()->writeString($tabella->getRigaCorrente(), $tabella->getColonnaCorrente(), $tabella->getIntestazione());
+        $tabella->getActiveSheet()->writeString($tabella->getRigaCorrente(), $tabella->getColonnaCorrente(), $this->sanitize($tabella->getIntestazione()));
         $tabella->incrementaRiga();
     }
 

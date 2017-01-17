@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Excel;
 
 final class Colonna implements ColonnaInterface
@@ -12,7 +14,7 @@ final class Colonna implements ColonnaInterface
 
     private $stileCella;
 
-    public function __construct($chiave, $intestazione, $largezza, StileCellaInterface $stileCella)
+    public function __construct(string $chiave, string $intestazione, int $largezza, StileCellaInterface $stileCella)
     {
         $this->chiave       = $chiave;
         $this->intestazione = $intestazione;
@@ -20,22 +22,22 @@ final class Colonna implements ColonnaInterface
         $this->stileCella   = $stileCella;
     }
 
-    public function getChiave()
+    public function getChiave(): string
     {
         return $this->chiave;
     }
 
-    public function getIntestazione()
+    public function getIntestazione(): string
     {
         return $this->intestazione;
     }
 
-    public function getLarghezza()
+    public function getLarghezza(): int
     {
         return $this->largezza;
     }
 
-    public function getStileCella()
+    public function getStileCella(): StileCellaInterface
     {
         return $this->stileCella;
     }

@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Excel;
 
 interface ColonnaInterface
 {
-    public function getChiave();
+    public function getChiave(): string;
 
-    public function getIntestazione();
+    public function getIntestazione(): string;
 
-    public function getLarghezza();
+    public function getLarghezza(): int;
 
-    public function getStileCella();
+    public function getStileCella(): StileCellaInterface;
 }

@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ExcelTest;
 
 use Excel;
-use PHPUnit_Framework_TestCase;
 use org\bovigo\vfs;
+use PHPUnit_Framework_TestCase;
 
-class MainTest extends PHPUnit_Framework_TestCase
+final class MainTest extends PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        Excel\OLE::$gmmktime = gmmktime('01','01','01','01','01','2000');
+        Excel\OLE::$gmmktime = gmmktime(1, 1, 1, 1, 1, 2000);
 
         $this->vfs = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test.xls');
@@ -70,7 +72,7 @@ class MainTest extends PHPUnit_Framework_TestCase
     {
         $sheet = $this->xls->addWorksheet('FoglioCustom');
 
-        for ($i = 0; $i < 1000; $i++) {
+        for ($i = 0; $i < 1000; ++$i) {
             $sheet->writeString($i, 1, 'foobar' . $i);
         }
 
