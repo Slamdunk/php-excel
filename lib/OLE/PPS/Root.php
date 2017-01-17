@@ -16,10 +16,9 @@ class Root extends Excel\OLE\PPS
     /**
      * Constructor
      *
-     * @access public
      *
-     * @param integer $time_1st A timestamp
-     * @param integer $time_2nd A timestamp
+     * @param int $time_1st A timestamp
+     * @param int $time_2nd A timestamp
      */
     public function __construct($time_1st, $time_2nd, $raChild)
     {
@@ -43,7 +42,6 @@ class Root extends Excel\OLE\PPS
      * temporary file and then outputs it's contents to stdout.
      *
      * @param string $filename The name of the file where to save the Excel_OLE container
-     * @access public
      *
      * @return mixed true on success, PEAR_Error on failure
      */
@@ -59,7 +57,7 @@ class Root extends Excel\OLE\PPS
         $aList = array();
         Excel\OLE\PPS\Root::_savePpsSetPnt($aList, array($this));
         // calculate values for header
-        list($iSBDcnt, $iBBcnt, $iPPScnt) = $this->_calcSize($aList); //, $rhInfo);
+        list($iSBDcnt, $iBBcnt, $iPPScnt) = $this->_calcSize($aList); // , $rhInfo);
         // Save Header
         $this->_saveHeader($iSBDcnt, $iBBcnt, $iPPScnt);
 
@@ -82,16 +80,15 @@ class Root extends Excel\OLE\PPS
     /**
      * Calculate some numbers
      *
-     * @access private
      *
      * @param array $raList Reference to an array of PPS's
      *
      * @return array The array of numbers
      */
-    private function _calcSize(&$raList)
+    private function _calcSize(& $raList)
     {
         // Calculate Basic Setting
-        list($iSBDcnt, $iBBcnt, $iPPScnt) = array(0,0,0);
+        list($iSBDcnt, $iBBcnt, $iPPScnt) = array(0, 0, 0);
         $iSmallLen = 0;
         $iSBcnt = 0;
         foreach ($raList as $pps) {
@@ -121,13 +118,12 @@ class Root extends Excel\OLE\PPS
     /**
      * Helper function for caculating a magic value for block sizes
      *
-     * @access private
      *
-     * @param integer $i2 The argument
+     * @param int $i2 The argument
      *
      * @see save()
      *
-     * @return integer
+     * @return int
      */
     private function _adjust2($i2)
     {
@@ -139,11 +135,10 @@ class Root extends Excel\OLE\PPS
     /**
      * Save Excel_OLE header
      *
-     * @access private
      *
-     * @param integer $iSBDcnt
-     * @param integer $iBBcnt
-     * @param integer $iPPScnt
+     * @param int $iSBDcnt
+     * @param int $iBBcnt
+     * @param int $iPPScnt
      */
     private function _saveHeader($iSBDcnt, $iBBcnt, $iPPScnt)
     {
@@ -155,12 +150,11 @@ class Root extends Excel\OLE\PPS
     /**
      * Saving big data (PPS's with data bigger than Excel\OLE::Excel_OLE_DATA_SIZE_SMALL)
      *
-     * @access private
      *
-     * @param integer $iStBlk
-     * @param array   &$raList Reference to array of PPS's
+     * @param int   $iStBlk
+     * @param array &$raList Reference to array of PPS's
      */
-    private function _saveBigData($iStBlk, &$raList)
+    private function _saveBigData($iStBlk, & $raList)
     {
         $FILE = $this->_FILEH_;
 
@@ -177,7 +171,7 @@ class Root extends Excel\OLE\PPS
                 // Write Data
                 if (isset($pps->_PPS_FILE)) {
                     fseek($pps->_PPS_FILE, 0); // To The Top
-                    while($sBuff = fread($pps->_PPS_FILE, 4096)) {
+                    while ($sBuff = fread($pps->_PPS_FILE, 4096)) {
                         fwrite($FILE, $sBuff);
                     }
                 } else {
@@ -185,7 +179,7 @@ class Root extends Excel\OLE\PPS
                 }
 
                 if ($pps->Size % $this->_BIG_BLOCK_SIZE) {
-                    for ($j = 0; $j < ($this->_BIG_BLOCK_SIZE - ($pps->Size % $this->_BIG_BLOCK_SIZE)); $j++) {
+                    for ($j = 0; $j < ($this->_BIG_BLOCK_SIZE - ($pps->Size % $this->_BIG_BLOCK_SIZE)); ++$j) {
                         fwrite($FILE, "\x00");
                     }
                 }
@@ -202,11 +196,10 @@ class Root extends Excel\OLE\PPS
     /**
      * get small data (PPS's with data smaller than Excel\OLE::Excel_OLE_DATA_SIZE_SMALL)
      *
-     * @access private
      *
      * @param array &$raList Reference to array of PPS's
      */
-    private function _makeSmallData(&$raList)
+    private function _makeSmallData(& $raList)
     {
         $sRes = '';
         $FILE = $this->_FILEH_;
@@ -226,12 +219,12 @@ class Root extends Excel\OLE\PPS
                     floor($pps->Size / $this->_SMALL_BLOCK_SIZE)
                 +   (($pps->Size % $this->_SMALL_BLOCK_SIZE) ? 1 : 0)
             );
-            ;
+
             // Add to SBD
-            for ($j = 0; $j < ($iSmbCnt - 1); $j++) {
-                fwrite($FILE, pack("V", $j + $iSmBlk + 1));
+            for ($j = 0; $j < ($iSmbCnt - 1); ++$j) {
+                fwrite($FILE, pack('V', $j + $iSmBlk + 1));
             }
-            fwrite($FILE, pack("V", -2));
+            fwrite($FILE, pack('V', -2));
 
             // Add to Data String(this will be written for RootEntry)
             fseek($pps->_PPS_FILE, 0); // To The Top
@@ -240,7 +233,7 @@ class Root extends Excel\OLE\PPS
             }
 
             if ($pps->Size % $this->_SMALL_BLOCK_SIZE) {
-                for ($j = 0; $j < ($this->_SMALL_BLOCK_SIZE - ($pps->Size % $this->_SMALL_BLOCK_SIZE)); $j++) {
+                for ($j = 0; $j < ($this->_SMALL_BLOCK_SIZE - ($pps->Size % $this->_SMALL_BLOCK_SIZE)); ++$j) {
                     $sRes .= "\x00";
                 }
             }
@@ -251,8 +244,8 @@ class Root extends Excel\OLE\PPS
 
         $iSbCnt = floor($this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_LONG_INT_SIZE);
         if ($iSmBlk % $iSbCnt) {
-            for ($i = 0; $i < ($iSbCnt - ($iSmBlk % $iSbCnt)); $i++) {
-                fwrite($FILE, pack("V", -1));
+            for ($i = 0; $i < ($iSbCnt - ($iSmBlk % $iSbCnt)); ++$i) {
+                fwrite($FILE, pack('V', -1));
             }
         }
 
@@ -262,11 +255,10 @@ class Root extends Excel\OLE\PPS
     /**
      * Saves all the PPS's WKs
      *
-     * @access private
      *
      * @param array $raList Reference to an array with all PPS's
      */
-    private function _savePps(&$raList)
+    private function _savePps(& $raList)
     {
         // Save each PPS WK
         foreach ($raList as $pps) {
@@ -276,7 +268,7 @@ class Root extends Excel\OLE\PPS
         $iCnt = count($raList);
         $iBCnt = $this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_PPS_SIZE;
         if ($iCnt % $iBCnt) {
-            for ($i = 0; $i < (($iBCnt - ($iCnt % $iBCnt)) * Excel\OLE::Excel_OLE_PPS_SIZE); $i++) {
+            for ($i = 0; $i < (($iBCnt - ($iCnt % $iBCnt)) * Excel\OLE::Excel_OLE_PPS_SIZE); ++$i) {
                 fwrite($this->_FILEH_, "\x00");
             }
         }
@@ -285,11 +277,10 @@ class Root extends Excel\OLE\PPS
     /**
      * Saving Big Block Depot
      *
-     * @access private
      *
-     * @param integer $iSbdSize
-     * @param integer $iBsize
-     * @param integer $iPpsCnt
+     * @param int $iSbdSize
+     * @param int $iBsize
+     * @param int $iPpsCnt
      */
     private function _saveBbd($iSbdSize, $iBsize, $iPpsCnt)
     {
@@ -299,11 +290,10 @@ class Root extends Excel\OLE\PPS
     /**
      * New method to store Bigblock chain
      *
-     * @access private
      *
-     * @param integer $num_sb_blocks  - number of Smallblock depot blocks
-     * @param integer $num_bb_blocks  - number of Bigblock depot blocks
-     * @param integer $num_pps_blocks - number of PropertySetStorage blocks
+     * @param int $num_sb_blocks  - number of Smallblock depot blocks
+     * @param int $num_bb_blocks  - number of Bigblock depot blocks
+     * @param int $num_pps_blocks - number of PropertySetStorage blocks
      */
     private function _create_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
@@ -311,65 +301,65 @@ class Root extends Excel\OLE\PPS
 
         $bbd_info = $this->_calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks);
 
-        $data = "";
+        $data = '';
 
-        if($num_sb_blocks > 0) {
-            for($i = 0; $i < ($num_sb_blocks - 1); $i++) {
-                $data .= pack("V", $i + 1);
+        if ($num_sb_blocks > 0) {
+            for ($i = 0; $i < ($num_sb_blocks - 1); ++$i) {
+                $data .= pack('V', $i + 1);
             }
-            $data .= pack("V", -2);
+            $data .= pack('V', -2);
         }
 
-        for($i = 0; $i < ($num_bb_blocks - 1); $i++) {
-            $data .= pack("V", $i + $num_sb_blocks + 1);
+        for ($i = 0; $i < ($num_bb_blocks - 1); ++$i) {
+            $data .= pack('V', $i + $num_sb_blocks + 1);
         }
-        $data .= pack("V", -2);
+        $data .= pack('V', -2);
 
-        for($i = 0; $i < ($num_pps_blocks - 1); $i++) {
-            $data .= pack("V", $i + $num_sb_blocks + $num_bb_blocks + 1);
+        for ($i = 0; $i < ($num_pps_blocks - 1); ++$i) {
+            $data .= pack('V', $i + $num_sb_blocks + $num_bb_blocks + 1);
         }
-        $data .= pack("V", -2);
+        $data .= pack('V', -2);
 
-        for($i = 0; $i < $bbd_info["0xFFFFFFFD_blockchain_entries"]; $i++) {
-            $data .= pack("V", 0xFFFFFFFD);
+        for ($i = 0; $i < $bbd_info['0xFFFFFFFD_blockchain_entries']; ++$i) {
+            $data .= pack('V', 0xFFFFFFFD);
         }
 
-        for($i = 0; $i < $bbd_info["0xFFFFFFFC_blockchain_entries"]; $i++) {
-            $data .= pack("V", 0xFFFFFFFC);
+        for ($i = 0; $i < $bbd_info['0xFFFFFFFC_blockchain_entries']; ++$i) {
+            $data .= pack('V', 0xFFFFFFFC);
         }
 
         // Adjust for Block
-        $all_entries = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"];
-        if($all_entries % $bbd_info["entries_per_block"]) {
-            $rest = $bbd_info["entries_per_block"] - ($all_entries % $bbd_info["entries_per_block"]);
-            for($i = 0; $i < $rest; $i++) {
-                $data .= pack("V", -1);
+        $all_entries = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info['0xFFFFFFFD_blockchain_entries'] + $bbd_info['0xFFFFFFFC_blockchain_entries'];
+        if ($all_entries % $bbd_info['entries_per_block']) {
+            $rest = $bbd_info['entries_per_block'] - ($all_entries % $bbd_info['entries_per_block']);
+            for ($i = 0; $i < $rest; ++$i) {
+                $data .= pack('V', -1);
             }
         }
 
         // Extra BDList
-        if ($bbd_info["blockchain_list_entries"] > $bbd_info["header_blockchain_list_entries"]) {
+        if ($bbd_info['blockchain_list_entries'] > $bbd_info['header_blockchain_list_entries']) {
             $iN = 0;
             $iNb = 0;
-            for ($i = $bbd_info["header_blockchain_list_entries"]; $i < $bbd_info["blockchain_list_entries"]; $i++, $iN++) {
-                if ($iN >= ($bbd_info["entries_per_block"] - 1)) {
+            for ($i = $bbd_info['header_blockchain_list_entries']; $i < $bbd_info['blockchain_list_entries']; $i++, $iN++) {
+                if ($iN >= ($bbd_info['entries_per_block'] - 1)) {
                     $iN = 0;
-                    $iNb++;
-                    $data .= pack("V", $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $iNb);
+                    ++$iNb;
+                    $data .= pack('V', $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info['0xFFFFFFFD_blockchain_entries'] + $iNb);
                 }
 
-                $data .= pack("V", $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i);
+                $data .= pack('V', $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i);
             }
 
-            $all_entries = $bbd_info["blockchain_list_entries"] - $bbd_info["header_blockchain_list_entries"];
-            if (($all_entries % ($bbd_info["entries_per_block"] - 1))) {
-                $rest = ($bbd_info["entries_per_block"] - 1) - ($all_entries % ($bbd_info["entries_per_block"] - 1));
-                for($i = 0; $i < $rest; $i++) {
-                    $data .= pack("V", -1);
+            $all_entries = $bbd_info['blockchain_list_entries'] - $bbd_info['header_blockchain_list_entries'];
+            if (($all_entries % ($bbd_info['entries_per_block'] - 1))) {
+                $rest = ($bbd_info['entries_per_block'] - 1) - ($all_entries % ($bbd_info['entries_per_block'] - 1));
+                for ($i = 0; $i < $rest; ++$i) {
+                    $data .= pack('V', -1);
                 }
             }
 
-            $data .= pack("V", -2);
+            $data .= pack('V', -2);
         }
 
         fwrite($FILE, $data);
@@ -378,11 +368,10 @@ class Root extends Excel\OLE\PPS
     /**
      * New method to store Header
      *
-     * @access private
      *
-     * @param integer $num_sb_blocks  - number of Smallblock depot blocks
-     * @param integer $num_bb_blocks  - number of Bigblock depot blocks
-     * @param integer $num_pps_blocks - number of PropertySetStorage blocks
+     * @param int $num_sb_blocks  - number of Smallblock depot blocks
+     * @param int $num_bb_blocks  - number of Bigblock depot blocks
+     * @param int $num_pps_blocks - number of PropertySetStorage blocks
      */
     private function _create_header($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
@@ -397,47 +386,47 @@ class Root extends Excel\OLE\PPS
             . "\x00\x00\x00\x00"
             . "\x00\x00\x00\x00"
             . "\x00\x00\x00\x00"
-            . pack("v", 0x3b)
-            . pack("v", 0x03)
-            . pack("v", -2)
-            . pack("v", 9)
-            . pack("v", 6)
-            . pack("v", 0)
+            . pack('v', 0x3b)
+            . pack('v', 0x03)
+            . pack('v', -2)
+            . pack('v', 9)
+            . pack('v', 6)
+            . pack('v', 0)
             . "\x00\x00\x00\x00"
             . "\x00\x00\x00\x00"
-            . pack("V", $bbd_info["blockchain_list_entries"])
-            . pack("V", $num_sb_blocks + $num_bb_blocks) //ROOT START
-            . pack("V", 0)
-            . pack("V", 0x1000)
+            . pack('V', $bbd_info['blockchain_list_entries'])
+            . pack('V', $num_sb_blocks + $num_bb_blocks) // ROOT START
+            . pack('V', 0)
+            . pack('V', 0x1000)
          );
 
-        //Small Block Depot
-        if($num_sb_blocks > 0) {
-            fwrite($FILE, pack("V", 0));
+        // Small Block Depot
+        if ($num_sb_blocks > 0) {
+            fwrite($FILE, pack('V', 0));
         } else {
-            fwrite($FILE, pack("V", -2));
+            fwrite($FILE, pack('V', -2));
         }
 
-        fwrite($FILE, pack("V", $num_sb_blocks));
+        fwrite($FILE, pack('V', $num_sb_blocks));
 
         // Extra BDList Start, Count
-        if($bbd_info["blockchain_list_entries"] < $bbd_info["header_blockchain_list_entries"]) {
+        if ($bbd_info['blockchain_list_entries'] < $bbd_info['header_blockchain_list_entries']) {
             fwrite($FILE,
-                pack("V", -2) .      // Extra BDList Start
-                pack("V", 0)        // Extra BDList Count
+                pack('V', -2) .      // Extra BDList Start
+                pack('V', 0)        // Extra BDList Count
             );
         } else {
-            fwrite($FILE, pack("V", $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"]) . pack("V", $bbd_info["0xFFFFFFFC_blockchain_entries"]));
+            fwrite($FILE, pack('V', $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info['0xFFFFFFFD_blockchain_entries']) . pack('V', $bbd_info['0xFFFFFFFC_blockchain_entries']));
         }
 
         // BDList
-        for ($i = 0; $i < $bbd_info["header_blockchain_list_entries"] and $i < $bbd_info["blockchain_list_entries"]; $i++) {
-            fwrite($FILE, pack("V", $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i));
+        for ($i = 0; $i < $bbd_info['header_blockchain_list_entries'] and $i < $bbd_info['blockchain_list_entries']; ++$i) {
+            fwrite($FILE, pack('V', $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i));
         }
 
-        if($i < $bbd_info["header_blockchain_list_entries"]) {
-            for($j = 0; $j < ($bbd_info["header_blockchain_list_entries"] - $i); $j++) {
-                fwrite($FILE, (pack("V", -1)));
+        if ($i < $bbd_info['header_blockchain_list_entries']) {
+            for ($j = 0; $j < ($bbd_info['header_blockchain_list_entries'] - $i); ++$j) {
+                fwrite($FILE, (pack('V', -1)));
             }
         }
     }
@@ -445,30 +434,29 @@ class Root extends Excel\OLE\PPS
     /**
      * New method to calculate Bigblock chain
      *
-     * @access private
      *
-     * @param integer $num_sb_blocks  - number of Smallblock depot blocks
-     * @param integer $num_bb_blocks  - number of Bigblock depot blocks
-     * @param integer $num_pps_blocks - number of PropertySetStorage blocks
+     * @param int $num_sb_blocks  - number of Smallblock depot blocks
+     * @param int $num_bb_blocks  - number of Bigblock depot blocks
+     * @param int $num_pps_blocks - number of PropertySetStorage blocks
      */
     private function _calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
-        $bbd_info["entries_per_block"] = $this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_LONG_INT_SIZE;
-        $bbd_info["header_blockchain_list_entries"] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel\OLE::Excel_OLE_LONG_INT_SIZE;
-        $bbd_info["blockchain_entries"] = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks;
-        $bbd_info["0xFFFFFFFD_blockchain_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"]);
-        $bbd_info["blockchain_list_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"]);
+        $bbd_info['entries_per_block'] = $this->_BIG_BLOCK_SIZE / Excel\OLE::Excel_OLE_LONG_INT_SIZE;
+        $bbd_info['header_blockchain_list_entries'] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel\OLE::Excel_OLE_LONG_INT_SIZE;
+        $bbd_info['blockchain_entries'] = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks;
+        $bbd_info['0xFFFFFFFD_blockchain_entries'] = $this->get_number_of_pointer_blocks($bbd_info['blockchain_entries']);
+        $bbd_info['blockchain_list_entries'] = $this->get_number_of_pointer_blocks($bbd_info['blockchain_entries'] + $bbd_info['0xFFFFFFFD_blockchain_entries']);
 
         // do some magic
-        $bbd_info["ext_blockchain_list_entries"] = 0;
-        $bbd_info["0xFFFFFFFC_blockchain_entries"] = 0;
-        if ($bbd_info["blockchain_list_entries"] > $bbd_info["header_blockchain_list_entries"]) {
+        $bbd_info['ext_blockchain_list_entries'] = 0;
+        $bbd_info['0xFFFFFFFC_blockchain_entries'] = 0;
+        if ($bbd_info['blockchain_list_entries'] > $bbd_info['header_blockchain_list_entries']) {
             do {
-                $bbd_info["blockchain_list_entries"] = $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]);
-                $bbd_info["ext_blockchain_list_entries"] = $bbd_info["blockchain_list_entries"] - $bbd_info["header_blockchain_list_entries"];
-                $bbd_info["0xFFFFFFFC_blockchain_entries"] = $this->get_number_of_pointer_blocks($bbd_info["ext_blockchain_list_entries"]);
-                $bbd_info["0xFFFFFFFD_blockchain_entries"] = $this->get_number_of_pointer_blocks($num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]);
-            } while ($bbd_info["blockchain_list_entries"] < $this->get_number_of_pointer_blocks($bbd_info["blockchain_entries"] + $bbd_info["0xFFFFFFFD_blockchain_entries"] + $bbd_info["0xFFFFFFFC_blockchain_entries"]));
+                $bbd_info['blockchain_list_entries'] = $this->get_number_of_pointer_blocks($bbd_info['blockchain_entries'] + $bbd_info['0xFFFFFFFD_blockchain_entries'] + $bbd_info['0xFFFFFFFC_blockchain_entries']);
+                $bbd_info['ext_blockchain_list_entries'] = $bbd_info['blockchain_list_entries'] - $bbd_info['header_blockchain_list_entries'];
+                $bbd_info['0xFFFFFFFC_blockchain_entries'] = $this->get_number_of_pointer_blocks($bbd_info['ext_blockchain_list_entries']);
+                $bbd_info['0xFFFFFFFD_blockchain_entries'] = $this->get_number_of_pointer_blocks($num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info['0xFFFFFFFD_blockchain_entries'] + $bbd_info['0xFFFFFFFC_blockchain_entries']);
+            } while ($bbd_info['blockchain_list_entries'] < $this->get_number_of_pointer_blocks($bbd_info['blockchain_entries'] + $bbd_info['0xFFFFFFFD_blockchain_entries'] + $bbd_info['0xFFFFFFFC_blockchain_entries']));
         }
 
         return $bbd_info;
@@ -477,9 +465,8 @@ class Root extends Excel\OLE\PPS
     /**
      * Calculates number of pointer blocks
      *
-     * @access public
      *
-     * @param integer $num_pointers - number of pointers
+     * @param int $num_pointers - number of pointers
      */
     private function get_number_of_pointer_blocks($num_pointers)
     {

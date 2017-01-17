@@ -35,7 +35,6 @@ class OLE
     /**
      * Utility function to transform ASCII text to Unicode
      *
-     * @access public
      * @static
      *
      * @param string $ascii The ASCII string to transform
@@ -45,8 +44,8 @@ class OLE
     public static function Asc2Ucs($ascii)
     {
         $rawname = '';
-        for ($i = 0; $i < strlen($ascii); $i++) {
-            $rawname .= $ascii{$i} . "\x00";
+        for ($i = 0; $i < strlen($ascii); ++$i) {
+            $rawname .= $ascii[$i] . "\x00";
         }
 
         return $rawname;
@@ -56,10 +55,9 @@ class OLE
      * Utility function
      * Returns a string for the Excel_OLE container with the date given
      *
-     * @access public
      * @static
      *
-     * @param integer $date A timestamp
+     * @param int $date A timestamp
      *
      * @return string The string for the Excel_OLE container
      */
@@ -76,8 +74,8 @@ class OLE
         $days = 134774;
         // calculate seconds
         $gmmktime = gmmktime(
-            date("H",$date),date("i",$date),date("s",$date),
-            date("m",$date),date("d",$date),date("Y",$date)
+            date('H',$date),date('i',$date),date('s',$date),
+            date('m',$date),date('d',$date),date('Y',$date)
         );
         if (isset(self::$gmmktime)) {
             $gmmktime = self::$gmmktime;
@@ -93,12 +91,12 @@ class OLE
         // Make HEX string
         $res = '';
 
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < 4; ++$i) {
             $hex = $low_part % 0x100;
             $res .= pack('c', $hex);
             $low_part /= 0x100;
         }
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 0; $i < 4; ++$i) {
             $hex = $high_part % 0x100;
             $res .= pack('c', $hex);
             $high_part /= 0x100;

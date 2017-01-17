@@ -11,20 +11,19 @@ use Excel;
  *
  * @category FileFormats
  */
-
 class Format
 {
     /**
      * The index given by the workbook when creating a new format.
      *
-     * @var integer
+     * @var int
      */
     private $_xf_index;
 
     /**
      * Index to the FONT record.
      *
-     * @var integer
+     * @var int
      */
     public $font_index;
 
@@ -38,220 +37,219 @@ class Format
     /**
      * Height of font (1/20 of a point)
      *
-     * @var integer
+     * @var int
      */
     private $_size;
 
     /**
      * Bold style
      *
-     * @var integer
+     * @var int
      */
     private $_bold;
 
     /**
      * Bit specifiying if the font is italic.
      *
-     * @var integer
+     * @var int
      */
     private $_italic;
 
     /**
      * Index to the cell's color
      *
-     * @var integer
+     * @var int
      */
     private $_color;
 
     /**
      * The text underline property
      *
-     * @var integer
+     * @var int
      */
     private $_underline;
 
     /**
      * Bit specifiying if the font has strikeout.
      *
-     * @var integer
+     * @var int
      */
     private $_font_strikeout;
 
     /**
      * Bit specifiying if the font has outline.
      *
-     * @var integer
+     * @var int
      */
     private $_font_outline;
 
     /**
      * Bit specifiying if the font has shadow.
      *
-     * @var integer
+     * @var int
      */
     private $_font_shadow;
 
     /**
      * 2 bytes specifiying the script type for the font.
      *
-     * @var integer
+     * @var int
      */
     private $_font_script;
 
     /**
      * Byte specifiying the font family.
      *
-     * @var integer
+     * @var int
      */
     private $_font_family;
 
     /**
      * Byte specifiying the font charset.
      *
-     * @var integer
+     * @var int
      */
     private $_font_charset;
 
     /**
      * An index (2 bytes) to a FORMAT record (number format).
      *
-     * @var integer
+     * @var int
      */
     private $_num_format;
 
     /**
      * Bit specifying if formulas are hidden.
      *
-     * @var integer
+     * @var int
      */
     private $_hidden;
 
     /**
      * Bit specifying if the cell is locked.
      *
-     * @var integer
+     * @var int
      */
     private $_locked;
 
     /**
      * The three bits specifying the text horizontal alignment.
      *
-     * @var integer
+     * @var int
      */
     private $_text_h_align;
 
     /**
      * Bit specifying if the text is wrapped at the right border.
      *
-     * @var integer
+     * @var int
      */
     private $_text_wrap;
 
     /**
      * The three bits specifying the text vertical alignment.
      *
-     * @var integer
+     * @var int
      */
     private $_text_v_align;
 
     /**
      * 1 bit, apparently not used.
      *
-     * @var integer
+     * @var int
      */
     private $_text_justlast;
 
     /**
      * The two bits specifying the text rotation.
      *
-     * @var integer
+     * @var int
      */
     private $_rotation;
 
     /**
      * The cell's foreground color.
      *
-     * @var integer
+     * @var int
      */
     private $_fg_color;
 
     /**
      * The cell's background color.
      *
-     * @var integer
+     * @var int
      */
     private $_bg_color;
 
     /**
      * The cell's background fill pattern.
      *
-     * @var integer
+     * @var int
      */
     private $_pattern;
 
     /**
      * Style of the bottom border of the cell
      *
-     * @var integer
+     * @var int
      */
     private $_bottom;
 
     /**
      * Color of the bottom border of the cell.
      *
-     * @var integer
+     * @var int
      */
     private $_bottom_color;
 
     /**
      * Style of the top border of the cell
      *
-     * @var integer
+     * @var int
      */
     private $_top;
 
     /**
      * Color of the top border of the cell.
      *
-     * @var integer
+     * @var int
      */
     private $_top_color;
 
     /**
      * Style of the left border of the cell
      *
-     * @var integer
+     * @var int
      */
     private $_left;
 
     /**
      * Color of the left border of the cell.
      *
-     * @var integer
+     * @var int
      */
     private $_left_color;
 
     /**
      * Style of the right border of the cell
      *
-     * @var integer
+     * @var int
      */
     private $_right;
 
     /**
      * Color of the right border of the cell.
      *
-     * @var integer
+     * @var int
      */
     private $_right_color;
 
     /**
      * Constructor
      *
-     * @access private
      *
-     * @param integer $index      the XF index for the format.
-     * @param array   $properties array with properties to be set on initialization.
+     * @param int   $index      the XF index for the format
+     * @param array $properties array with properties to be set on initialization
      */
     public function __construct($index = 0, $properties =  array())
     {
@@ -310,7 +308,7 @@ class Format
     /**
      * Generate an Excel BIFF XF record (style or cell).
      *
-     * @param string $style The type of the XF record ('style' or 'cell').
+     * @param string $style the type of the XF record ('style' or 'cell')
      *
      * @return string The XF record
      */
@@ -387,8 +385,8 @@ class Format
         $border2        = $this->_left_color;     // Border color
         $border2       |= $this->_right_color   << 7;
 
-        $header      = pack("vv",       $record, $length);
-        $data        = pack("vvvvvvvv", $ifnt, $ifmt, $style, $align,
+        $header      = pack('vv',       $record, $length);
+        $data        = pack('vvvvvvvv', $ifnt, $ifmt, $style, $align,
                                         $icv, $fill,
                                         $border1, $border2);
 
@@ -429,8 +427,8 @@ class Format
             $grbit     |= 0x20;
         }
 
-        $header  = pack("vv",         $record, $length);
-        $data    = pack("vvvvvCCCCC", $dyHeight, $grbit, $icv, $bls,
+        $header  = pack('vv',         $record, $length);
+        $data    = pack('vvvvvCCCCC', $dyHeight, $grbit, $icv, $bls,
                                       $sss, $uls, $bFamily,
                                       $bCharSet, $reserved, $cch);
 
@@ -462,7 +460,7 @@ class Format
     /**
      * Returns the index used by Excel_Writer_Worksheet::_XF()
      *
-     * @return integer The index for the XF record
+     * @return int The index for the XF record
      */
     public function getXfIndex()
     {
@@ -474,11 +472,10 @@ class Format
      * string into a number. Color range is 0..63 but we will restrict it
      * to 8..63 to comply with Gnumeric. Colors 0..7 are repeated in 8..15.
      *
-     * @access private
      *
      * @param string $name_color name of the color (i.e.: 'blue', 'red', etc..). Optional.
      *
-     * @return integer The color index
+     * @return int The color index
      */
     private function _getColor($name_color = '')
     {
@@ -530,7 +527,6 @@ class Format
     /**
      * Set cell alignment.
      *
-     * @access public
      *
      * @param string $location alignment for the cell ('left', 'right', etc...).
      */
@@ -543,7 +539,6 @@ class Format
     /**
      * Set cell horizontal alignment.
      *
-     * @access public
      *
      * @param string $location alignment for the cell ('left', 'right', etc...).
      */
@@ -569,7 +564,6 @@ class Format
     /**
      * Set cell vertical alignment.
      *
-     * @access public
      *
      * @param string $location alignment for the cell ('top', 'vleft', 'vright', etc...).
      */
@@ -592,8 +586,6 @@ class Format
 
     /**
      * This is an alias for the unintuitive setAlign('merge')
-     *
-     * @access public
      */
     public function setMerge()
     {
@@ -605,9 +597,8 @@ class Format
      * Bold has a range 100..1000.
      * 0 (400) is normal. 1 (700) is bold.
      *
-     * @access public
      *
-     * @param integer $weight Weight for the text, 0 maps to 400 (normal text),
+     * @param int $weight Weight for the text, 0 maps to 400 (normal text),
      */
     public function setBold($weight = 1)
     {
@@ -626,9 +617,8 @@ class Format
     /**
      * Sets the width for the bottom border of the cell
      *
-     * @access public
      *
-     * @param integer $style style of the cell border. 1 => thin, 2 => thick.
+     * @param int $style style of the cell border. 1 => thin, 2 => thick.
      */
     public function setBottom($style)
     {
@@ -638,9 +628,8 @@ class Format
     /**
      * Sets the width for the top border of the cell
      *
-     * @access public
      *
-     * @param integer $style style of the cell top border. 1 => thin, 2 => thick.
+     * @param int $style style of the cell top border. 1 => thin, 2 => thick.
      */
     public function setTop($style)
     {
@@ -650,9 +639,8 @@ class Format
     /**
      * Sets the width for the left border of the cell
      *
-     * @access public
      *
-     * @param integer $style style of the cell left border. 1 => thin, 2 => thick.
+     * @param int $style style of the cell left border. 1 => thin, 2 => thick.
      */
     public function setLeft($style)
     {
@@ -662,9 +650,8 @@ class Format
     /**
      * Sets the width for the right border of the cell
      *
-     * @access public
      *
-     * @param integer $style style of the cell right border. 1 => thin, 2 => thick.
+     * @param int $style style of the cell right border. 1 => thin, 2 => thick.
      */
     public function setRight($style)
     {
@@ -674,9 +661,8 @@ class Format
     /**
      * Set cells borders to the same style
      *
-     * @access public
      *
-     * @param integer $style style to apply for all cell borders. 1 => thin, 2 => thick.
+     * @param int $style style to apply for all cell borders. 1 => thin, 2 => thick.
      */
     public function setBorder($style)
     {
@@ -693,7 +679,6 @@ class Format
     /**
      * Sets all the cell's borders to the same color
      *
-     * @access public
      *
      * @param mixed $color The color we are setting. Either a string (like 'blue'),
      *                     or an integer (range is [8...63]).
@@ -709,7 +694,6 @@ class Format
     /**
      * Sets the cell's bottom border color
      *
-     * @access public
      *
      * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
      */
@@ -722,7 +706,6 @@ class Format
     /**
      * Sets the cell's top border color
      *
-     * @access public
      *
      * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
      */
@@ -735,7 +718,6 @@ class Format
     /**
      * Sets the cell's left border color
      *
-     * @access public
      *
      * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
      */
@@ -748,7 +730,6 @@ class Format
     /**
      * Sets the cell's right border color
      *
-     * @access public
      *
      * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
      */
@@ -761,7 +742,6 @@ class Format
     /**
      * Sets the cell's foreground color
      *
-     * @access public
      *
      * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
      */
@@ -777,7 +757,6 @@ class Format
     /**
      * Sets the cell's background color
      *
-     * @access public
      *
      * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
      */
@@ -793,7 +772,6 @@ class Format
     /**
      * Sets the cell's color
      *
-     * @access public
      *
      * @param mixed $color either a string (like 'blue'), or an integer (range is [8...63]).
      */
@@ -806,10 +784,9 @@ class Format
     /**
      * Sets the fill pattern attribute of a cell
      *
-     * @access public
      *
-     * @param integer $arg Optional. Defaults to 1. Meaningful values are: 0-18,
-     *                     0 meaning no background.
+     * @param int $arg Optional. Defaults to 1. Meaningful values are: 0-18,
+     *                 0 meaning no background.
      */
     public function setPattern($arg = 1)
     {
@@ -819,10 +796,9 @@ class Format
     /**
      * Sets the underline of the text
      *
-     * @access public
      *
-     * @param integer $underline The value for underline. Possible values are:
-     *                           1 => underline, 2 => double underline.
+     * @param int $underline The value for underline. Possible values are:
+     *                       1 => underline, 2 => double underline.
      */
     public function setUnderline($underline)
     {
@@ -831,8 +807,6 @@ class Format
 
     /**
      * Sets the font style as italic
-     *
-     * @access public
      */
     public function setItalic()
     {
@@ -842,9 +816,8 @@ class Format
     /**
      * Sets the font size
      *
-     * @access public
      *
-     * @param integer $size The font size (in pixels I think).
+     * @param int $size the font size (in pixels I think)
      */
     public function setSize($size)
     {
@@ -853,8 +826,6 @@ class Format
 
     /**
      * Sets text wrapping
-     *
-     * @access public
      */
     public function setTextWrap()
     {
@@ -864,9 +835,8 @@ class Format
     /**
      * Sets the orientation of the text
      *
-     * @access public
      *
-     * @param integer $angle The rotation angle for the text (clockwise). Possible
+     * @param int $angle The rotation angle for the text (clockwise). Possible
      */
     /*
     function setTextRotation($angle)
@@ -896,9 +866,8 @@ class Format
      * Sets the numeric format.
      * It can be date, time, currency, etc...
      *
-     * @access public
      *
-     * @param integer $num_format The numeric format.
+     * @param int $num_format the numeric format
      */
     public function setNumFormat($num_format)
     {
@@ -912,8 +881,6 @@ class Format
 
     /**
      * Sets font as strikeout.
-     *
-     * @access public
      */
     public function setStrikeOut()
     {
@@ -922,8 +889,6 @@ class Format
 
     /**
      * Sets outlining for a font.
-     *
-     * @access public
      */
     public function setOutLine()
     {
@@ -932,8 +897,6 @@ class Format
 
     /**
      * Sets font as shadow.
-     *
-     * @access public
      */
     public function setShadow()
     {
@@ -943,10 +906,9 @@ class Format
     /**
      * Sets the script type of the text
      *
-     * @access public
      *
-     * @param integer $script The value for script type. Possible values are:
-     *                        1 => superscript, 2 => subscript.
+     * @param int $script The value for script type. Possible values are:
+     *                    1 => superscript, 2 => subscript.
      */
     public function setScript($script)
     {
@@ -955,8 +917,6 @@ class Format
 
     /**
      * Locks a cell.
-     *
-     * @access public
      */
     public function setLocked()
     {
@@ -965,8 +925,6 @@ class Format
 
     /**
      * Unlocks a cell. Useful for unprotecting particular cells of a protected sheet.
-     *
-     * @access public
      */
     public function setUnLocked()
     {
@@ -976,7 +934,6 @@ class Format
     /**
      * Sets the font family name.
      *
-     * @access public
      *
      * @param string $fontfamily The font family name. Possible values are:
      *                           'Times New Roman', 'Arial', 'Courier'.

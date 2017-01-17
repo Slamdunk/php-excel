@@ -3,4 +3,5 @@
 namespace Excel\Exception;
 
 interface ExceptionInterface
-{}
+{
+}
