@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace ExcelTest;
 
 use Excel;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-final class CampoReportCollectionTest extends PHPUnit_Framework_TestCase
+final class CampoReportCollectionTest extends TestCase
 {
     protected function setUp()
     {
@@ -26,14 +26,14 @@ final class CampoReportCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testNonModificabileConSet()
     {
-        $this->setExpectedException('Excel\Exception\RuntimeException');
+        $this->expectException('Excel\Exception\RuntimeException');
 
         $this->collection['foo'] = 1;
     }
 
     public function testNonModificabileConUnset()
     {
-        $this->setExpectedException('Excel\Exception\RuntimeException');
+        $this->expectException('Excel\Exception\RuntimeException');
 
         unset($this->collection['foo']);
     }

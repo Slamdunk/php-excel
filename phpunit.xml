@@ -1,5 +1,5 @@
 <phpunit
-    bootstrap="./tests/bootstrap.php"
+    bootstrap="./vendor/autoload.php"
     backupGlobals="false"
     backupStaticAttributes="false"
     colors="true"
@@ -13,8 +13,4 @@
             <directory suffix=".php">./lib</directory>
         </whitelist>
     </filter>
-
-    <logging>
-        <log type="coverage-html" target="./code-coverage" charset="UTF-8" highlight="true" lowUpperBound="60" highLowerBound="80" />
-    </logging>
 </phpunit>

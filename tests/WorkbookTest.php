@@ -8,9 +8,9 @@ use ArrayIterator;
 use Excel;
 use org\bovigo\vfs;
 use PHPExcel_IOFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-final class WorkbookTest extends PHPUnit_Framework_TestCase
+final class WorkbookTest extends TestCase
 {
     protected function setUp()
     {

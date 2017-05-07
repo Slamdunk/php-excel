@@ -6,7 +6,7 @@ namespace ExcelTest;
 
 use ArrayIterator;
 use Excel;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 final class TabellaTest extends TestCase
 {
@@ -61,7 +61,7 @@ final class TabellaTest extends TestCase
 
     public function testTabellaDeveAvereFlagVuota()
     {
-        $this->setExpectedException('Excel\Exception\RuntimeException');
+        $this->expectException('Excel\Exception\RuntimeException');
 
         $this->tabella->count();
     }

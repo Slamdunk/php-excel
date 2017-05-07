@@ -6,9 +6,9 @@ namespace ExcelTest;
 
 use Excel;
 use org\bovigo\vfs;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-final class MainTest extends PHPUnit_Framework_TestCase
+final class MainTest extends TestCase
 {
     protected function setUp()
     {
@@ -89,7 +89,7 @@ final class MainTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($lettera . '2', $this->xls->rowcolToCell(1, $indice));
 
-        $this->setExpectedException('Excel\Exception\InvalidArgumentException');
+        $this->expectException('Excel\Exception\InvalidArgumentException');
 
         $this->xls->rowcolToCell(1, 50000);
     }
