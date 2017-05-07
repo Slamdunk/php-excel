@@ -1,8 +1,8 @@
 <?php
 
-namespace Excel\OLE;
+namespace Slam\Excel\Pear\OLE;
 
-use Excel;
+use Slam\Excel;
 
 /**
  * Class for creating PPS's for Excel_OLE containers
@@ -184,8 +184,8 @@ class PPS
             . "\xc0\x00\x00\x00"                  // 92
             . "\x00\x00\x00\x46"                  // 96 // Seems to be ok only for Root
             . "\x00\x00\x00\x00"                  // 100
-            . Excel\OLE::LocalDate2Excel_OLE($this->Time1st)       // 108
-            . Excel\OLE::LocalDate2Excel_OLE($this->Time2nd)       // 116
+            . Excel\Pear\OLE::LocalDate2Excel_OLE($this->Time1st)       // 108
+            . Excel\Pear\OLE::LocalDate2Excel_OLE($this->Time2nd)       // 116
             . pack('V', isset($this->_StartBlock)
                     ? $this->_StartBlock
                     : 0

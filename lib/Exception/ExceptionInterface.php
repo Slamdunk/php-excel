@@ -1,6 +1,6 @@
 <?php
 
-namespace Excel\Exception;
+namespace Slam\Excel\Exception;
 
 interface ExceptionInterface
 {

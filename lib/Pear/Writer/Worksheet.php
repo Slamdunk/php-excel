@@ -1,8 +1,8 @@
 <?php
 
-namespace Excel\Writer;
+namespace Slam\Excel\Pear\Writer;
 
-use Excel;
+use Slam\Excel;
 
 /**
  * Class for generating Excel Spreadsheets
@@ -424,7 +424,7 @@ class Worksheet extends BIFFwriter
         $this->_parser         = &$parser;
 
         // $this->ext_sheets      = array();
-        $this->_filehandle     = Excel\OLE::getTmpfile();
+        $this->_filehandle     = Excel\Pear\OLE::getTmpfile();
         // $this->fileclosed      = 0;
         // $this->offset          = 0;
         $this->_xls_rowmax     = $rowmax;

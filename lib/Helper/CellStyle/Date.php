@@ -1,10 +1,11 @@
 <?php
 
-namespace Excel\StileCella;
+namespace Slam\Excel\Helper\CellStyle;
 
-use Excel;
+use Slam\Excel\Helper\CellStyleInterface;
+use Slam\Excel\Pear\Writer\Format;
 
-final class Data implements Excel\StileCellaInterface
+final class Date implements CellStyleInterface
 {
     public function decorateValue($value)
     {
@@ -15,7 +16,7 @@ final class Data implements Excel\StileCellaInterface
         return implode('/', array_reverse(explode('-', $value)));
     }
 
-    public function styleCell(Excel\Writer\Format $format)
+    public function styleCell(Format $format)
     {
         $format->setAlign('center');
     }

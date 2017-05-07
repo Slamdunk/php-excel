@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace ExcelTest;
+namespace Slam\Excel\Tests\Helper;
 
-use Excel;
+use Slam\Excel;
 use org\bovigo\vfs;
 use PHPUnit\Framework\TestCase;
 
@@ -12,23 +12,23 @@ final class MainTest extends TestCase
 {
     protected function setUp()
     {
-        Excel\OLE::$gmmktime = gmmktime(1, 1, 1, 1, 1, 2000);
+        Excel\Pear\OLE::$gmmktime = gmmktime(1, 1, 1, 1, 1, 2000);
 
         $this->vfs = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test.xls');
 
         // $this->filename = __DIR__ . '/stock.xls';
 
-        $this->xls = new Excel\Writer\Workbook($this->filename);
+        $this->xls = new Excel\Pear\Writer\Workbook($this->filename);
     }
 
-    public function testGenerazioneFileBase()
+    public function testBaseCreation()
     {
         $this->xls->setCustomColor(60, hexdec('7f'), hexdec('7f'), hexdec('7f'));
         $this->xls->setCustomColor(61, hexdec('e8'), hexdec('e8'), hexdec('e8'));
         $this->xls->setCustomColor(62, hexdec('cc'), hexdec('cc'), hexdec('cc'));
 
-        $sheet = $this->xls->addWorksheet('FoglioCustom');
+        $sheet = $this->xls->addWorksheet('CustomSheet');
         $sheet->setLandscape();
         $sheet->setMargins(0.2);
         $sheet->hideGridLines();
@@ -64,13 +64,13 @@ final class MainTest extends TestCase
 
         $this->xls->close();
 
-        $this->assertLessThan(Excel\OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
-        $this->assertSame('43093f883818e44f4dd62f0382d95ecf6b689004', hash('sha1', file_get_contents($this->filename)));
+        $this->assertLessThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
+        $this->assertSame('9ab414a26fdb4bfb5a6d65c9c214ddc70b5a5464', hash_file('sha1', $this->filename));
     }
 
-    public function testFileGrandi()
+    public function testBigFiles()
     {
-        $sheet = $this->xls->addWorksheet('FoglioCustom');
+        $sheet = $this->xls->addWorksheet('CustomSheet');
 
         for ($i = 0; $i < 1000; ++$i) {
             $sheet->writeString($i, 1, 'foobar' . $i);
@@ -78,23 +78,23 @@ final class MainTest extends TestCase
 
         $this->xls->close();
 
-        $this->assertGreaterThan(Excel\OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
-        $this->assertSame('884f515114705011286817afff99f848f76b0ce2', hash('sha1', file_get_contents($this->filename)));
+        $this->assertGreaterThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
+        $this->assertSame('f95f7ff2fb1ffb98cef820ecd73312c9a43b9662', hash_file('sha1', $this->filename));
     }
 
     /**
-     * @dataProvider dataProviderTestIndiceColonnaInNumero
+     * @dataProvider dataProviderTestColumnIndexInInumber
      */
-    public function testIndiceColonnaInNumero($indice, $lettera)
+    public function testColumnIndexInInumber(int $index, string $letter)
     {
-        $this->assertSame($lettera . '2', $this->xls->rowcolToCell(1, $indice));
+        $this->assertSame($letter . '2', $this->xls->rowcolToCell(1, $index));
 
-        $this->expectException('Excel\Exception\InvalidArgumentException');
+        $this->expectException(Excel\Exception\InvalidArgumentException::class);
 
         $this->xls->rowcolToCell(1, 50000);
     }
 
-    public function dataProviderTestIndiceColonnaInNumero()
+    public function dataProviderTestColumnIndexInInumber()
     {
         return array(
             array(0, 'A'),

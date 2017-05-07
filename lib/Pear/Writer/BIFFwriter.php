@@ -1,8 +1,8 @@
 <?php
 
-namespace Excel\Writer;
+namespace Slam\Excel\Pear\Writer;
 
-use Excel;
+use Slam\Excel;
 
 /**
  * Class for writing Excel BIFF records.

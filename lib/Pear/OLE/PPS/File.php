@@ -1,8 +1,8 @@
 <?php
 
-namespace Excel\OLE\PPS;
+namespace Slam\Excel\Pear\OLE\PPS;
 
-use Excel;
+use Slam\Excel;
 
 /**
  * Class for creating File PPS's for Excel_OLE containers
@@ -11,7 +11,7 @@ use Excel;
  *
  * @category Structures
  */
-class File extends Excel\OLE\PPS
+class File extends Excel\Pear\OLE\PPS
 {
     /**
      * The constructor
@@ -26,7 +26,7 @@ class File extends Excel\OLE\PPS
         parent::__construct(
             null,
             $name,
-            Excel\OLE::Excel_OLE_PPS_TYPE_FILE,
+            Excel\Pear\OLE::Excel_OLE_PPS_TYPE_FILE,
             null,
             null,
             null,
@@ -36,7 +36,7 @@ class File extends Excel\OLE\PPS
             array()
         );
 
-        $this->_PPS_FILE = Excel\OLE::getTmpfile();
+        $this->_PPS_FILE = Excel\Pear\OLE::getTmpfile();
     }
 
     /**

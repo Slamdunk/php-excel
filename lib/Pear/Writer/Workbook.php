@@ -1,8 +1,8 @@
 <?php
 
-namespace Excel\Writer;
+namespace Slam\Excel\Pear\Writer;
 
-use Excel;
+use Slam\Excel;
 
 /**
  * Class for generating Excel Spreadsheets
@@ -486,7 +486,7 @@ class Workbook extends BIFFwriter
      */
     protected function _storeExcel_OLEFile()
     {
-        $Excel_OLE = new Excel\OLE\PPS\File(Excel\OLE::Asc2Ucs('Book'));
+        $Excel_OLE = new Excel\Pear\OLE\PPS\File(Excel\Pear\OLE::Asc2Ucs('Book'));
         $Excel_OLE->append($this->_data);
 
         $total_worksheets = count($this->_worksheets);
@@ -496,7 +496,7 @@ class Workbook extends BIFFwriter
             }
         }
 
-        $root = new Excel\OLE\PPS\Root(time(), time(), array($Excel_OLE));
+        $root = new Excel\Pear\OLE\PPS\Root(time(), time(), array($Excel_OLE));
         $res = $root->save($this->_filename);
 
         return true;
