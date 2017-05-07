@@ -187,7 +187,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         return $value;
     }
 
-    private function generateFormats(array $titles, ColonnaCollection $columnCollection = null)
+    private function generateFormats(array $titles, ColumnCollection $columnCollection = null)
     {
         $this->formats = array();
         foreach ($titles as $key) {
