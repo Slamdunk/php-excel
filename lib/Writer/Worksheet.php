@@ -780,7 +780,7 @@ class Worksheet extends BIFFwriter
      * @param int $last_row     last row in the selected quadrant
      * @param int $last_column  last column in the selected quadrant
      */
-    public function setSelection($first_row,$first_column,$last_row,$last_column)
+    public function setSelection($first_row, $first_column, $last_row, $last_column)
     {
         $this->_selection = array($first_row, $first_column, $last_row, $last_column);
     }
@@ -853,7 +853,7 @@ class Worksheet extends BIFFwriter
      * @param string $string The header text
      * @param float  $margin optional head margin in inches
      */
-    public function setHeader($string,$margin = 0.50)
+    public function setHeader($string, $margin = 0.50)
     {
         if (strlen($string) >= 255) {
             // carp 'Header string must be less than 255 characters';
@@ -870,7 +870,7 @@ class Worksheet extends BIFFwriter
      * @param string $string The footer text
      * @param float  $margin optional foot margin in inches
      */
-    public function setFooter($string,$margin = 0.50)
+    public function setFooter($string, $margin = 0.50)
     {
         if (strlen($string) >= 255) {
             // carp 'Footer string must be less than 255 characters';
@@ -1318,7 +1318,7 @@ class Worksheet extends BIFFwriter
      */
     protected function _cellToRowcol($cell)
     {
-        preg_match("/\$?([A-I]?[A-Z])\$?(\d+)/",$cell,$match);
+        preg_match("/\$?([A-I]?[A-Z])\$?(\d+)/", $cell, $match);
         $col     = $match[1];
         $row     = $match[2];
 
@@ -1329,7 +1329,7 @@ class Worksheet extends BIFFwriter
 
         while ($chars) {
             $char = array_pop($chars);        // LS char first
-            $col += (ord($char) - ord('A') + 1) * pow(26,$expn);
+            $col += (ord($char) - ord('A') + 1) * pow(26, $expn);
             ++$expn;
         }
 
@@ -2101,9 +2101,9 @@ class Worksheet extends BIFFwriter
         $stream_len    = pack('V', 0); // strlen($dir_long) + 0x06);
 
         // Pack the undocumented parts of the hyperlink stream
-        $unknown1 = pack('H*','D0C9EA79F9BACE118C8200AA004BA90B02000000');
-        $unknown2 = pack('H*','0303000000000000C000000000000046');
-        $unknown3 = pack('H*','FFFFADDE000000000000000000000000000000000000000');
+        $unknown1 = pack('H*', 'D0C9EA79F9BACE118C8200AA004BA90B02000000');
+        $unknown2 = pack('H*', '0303000000000000C000000000000046');
+        $unknown3 = pack('H*', 'FFFFADDE000000000000000000000000000000000000000');
         $unknown4 = pack('v',  0x03);
 
         // Pack the main data stream
@@ -2186,7 +2186,7 @@ class Worksheet extends BIFFwriter
 
         $header   = pack('vv',       $record, $length);
         $data     = pack('vvvvvvvv', $row, $colMic, $colMac, $miyRw,
-                                     $irwMac,$reserved, $grbit, $ixfe);
+                                     $irwMac, $reserved, $grbit, $ixfe);
         $this->_append($header . $data);
     }
 
@@ -2340,7 +2340,7 @@ class Worksheet extends BIFFwriter
      */
     protected function _storeSelection($array)
     {
-        list($rwFirst,$colFirst,$rwLast,$colLast) = $array;
+        list($rwFirst, $colFirst, $rwLast, $colLast) = $array;
         $record   = 0x001D;                  // Record identifier
         $length   = 0x000F;                  // Number of bytes to follow
 
@@ -2940,7 +2940,7 @@ class Worksheet extends BIFFwriter
 
         // 1000 vertical pagebreaks apExcel_PEARs to be an internal Excel 5 limit.
         // It is slightly higher in Excel 97/200, approx. 1026
-        $breaks = array_slice($this->_vbreaks,0,1000);
+        $breaks = array_slice($this->_vbreaks, 0, 1000);
 
         // Sort and filter array of page breaks
         sort($breaks, SORT_NUMERIC);
@@ -3211,7 +3211,7 @@ class Worksheet extends BIFFwriter
      * @param int $rwB  Row containing bottom right corner of object
      * @param int $dyB  Distance from bottom of cell
      */
-    protected function _storeObjPicture($colL,$dxL,$rwT,$dyT,$colR,$dxR,$rwB,$dyB)
+    protected function _storeObjPicture($colL, $dxL, $rwT, $dyT, $colR, $dxR, $rwB, $dyB)
     {
         $record      = 0x005d;   // Record identifier
         $length      = 0x003c;   // Bytes to follow
@@ -3289,7 +3289,7 @@ class Worksheet extends BIFFwriter
     protected function _processBitmap($bitmap)
     {
         // Open file.
-        $bmp_fd = @fopen($bitmap,'rb');
+        $bmp_fd = @fopen($bitmap, 'rb');
         if (! $bmp_fd) {
             throw new Excel\Exception\RuntimeException("Couldn't import $bitmap");
         }

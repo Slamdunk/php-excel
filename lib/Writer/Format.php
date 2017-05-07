@@ -511,7 +511,7 @@ class Format
         }
 
         // or the default color if string is unrecognised,
-        if (preg_match("/\D/",$name_color)) {
+        if (preg_match("/\D/", $name_color)) {
             return(0x7FFF);
         }
 

@@ -74,8 +74,8 @@ class OLE
         $days = 134774;
         // calculate seconds
         $gmmktime = gmmktime(
-            date('H',$date),date('i',$date),date('s',$date),
-            date('m',$date),date('d',$date),date('Y',$date)
+            date('H', $date), date('i', $date), date('s', $date),
+            date('m', $date), date('d', $date), date('Y', $date)
         );
         if (isset(self::$gmmktime)) {
             $gmmktime = self::$gmmktime;

@@ -462,7 +462,7 @@ class Workbook extends BIFFwriter
 
         // Add BOUNDSHEET records
         for ($i = 0; $i < $total_worksheets; ++$i) {
-            $this->_storeBoundsheet($this->_worksheets[$i]->name,$this->_worksheets[$i]->offset);
+            $this->_storeBoundsheet($this->_worksheets[$i]->name, $this->_worksheets[$i]->offset);
         }
 
         if ($this->_country_code != -1) {
@@ -600,7 +600,7 @@ class Workbook extends BIFFwriter
                 // Add a new FORMAT
                 $hash_num_formats[$num_format]  = $index;
                 $this->_formats[$i]->setNumFormat($index);
-                array_push($num_formats,$num_format);
+                array_push($num_formats, $num_format);
                 ++$index;
             }
         }
@@ -608,7 +608,7 @@ class Workbook extends BIFFwriter
         // Write the new FORMAT records starting from 0xA4
         $index = 164;
         foreach ($num_formats as $num_format) {
-            $this->_storeNumFormat($num_format,$index);
+            $this->_storeNumFormat($num_format, $index);
             ++$index;
         }
     }
@@ -786,7 +786,7 @@ class Workbook extends BIFFwriter
      * @param string $sheetname Worksheet name
      * @param int    $offset    Location of worksheet BOF
      */
-    protected function _storeBoundsheet($sheetname,$offset)
+    protected function _storeBoundsheet($sheetname, $offset)
     {
         $record    = 0x0085;                    // Record identifier
         $length = 0x07 + strlen($sheetname); // Number of bytes to follow
@@ -1107,7 +1107,7 @@ class Workbook extends BIFFwriter
         // Pack the RGB data
         foreach ($aref as $color) {
             foreach ($color as $byte) {
-                $data .= pack('C',$byte);
+                $data .= pack('C', $byte);
             }
         }
 
