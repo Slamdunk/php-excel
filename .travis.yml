@@ -1,15 +1,27 @@
 language: php
 
-php:
-  - 7.0
-  - 7.1
+sudo: false
+
+env:
+    global:
+        - PHP_LATEST_VERSION=0
+
+matrix:
+    fast_finish: true
+    include:
+        - php: 7.0
+        - php: 7.1
+          env: PHP_LATEST_VERSION=1
+
+cache:
+  directories:
+    - $HOME/.composer
 
 install:
-  - composer self-update
-  - composer install --prefer-dist --optimize-autoloader
+  - composer install --prefer-dist
 
 script:
-  - phpunit --coverage-text
+  - sh .travis.run-tests.sh
 
 notifications:
   email: false
