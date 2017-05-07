@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Slam\Excel\Tests\Helper;
 
 use ArrayIterator;
-use Slam\Excel;
 use PHPUnit\Framework\TestCase;
+use Slam\Excel;
 
 final class TableTest extends TestCase
 {

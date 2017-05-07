@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Slam\Excel\Helper;
 
-use Slam\Excel\Exception;
-use Slam\Excel\Pear\Writer\Worksheet;
 use Countable;
 use Iterator;
+use Slam\Excel\Exception;
+use Slam\Excel\Pear\Writer\Worksheet;
 
 final class Table implements Countable
 {

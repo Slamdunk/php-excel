@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Slam\Excel\Helper;
 
 use Slam\Excel;
@@ -69,7 +71,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             $table = reset($tables);
             $firstSheet = $table->getActiveSheet();
             // In Excel the maximum length for a sheet name is 30
-            $originalName = substr($firstSheet->name, 0, 21);
+            $originalName = mb_substr($firstSheet->name, 0, 21);
 
             $sheetCounter = 0;
             $sheetTotal = count($tables);

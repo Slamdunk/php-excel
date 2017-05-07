@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Slam\Excel\Tests\Helper;
 
 use ArrayIterator;
-use Slam\Excel;
 use org\bovigo\vfs;
 use PHPExcel_IOFactory;
 use PHPUnit\Framework\TestCase;
+use Slam\Excel;
 
 final class TableWorkbookTest extends TestCase
 {
@@ -99,14 +99,14 @@ final class TableWorkbookTest extends TestCase
         $expected = array(
             'A1' => null,
             'A2' => $table->getHeading(),
-            
+
             'A3' => 'Foo1',
             'B3' => 'Foo2',
             'C3' => 'Foo3',
             'D3' => 'Foo4',
             'E3' => 'Foo5',
             'F3' => 'Foo6',
-            
+
             'A4' => 'text',
             'B4' => 3.45,
             'C4' => 1234567.8,
@@ -176,7 +176,7 @@ final class TableWorkbookTest extends TestCase
     public function testEmptyTable()
     {
         $emptyTableMessage = uniqid('no_data_');
-        
+
         $phpExcel = new Excel\Helper\TableWorkbook($this->filename);
         $phpExcel->setEmptyTableMessage($emptyTableMessage);
 

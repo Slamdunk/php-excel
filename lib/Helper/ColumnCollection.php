@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Slam\Excel\Helper;
 
-use Slam\Excel\Exception;
 use ArrayAccess;
+use Slam\Excel\Exception;
 
 final class ColumnCollection implements ArrayAccess
 {

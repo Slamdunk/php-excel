@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Slam\Excel\Tests\Helper;
 
-use Slam\Excel;
 use org\bovigo\vfs;
 use PHPUnit\Framework\TestCase;
+use Slam\Excel;
 
 final class MainTest extends TestCase
 {

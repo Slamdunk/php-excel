@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Slam\Excel\Tests\Helper;
 
+use PHPUnit\Framework\TestCase;
 use Slam\Excel\Exception;
 use Slam\Excel\Helper;
-use PHPUnit\Framework\TestCase;
 
 final class ColumnCollectionTest extends TestCase
 {
