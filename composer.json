@@ -1,6 +1,5 @@
 {
     "name": "slam/php-excel",
-    "type": "library",
     "description": "Old faster PHPExcel",
     "license": "MIT",
     "authors": [
