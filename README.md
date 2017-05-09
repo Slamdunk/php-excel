@@ -18,14 +18,14 @@ some coding standard fixes and some Scrutinizer patches.
 
 ## Installation
 
-composer require slam/php-excel
+`composer require slam/php-excel`
 
 ## Usage
 
 From version 4 the code is split in two parts:
 
 1. `Slam\Excel\Pear` namespace, the original Pear code
-1. `Slam\Excel\Helper` namespace, an helper to apply a trivial style on a Table structure
+1. `Slam\Excel\Helper` namespace, an helper to apply a trivial style on a Table structure:
 
 ```php
 use Slam\Excel\Helper as ExcelHelper;
@@ -64,3 +64,7 @@ $table->setColumnCollection($columnCollection);
 $phpExcel->writeTable($table);
 $phpExcel->close();
 ```
+
+Result:
+
+![Example](https://raw.githubusercontent.com/Slamdunk/php-excel/master/example.png)
