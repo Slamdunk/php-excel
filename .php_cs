@@ -1,8 +1,9 @@
 <?php
 
-$config = new SlamCsFixer\Config(false);
+$config = new SlamCsFixer\Config();
 $config->getFinder()
-    ->in(__DIR__ . '/lib')
+    ->in(__DIR__ . '/lib/Exception')
+    ->in(__DIR__ . '/lib/Helper')
     ->in(__DIR__ . '/tests')
 ;
 

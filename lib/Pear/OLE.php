@@ -1,6 +1,8 @@
 <?php
 
-namespace Excel;
+namespace Slam\Excel\Pear;
+
+use Slam\Excel\Exception;
 
 /**
  * Excel_OLE package base class.
@@ -19,7 +21,7 @@ class OLE
     const Excel_OLE_PPS_TYPE_FILE       = 2;
     const Excel_OLE_PPS_TYPE_ROOT       = 5;
 
-    // Per unitTests
+    // For Unit Tests
     public static $gmmktime;
 
     public static function getTmpfile()

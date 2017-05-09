@@ -1,7 +1,9 @@
 <?php
 
-namespace Excel\Exception;
+declare(strict_types=1);
 
-class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+namespace Slam\Excel\Exception;
+
+final class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
 }

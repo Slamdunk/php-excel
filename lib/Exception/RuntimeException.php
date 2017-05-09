@@ -1,7 +1,9 @@
 <?php
 
-namespace Excel\Exception;
+declare(strict_types=1);
 
-class RuntimeException extends \RuntimeException implements ExceptionInterface
+namespace Slam\Excel\Exception;
+
+final class RuntimeException extends \RuntimeException implements ExceptionInterface
 {
 }

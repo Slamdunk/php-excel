@@ -22,9 +22,9 @@
         "slam/php-debug-r": "^1.0"
     },
     "autoload": {
-        "psr-4": { "Excel\\": "lib/" }
+        "psr-4": { "Slam\\Excel\\": "lib/" }
     },
     "autoload-dev": {
-        "psr-4": { "ExcelTest\\": "tests/" }
+        "psr-4": { "Slam\\Excel\\Tests\\": "tests/" }
     }
 }
