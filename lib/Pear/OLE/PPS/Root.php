@@ -13,6 +13,10 @@ use Slam\Excel;
  */
 class Root extends Excel\Pear\OLE\PPS
 {
+    protected $_FILEH_;
+    protected $_BIG_BLOCK_SIZE;
+    protected $_SMALL_BLOCK_SIZE;
+
     /**
      * Constructor
      *
@@ -88,9 +92,8 @@ class Root extends Excel\Pear\OLE\PPS
     private function _calcSize(& $raList)
     {
         // Calculate Basic Setting
-        list($iSBDcnt, $iBBcnt, $iPPScnt) = array(0, 0, 0);
-        $iSmallLen = 0;
         $iSBcnt = 0;
+        $iBBcnt = 0;
         foreach ($raList as $pps) {
             if ($pps->Type == Excel\Pear\OLE::Excel_OLE_PPS_TYPE_FILE) {
                 $pps->Size = $pps->_DataLen();
@@ -142,8 +145,6 @@ class Root extends Excel\Pear\OLE\PPS
      */
     private function _saveHeader($iSBDcnt, $iBBcnt, $iPPScnt)
     {
-        $FILE = $this->_FILEH_;
-
         return $this->_create_header($iSBDcnt, $iBBcnt, $iPPScnt);
     }
 
@@ -441,6 +442,7 @@ class Root extends Excel\Pear\OLE\PPS
      */
     private function _calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
+        $bbd_info = array();
         $bbd_info['entries_per_block'] = $this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE;
         $bbd_info['header_blockchain_list_entries'] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE;
         $bbd_info['blockchain_entries'] = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks;

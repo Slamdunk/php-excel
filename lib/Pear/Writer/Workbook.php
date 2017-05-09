@@ -143,12 +143,10 @@ class Workbook extends BIFFwriter
      */
     protected $_country_code;
 
-    /**
-     * number of bytes for sizeinfo of strings
-     *
-     * @var int
-     */
-    protected $_string_sizeinfo_size;
+    protected $_str_total;
+    protected $_str_unique;
+    protected $_str_table;
+    protected $_block_sizes;
 
     /**
      * Class constructor
@@ -176,7 +174,6 @@ class Workbook extends BIFFwriter
         $this->_palette             = array();
         $this->_codepage            = 0x04E4; // FIXME: should change for BIFF8
         $this->_country_code        = -1;
-        $this->_string_sizeinfo     = 3;
 
         // Add the default format for hyperlinks
         $this->_url_format          = $this->addFormat(array('color' => 'blue', 'underline' => 1));
@@ -198,7 +195,7 @@ class Workbook extends BIFFwriter
         if ($this->_fileclosed) { // Prevent close() from being called twice.
             return true;
         }
-        $res = $this->_storeWorkbook();
+        $this->_storeWorkbook();
 
         $this->_fileclosed = 1;
 
@@ -473,7 +470,7 @@ class Workbook extends BIFFwriter
         $this->_storeEof();
 
         // Store the workbook in an Excel_OLE container
-        $res = $this->_storeExcel_OLEFile();
+        $this->_storeExcel_OLEFile();
 
         return true;
     }
@@ -497,7 +494,7 @@ class Workbook extends BIFFwriter
         }
 
         $root = new Excel\Pear\OLE\PPS\Root(time(), time(), array($Excel_OLE));
-        $res = $root->save($this->_filename);
+        $root->save($this->_filename);
 
         return true;
     }
@@ -536,14 +533,14 @@ class Workbook extends BIFFwriter
 
         // Note: Fonts are 0-indexed. According to the SDK there is no index 4,
         // so the following fonts are 0, 1, 2, 3, 5
-        // 
+        //
         for ($i = 1; $i <= 5; ++$i) {
             $this->_append($font);
         }
 
         // Iterate through the XF objects and write a FONT record if it isn't the
         // same as the default FONT and if it hasn't already been used.
-        // 
+        //
         $fonts = array();
         $index = 6;                  // The first user defined FONT
 
@@ -586,7 +583,7 @@ class Workbook extends BIFFwriter
             // Check if $num_format is an index to a built-in format.
             // Also check for a string of zeros, which is a valid format string
             // but would evaluate to zero.
-            // 
+            //
             if (! preg_match("/^0+\d/", $num_format)) {
                 if (preg_match("/^\d+$/", $num_format)) { // built-in format
                     continue;
@@ -620,7 +617,7 @@ class Workbook extends BIFFwriter
     {
         // _tmp_format is added by the constructor. We use this to write the default XF's
         // The default font index is 0
-        // 
+        //
         $format = $this->_tmp_format;
         for ($i = 0; $i <= 14; ++$i) {
             $xf = $format->getXf('style'); // Style XF
@@ -692,7 +689,7 @@ class Workbook extends BIFFwriter
 
             // Determine if row + col, row, col or nothing has been defined
             // and write the appropriate record
-            // 
+            //
             if (isset($rowmin) && isset($colmin)) {
                 // Row and column titles have been defined.
                 // Row title has been defined.
@@ -816,8 +813,6 @@ class Workbook extends BIFFwriter
     /**
      * Writes the Excel BIFF EXTERNSHEET record. These references are used by
      * formulas.
-     *
-     * @param string $sheetname Worksheet name
      */
     protected function _storeExternsheetBiff8()
     {
@@ -825,7 +820,6 @@ class Workbook extends BIFFwriter
         $record   = 0x0017;                     // Record identifier
         $length   = 2 + 6 * $total_references;  // Number of bytes to follow
 
-        $supbook_index = 0;           // FIXME: only using internal SUPBOOK record
         $header           = pack('vv',  $record, $length);
         $data             = pack('v', $total_references);
         for ($i = 0; $i < $total_references; ++$i) {
@@ -861,15 +855,10 @@ class Workbook extends BIFFwriter
     {
         $record    = 0x041E;                      // Record identifier
 
-        $length    = 3 + strlen($format);      // Number of bytes to follow
-
-        $encoding = 0;
-        $cch  = strlen($format);             // Length of format string
-
         $length = strlen($format);
 
         $header    = pack('vv', $record, 3 + $length);
-        $data      = pack('vC', $ifmt, $cch);
+        $data      = pack('vC', $ifmt, $length);
 
         $this->_append($header . $data . $format);
     }
@@ -1239,7 +1228,6 @@ class Workbook extends BIFFwriter
          they must be written before the SST records
         */
 
-        $tmp_block_sizes = array();
         $tmp_block_sizes = $this->_block_sizes;
 
         $length  = 12;
@@ -1265,8 +1253,6 @@ class Workbook extends BIFFwriter
     protected function _storeSharedStringsTable()
     {
         $record  = 0x00fc;  // Record identifier
-        $length  = 0x0008;  // Number of bytes to follow
-        $total   = 0x0000;
 
         // Iterate through the strings to calculate the CONTINUE block sizes
         $continue_limit = 8208;
@@ -1280,12 +1266,9 @@ class Workbook extends BIFFwriter
 
         // The SST record is required even if it contains no strings. Thus we will
         // always have a length
-        // 
+        $length = 8;
         if (! empty($tmp_block_sizes)) {
             $length = 8 + array_shift($tmp_block_sizes);
-        } else {
-            // No strings
-            $length = 8;
         }
 
         // Write the SST block header information
@@ -1302,7 +1285,7 @@ class Workbook extends BIFFwriter
 
             // Block length is the total length of the strings that will be
             // written out in a single SST or CONTINUE block.
-            // 
+            //
             $block_length += $string_length;
 
             // We can write the string if it doesn't cross a CONTINUE boundary
@@ -1315,11 +1298,11 @@ class Workbook extends BIFFwriter
             // Deal with the cases where the next string to be written will exceed
             // the CONTINUE boundary. If the string is very long it may need to be
             // written in more than one CONTINUE record.
-            // 
+            //
             while ($block_length >= $continue_limit) {
                 // We need to avoid the case where a string is continued in the first
                 // n bytes that contain the string header information.
-                // 
+                //
                 $header_length   = 3; // Min string + header size -1
                 $space_remaining = $continue_limit - $written - $continue;
 
@@ -1363,7 +1346,7 @@ class Workbook extends BIFFwriter
                     // If the current string was split then the next CONTINUE block
                     // should have the string continue flag (grbit) set unless the
                     // split string fits exactly into the remaining space.
-                    // 
+                    //
                     if ($block_length > 0) {
                         $continue = 1;
                     } else {
@@ -1390,7 +1373,7 @@ class Workbook extends BIFFwriter
                 // If the string (or substr) is small enough we can write it in the
                 // new CONTINUE block. Else, go through the loop again to write it in
                 // one or more CONTINUE blocks
-                // 
+                //
                 if ($block_length < $continue_limit) {
                     $this->_append($string);
                     $written = $block_length;

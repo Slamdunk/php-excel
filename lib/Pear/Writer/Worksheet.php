@@ -253,6 +253,13 @@ class Worksheet extends BIFFwriter
     public $title_colmin;
 
     /**
+     * Last column to reapeat on each printed page
+     *
+     * @var int
+     */
+    public $title_colmax;
+
+    /**
      * First row of the area to print
      *
      * @var int
@@ -391,6 +398,21 @@ class Worksheet extends BIFFwriter
      * @var string
      */
     protected $_input_encoding;
+
+    protected $activesheet;
+    protected $firstsheet;
+    protected $_print_gridlines;
+    protected $_screen_gridlines;
+    protected $_print_headers;
+    protected $_hbreaks;
+    protected $_vbreaks;
+    protected $_protect;
+    protected $_password;
+    protected $col_sizes;
+    protected $_row_sizes;
+    protected $_zoom;
+    protected $_print_scale;
+    protected $_dv;
 
     /**
      * Constructor
@@ -1284,8 +1306,8 @@ class Worksheet extends BIFFwriter
 
         // Convert a column range: 'A:A' or 'B:G'
         if (preg_match('/([A-I]?[A-Z]):([A-I]?[A-Z])/', $cell, $match)) {
-            list($no_use, $col1) =  $this->_cellToRowcol($match[1] . '1'); // Add a dummy row
-            list($no_use, $col2) =  $this->_cellToRowcol($match[2] . '1'); // Add a dummy row
+            list(, $col1) =  $this->_cellToRowcol($match[1] . '1'); // Add a dummy row
+            list(, $col2) =  $this->_cellToRowcol($match[2] . '1'); // Add a dummy row
             return(array($col1, $col2));
         }
 
@@ -1327,8 +1349,8 @@ class Worksheet extends BIFFwriter
         $expn  = 0;
         $col   = 0;
 
-        while ($chars) {
-            $char = array_pop($chars);        // LS char first
+        // LS char first
+        while ($char = array_pop($chars)) {
             $col += (ord($char) - ord('A') + 1) * pow(26, $expn);
             ++$expn;
         }
@@ -1788,7 +1810,7 @@ class Worksheet extends BIFFwriter
         }
 
         // Parse the formula using the parser in Parser.php
-        $error = $this->_parser->parse($formula);
+        $this->_parser->parse($formula);
         $formula = $this->_parser->toReversePolish();
 
         $formlen    = strlen($formula);    // Length of the binary string
@@ -1949,7 +1971,6 @@ class Worksheet extends BIFFwriter
     protected function _writeUrlInternal($row1, $col1, $row2, $col2, $url, $str, $format = null)
     {
         $record      = 0x01B8;                       // Record identifier
-        $length      = 0x00000;                      // Bytes to follow
 
         if (! $format) {
             $format = $this->_url_format;
@@ -2024,7 +2045,6 @@ class Worksheet extends BIFFwriter
         }
 
         $record      = 0x01B8;                       // Record identifier
-        $length      = 0x00000;                      // Bytes to follow
 
         if (! $format) {
             $format = $this->_url_format;
@@ -2097,14 +2117,14 @@ class Worksheet extends BIFFwriter
 
         // Pack the lengths of the dir strings
         $dir_short_len = pack('V', strlen($dir_short));
-        $dir_long_len  = pack('V', strlen($dir_long));
+        // $dir_long_len  = pack('V', strlen($dir_long));
         $stream_len    = pack('V', 0); // strlen($dir_long) + 0x06);
 
         // Pack the undocumented parts of the hyperlink stream
         $unknown1 = pack('H*', 'D0C9EA79F9BACE118C8200AA004BA90B02000000');
         $unknown2 = pack('H*', '0303000000000000C000000000000046');
         $unknown3 = pack('H*', 'FFFFADDE000000000000000000000000000000000000000');
-        $unknown4 = pack('v',  0x03);
+        // $unknown4 = pack('v',  0x03);
 
         // Pack the main data stream
         $data        = pack('vvvv', $row1, $row2, $col1, $col2) .

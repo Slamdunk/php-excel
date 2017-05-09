@@ -244,6 +244,9 @@ class Format
      */
     private $_right_color;
 
+    private $_diag;
+    private $_diag_color;
+
     /**
      * Constructor
      *
@@ -407,7 +410,6 @@ class Format
         $uls        = $this->_underline;    // Underline
         $bFamily    = $this->_font_family;  // Font family
         $bCharSet   = $this->_font_charset; // Character set
-        $encoding   = 0;                    // TODO: Unicode support
 
         $cch        = strlen($this->_font_name); // Length of font name
         $record     = 0x31;                      // Record identifier
@@ -935,7 +937,7 @@ class Format
      * Sets the font family name.
      *
      *
-     * @param string $fontfamily The font family name. Possible values are:
+     * @param string $font_family The font family name. Possible values are:
      *                           'Times New Roman', 'Arial', 'Courier'.
      */
     public function setFontFamily($font_family)

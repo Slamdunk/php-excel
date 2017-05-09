@@ -85,6 +85,9 @@ class Parser
      */
     private $_references;
 
+    private $ptg;
+    private $_functions;
+
     /**
      * The class constructor
      *
@@ -555,7 +558,6 @@ class Parser
     private function _convertFunction($token, $num_args)
     {
         $args     = $this->_functions[$token][1];
-        $volatile = $this->_functions[$token][3];
 
         // Fixed number of args eg. TIME($i,$j,$k).
         if ($args >= 0) {
@@ -777,6 +779,7 @@ class Parser
      * @return mixed The reference index in packed() format on success,
      *               Excel_PEAR_Error on failure
      */
+    /*
     private function _getRefIndex($ext_ref)
     {
         $ext_ref = preg_replace("/^'/", '', $ext_ref); // Remove leading  ' if any.
@@ -826,6 +829,7 @@ class Parser
 
         return pack('v', $index);
     }
+    */
 
     /**
      * Look up the index that corresponds to an external sheet name. The hash of
@@ -1024,26 +1028,17 @@ class Parser
     {
         switch ($token) {
             case self::SPREADSHEET_EXCEL_WRITER_ADD:
-                return $token;
-                break;
             case self::SPREADSHEET_EXCEL_WRITER_SUB:
-                return $token;
-                break;
             case self::SPREADSHEET_EXCEL_WRITER_MUL:
-                return $token;
-                break;
             case self::SPREADSHEET_EXCEL_WRITER_DIV:
-                return $token;
-                break;
             case self::SPREADSHEET_EXCEL_WRITER_OPEN:
-                return $token;
-                break;
             case self::SPREADSHEET_EXCEL_WRITER_CLOSE:
-                return $token;
-                break;
             case self::SPREADSHEET_EXCEL_WRITER_COMA:
-                return $token;
-                break;
+            case self::SPREADSHEET_EXCEL_WRITER_GE:
+            case self::SPREADSHEET_EXCEL_WRITER_LE:
+            case self::SPREADSHEET_EXCEL_WRITER_EQ:
+            case self::SPREADSHEET_EXCEL_WRITER_NE:
+            case self::SPREADSHEET_EXCEL_WRITER_CONCAT:
             case self::SPREADSHEET_EXCEL_WRITER_SEMICOLON:
                 return $token;
                 break;
@@ -1060,21 +1055,6 @@ class Parser
                     break;
                 }
 
-                return $token;
-                break;
-            case self::SPREADSHEET_EXCEL_WRITER_GE:
-                return $token;
-                break;
-            case self::SPREADSHEET_EXCEL_WRITER_LE:
-                return $token;
-                break;
-            case self::SPREADSHEET_EXCEL_WRITER_EQ:
-                return $token;
-                break;
-            case self::SPREADSHEET_EXCEL_WRITER_NE:
-                return $token;
-                break;
-            case self::SPREADSHEET_EXCEL_WRITER_CONCAT:
                 return $token;
                 break;
             default:
