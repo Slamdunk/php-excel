@@ -1,35 +1,5 @@
-syntax: glob
-
-# Specifiche di progetto
-code-coverage/
-data/
-tmp/
-vendor/
-nohup.out
-.php_cs.cache
-
-# Eclipse
-*.pydevproject
-.project
-.metadata
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
-.externalToolBuilders/
-*.launch
-.cproject
-.buildpath
-
-# Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# OS X
-.DS_Store
-Icon
+/code-coverage/
+/vendor/
+/.php_cs.cache
+/composer.lock
+/nohup.out
