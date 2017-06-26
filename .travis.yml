@@ -17,14 +17,11 @@ matrix:
         - php: nightly
 
 cache:
-  directories:
-    - $HOME/.composer
-
-install:
-  - sh .travis.install.sh
+    directories:
+        - $HOME/.composer
 
 script:
-  - sh .travis.run-tests.sh
+    - sh .travis.run-tests.sh
 
 notifications:
-  email: false
+    email: false
