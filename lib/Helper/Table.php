@@ -28,6 +28,9 @@ final class Table implements Countable
     private $columnCollection;
 
     private $freezePanes = true;
+    private $fontSize = 8;
+    private $rowHeight;
+    private $textWrap = false;
 
     private $count;
 
@@ -138,6 +141,42 @@ final class Table implements Countable
     public function getFreezePanes(): bool
     {
         return $this->freezePanes;
+    }
+
+    public function setFontSize(int $fontSize)
+    {
+        $this->fontSize = $fontSize;
+
+        return $this;
+    }
+
+    public function getFontSize(): int
+    {
+        return $this->fontSize;
+    }
+
+    public function setRowHeight(int $rowHeight = null)
+    {
+        $this->rowHeight = $rowHeight;
+
+        return $this;
+    }
+
+    public function getRowHeight()
+    {
+        return $this->rowHeight;
+    }
+
+    public function setTextWrap(bool $textWrap)
+    {
+        $this->textWrap = $textWrap;
+
+        return $this;
+    }
+
+    public function getTextWrap(): bool
+    {
+        return $this->textWrap;
     }
 
     public function setCount(int $count)

@@ -6,6 +6,7 @@ namespace Slam\Excel\Tests\Helper;
 
 use ArrayIterator;
 use org\bovigo\vfs;
+use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPUnit\Framework\TestCase;
 use Slam\Excel;
@@ -203,7 +204,43 @@ final class TableWorkbookTest extends TestCase
         }
     }
 
-    private function getPhpExcelFromFile(string $filename)
+    public function testFontRowAttributesUsage()
+    {
+        $phpExcel = new Excel\Helper\TableWorkbook($this->filename);
+        $activeSheet = $phpExcel->addWorksheet(uniqid());
+        $table = new Excel\Helper\Table($activeSheet, 0, 0, uniqid(), new ArrayIterator(array(
+            array(
+                'name' => 'Foo',
+                'surname' => 'Bar',
+            ),
+            array(
+                'name' => 'Baz',
+                'surname' => 'Xxx',
+            ),
+        )));
+
+        $table->setFontSize(12);
+        $table->setRowHeight(33);
+        $table->setTextWrap(true);
+
+        $phpExcel->writeTable($table);
+        $phpExcel->close();
+
+        unset($phpExcel);
+
+        $phpExcel = $this->getPhpExcelFromFile($this->filename);
+
+        $firstSheet = $phpExcel->getSheet(0);
+        $cell = $firstSheet->getCell('A3');
+        $style = $cell->getStyle();
+
+        $this->assertSame('Foo', $cell->getValue());
+        $this->assertSame(12, $style->getFont()->getSize());
+        $this->assertSame(33, $firstSheet->getRowDimension($cell->getRow())->getRowHeight());
+        $this->assertSame(true, $style->getAlignment()->getWrapText());
+    }
+
+    private function getPhpExcelFromFile(string $filename): PHPExcel
     {
         return PHPExcel_IOFactory::load($filename);
     }

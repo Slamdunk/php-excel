@@ -109,7 +109,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
     {
         $columnCollection = $table->getColumnCollection();
         $columnKeys = array_keys($row);
-        $this->generateFormats($columnKeys, $columnCollection);
+        $this->generateFormats($table, $columnKeys, $columnCollection);
 
         $table->resetColumn();
         $titles = array();
@@ -134,6 +134,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
     private function writeRow(Table $table, array $row, string $type = null)
     {
         $table->resetColumn();
+        $sheet = $table->getActiveSheet();
 
         foreach ($row as $key => $content) {
             $cellStyle = $this->styleIdentity;
@@ -157,9 +158,13 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             $content = $cellStyle->decorateValue($content);
             $content = $this->sanitize($content);
 
-            $table->getActiveSheet()->{$write}($table->getRowCurrent(), $table->getColumnCurrent(), $content, $format);
+            $sheet->{$write}($table->getRowCurrent(), $table->getColumnCurrent(), $content, $format);
 
             $table->incrementColumn();
+        }
+
+        if (null !== ($rowHeight = $table->getRowHeight())) {
+            $sheet->setRow($table->getRowCurrent(), $rowHeight);
         }
 
         $table->incrementRow();
@@ -189,13 +194,13 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         return $value;
     }
 
-    private function generateFormats(array $titles, ColumnCollection $columnCollection = null)
+    private function generateFormats(Table $table, array $titles, ColumnCollection $columnCollection = null)
     {
         $this->formats = array();
         foreach ($titles as $key) {
             $header = $this->addFormat();
             $header->setColor('black');
-            $header->setSize(8);
+            $header->setSize($table->getFontSize());
             $header->setBold();
             $header->setFgColor(self::GREY_MEDIUM);
             $header->setTextWrap();
@@ -203,15 +208,23 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
 
             $zebraLight = $this->addFormat();
             $zebraLight->setColor('black');
-            $zebraLight->setSize(8);
+            $zebraLight->setSize($table->getFontSize());
             $zebraLight->setFgColor('white');
             $zebraLight->SetBorderColor(self::GREY_DARK);
 
             $zebraDark = $this->addFormat();
             $zebraDark->setColor('black');
-            $zebraDark->setSize(8);
+            $zebraDark->setSize($table->getFontSize());
             $zebraDark->setFgColor(self::GREY_LIGHT);
             $zebraDark->SetBorderColor(self::GREY_DARK);
+
+            if ($table->getTextWrap()) {
+                $zebraLight->setTextWrap();
+                $zebraLight->setAlign('top');
+
+                $zebraDark->setTextWrap();
+                $zebraDark->setAlign('top');
+            }
 
             $this->formats[$key] = array(
                 'cell_style'    => null,

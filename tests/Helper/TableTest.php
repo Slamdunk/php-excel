@@ -86,4 +86,19 @@ final class TableTest extends TestCase
 
         $this->assertSame($this->table->getFreezePanes(), $newTable->getFreezePanes());
     }
+
+    public function testFontRowAttributes()
+    {
+        $this->assertSame(8, $this->table->getFontSize());
+        $this->assertSame(null, $this->table->getRowHeight());
+        $this->assertSame(false, $this->table->getTextWrap());
+
+        $this->table->setFontSize($fontSize = mt_rand(10, 100));
+        $this->table->setRowHeight($rowHeight = mt_rand(10, 100));
+        $this->table->setTextWrap(true);
+
+        $this->assertSame($fontSize, $this->table->getFontSize());
+        $this->assertSame($rowHeight, $this->table->getRowHeight());
+        $this->assertSame(true, $this->table->getTextWrap());
+    }
 }
