@@ -17,6 +17,7 @@
         "phpoffice/phpexcel": "^1.8",
         "phpunit/phpunit": "^6.1",
         "roave/security-advisories": "dev-master",
+        "slam/php-cs-fixer-extensions": "^1.0",
         "slam/php-debug-r": "^1.0"
     },
     "autoload": {
