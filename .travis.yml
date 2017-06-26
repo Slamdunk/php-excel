@@ -12,6 +12,9 @@ matrix:
         - php: 7.0
         - php: 7.1
           env: PHP_LATEST_VERSION=1
+        - php: nightly
+    allow_failures:
+        - php: nightly
 
 cache:
   directories:
