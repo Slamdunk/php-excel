@@ -21,7 +21,7 @@ cache:
     - $HOME/.composer
 
 install:
-  - composer install --prefer-dist
+  - sh .travis.install.sh
 
 script:
   - sh .travis.run-tests.sh
