@@ -1,5 +1,3 @@
-/code-coverage/
-/vendor/
-/.php_cs.cache
-/composer.lock
-/nohup.out
+vendor/
+.php_cs.cache
+composer.lock
