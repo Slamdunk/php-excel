@@ -2,26 +2,25 @@ language: php
 
 sudo: false
 
-env:
-    global:
-        - PHP_LATEST_VERSION=0
-
 matrix:
-    fast_finish: true
-    include:
-        - php: 7.0
-        - php: 7.1
-          env: PHP_LATEST_VERSION=1
-        - php: nightly
-    allow_failures:
-        - php: nightly
+  fast_finish: true
+  include:
+    - php: 7.0
+      env: CS_CHECK=1
+    - php: 7.1
+      env: CODE_COVERAGE=1
+    - php: 7.2
+      env: COMPOSER_FLAGS="--ignore-platform-reqs"
+    - php: nightly
+      env: COMPOSER_FLAGS="--ignore-platform-reqs"
 
 cache:
-    directories:
-        - $HOME/.composer
+  directories:
+    - $HOME/.composer
 
-script:
-    - sh .travis.run-tests.sh
+install: wget -qO - https://github.com/Slamdunk/travis-scripts/raw/master/php-install.sh | sh
+
+script: wget -qO - https://github.com/Slamdunk/travis-scripts/raw/master/php-script.sh | sh
 
 notifications:
-    email: false
+  email: false
