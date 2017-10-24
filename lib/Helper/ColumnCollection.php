@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Slam\Excel\Helper;
 
-use ArrayAccess;
 use Slam\Excel\Exception;
 
-final class ColumnCollection implements ArrayAccess
+final class ColumnCollection implements ColumnCollectionInterface
 {
     private $columns = array();
 
