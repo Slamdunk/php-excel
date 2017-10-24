@@ -6,8 +6,8 @@
 
 This package is _NOT_ intended to be complete and flexible, but to be *fast*.
 
-[PHPOffice/PHPExcel](https://github.com/PHPOffice/PHPExcel) is a great library,
-but it abstracts everything in memory before writing to the disk. This is
+[PHPOffice/PHPExcel](https://github.com/PHPOffice/PHPExcel) and [PHPOffice/PhpSpreadsheet](https://github.com/PHPOffice/PhpSpreadsheet) are great libraries,
+but abstract everything in memory before writing to the disk. This is
 extremely inefficent and slow if you need to write a giant XLS with thousands
 rows and hundreds columns.
 
