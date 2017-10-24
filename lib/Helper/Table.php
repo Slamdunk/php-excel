@@ -119,7 +119,7 @@ final class Table implements Countable
         return $this->data;
     }
 
-    public function setColumnCollection(ColumnCollection $columnCollection = null)
+    public function setColumnCollection(ColumnCollectionInterface $columnCollection = null)
     {
         $this->columnCollection = $columnCollection;
 
