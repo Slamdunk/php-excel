@@ -186,7 +186,7 @@ final class Table implements Countable
 
     public function count()
     {
-        if ($this->count === null) {
+        if (null === $this->count) {
             throw new Exception\RuntimeException('Workbook must set count on table');
         }
 
@@ -195,7 +195,7 @@ final class Table implements Countable
 
     public function isEmpty(): bool
     {
-        return $this->count() === 0;
+        return 0 === $this->count();
     }
 
     public function splitTableOnNewWorksheet(Worksheet $activeSheet): self

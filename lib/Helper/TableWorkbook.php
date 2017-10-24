@@ -87,7 +87,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             }
         }
 
-        if ($count === 0) {
+        if (0 === $count) {
             $table->incrementRow();
             $table->getActiveSheet()->writeString($table->getRowCurrent(), $table->getColumnCurrent(), $this->emptyTableMessage);
             $table->incrementRow();
@@ -140,7 +140,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             $cellStyle = $this->styleIdentity;
             $format = null;
             if (isset($this->formats[$key])) {
-                if ($type === null) {
+                if (null === $type) {
                     $type = (($table->getRowCurrent() % 2)
                         ? 'zebra_dark'
                         : 'zebra_light'
@@ -174,7 +174,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
     {
         static $sanitizeMap;
 
-        if ($sanitizeMap === null) {
+        if (null === $sanitizeMap) {
             $sanitizeMap = array(
                 '&amp;'     => '&',
                 '&lt;'      => '<',
