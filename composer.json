@@ -15,9 +15,9 @@
     "require-dev": {
         "mikey179/vfsStream": "^1.6",
         "phpoffice/phpexcel": "^1.8",
-        "phpunit/phpunit": "^6.2",
+        "phpunit/phpunit": "^6.4",
         "roave/security-advisories": "dev-master",
-        "slam/php-cs-fixer-extensions": "^1.4",
+        "slam/php-cs-fixer-extensions": "^1.8",
         "slam/php-debug-r": "^1.1"
     },
     "autoload": {
