@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.0"
+        "php": "^7.1"
     },
     "require-dev": {
         "mikey179/vfsStream": "^1.6",
