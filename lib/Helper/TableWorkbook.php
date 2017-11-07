@@ -8,9 +8,8 @@ use Slam\Excel;
 
 final class TableWorkbook extends Excel\Pear\Writer\Workbook
 {
-    const GREY_DARK     = 60;
-    const GREY_MEDIUM   = 61;
-    const GREY_LIGHT    = 62;
+    const GREY_MEDIUM   = 43;
+    const GREY_LIGHT    = 42;
 
     private $rowsPerSheet = 60000;
 
@@ -24,9 +23,8 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
     {
         parent::__construct($filename);
 
-        $this->setCustomColor(self::GREY_DARK,      hexdec('7f'), hexdec('7f'), hexdec('7f'));
-        $this->setCustomColor(self::GREY_MEDIUM,    hexdec('cc'), hexdec('cc'), hexdec('cc'));
-        $this->setCustomColor(self::GREY_LIGHT,     hexdec('e8'), hexdec('e8'), hexdec('e8'));
+        $this->setCustomColor(self::GREY_MEDIUM,    0xCC, 0xCC, 0xCC);
+        $this->setCustomColor(self::GREY_LIGHT,     0xE8, 0xE8, 0xE8);
 
         $this->styleIdentity = new Excel\Helper\CellStyle\Text();
     }
@@ -142,8 +140,8 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             if (isset($this->formats[$key])) {
                 if (null === $type) {
                     $type = (($table->getRowCurrent() % 2)
-                        ? 'zebra_dark'
-                        : 'zebra_light'
+                        ? 'zebra_light'
+                        : 'zebra_dark'
                     );
                 }
                 $cellStyle = $this->formats[$key]['cell_style'];
@@ -210,13 +208,11 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             $zebraLight->setColor('black');
             $zebraLight->setSize($table->getFontSize());
             $zebraLight->setFgColor('white');
-            $zebraLight->SetBorderColor(self::GREY_DARK);
 
             $zebraDark = $this->addFormat();
             $zebraDark->setColor('black');
             $zebraDark->setSize($table->getFontSize());
             $zebraDark->setFgColor(self::GREY_LIGHT);
-            $zebraDark->SetBorderColor(self::GREY_DARK);
 
             if ($table->getTextWrap()) {
                 $zebraLight->setTextWrap();
