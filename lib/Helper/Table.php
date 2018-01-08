@@ -79,7 +79,7 @@ final class Table implements Countable
     {
         ++$this->rowCurrent;
 
-        $this->rowEnd = max($this->rowEnd, $this->rowCurrent);
+        $this->rowEnd = \max($this->rowEnd, $this->rowCurrent);
     }
 
     public function getColumnStart(): int
@@ -101,7 +101,7 @@ final class Table implements Countable
     {
         ++$this->columnCurrent;
 
-        $this->columnEnd = max($this->columnEnd, $this->columnCurrent);
+        $this->columnEnd = \max($this->columnEnd, $this->columnCurrent);
     }
 
     public function resetColumn()

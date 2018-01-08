@@ -14,9 +14,9 @@ final class ColumnCollectionTest extends TestCase
     {
         $this->column = new Helper\Column('foo', 'Foo', 10, new Helper\CellStyle\Text());
 
-        $this->collection = new Helper\ColumnCollection(array(
+        $this->collection = new Helper\ColumnCollection([
             $this->column,
-        ));
+        ]);
     }
 
     public function testBaseFunctionalities()

@@ -42,7 +42,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
     public function writeTable(Table $table): Table
     {
         $this->writeTableHeading($table);
-        $tables = array($table);
+        $tables = [$table];
 
         $count = 0;
         $headingRow = true;
@@ -50,7 +50,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             ++$count;
 
             if ($table->getRowCurrent() >= $this->rowsPerSheet) {
-                $table = $table->splitTableOnNewWorksheet($this->addWorksheet(uniqid()));
+                $table = $table->splitTableOnNewWorksheet($this->addWorksheet(\uniqid()));
                 $tables[] = $table;
                 $this->writeTableHeading($table);
                 $headingRow = true;
@@ -65,23 +65,23 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             $this->writeRow($table, $row);
         }
 
-        if (count($tables) > 1) {
-            $table = reset($tables);
+        if (\count($tables) > 1) {
+            $table = \reset($tables);
             $firstSheet = $table->getActiveSheet();
             // In Excel the maximum length for a sheet name is 30
-            $originalName = mb_substr($firstSheet->name, 0, 21);
+            $originalName = \mb_substr($firstSheet->name, 0, 21);
 
             $sheetCounter = 0;
-            $sheetTotal = count($tables);
+            $sheetTotal = \count($tables);
             foreach ($tables as $table) {
                 ++$sheetCounter;
-                $table->getActiveSheet()->name = sprintf('%s (%s|%s)', $originalName, $sheetCounter, $sheetTotal);
+                $table->getActiveSheet()->name = \sprintf('%s (%s|%s)', $originalName, $sheetCounter, $sheetTotal);
             }
         }
 
         if ($table->getFreezePanes()) {
             foreach ($tables as $table) {
-                $table->getActiveSheet()->freezePanes(array($table->getRowStart() + 2, 0));
+                $table->getActiveSheet()->freezePanes([$table->getRowStart() + 2, 0]);
             }
         }
 
@@ -93,7 +93,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
 
         $table->setCount($count);
 
-        return end($tables);
+        return \end($tables);
     }
 
     private function writeTableHeading(Table $table)
@@ -106,14 +106,14 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
     private function writeColumnsHeading(Table $table, array $row)
     {
         $columnCollection = $table->getColumnCollection();
-        $columnKeys = array_keys($row);
+        $columnKeys = \array_keys($row);
         $this->generateFormats($table, $columnKeys, $columnCollection);
 
         $table->resetColumn();
-        $titles = array();
+        $titles = [];
         foreach ($columnKeys as $title) {
             $width = 10;
-            $newTitle = ucwords(str_replace('_', ' ', $title));
+            $newTitle = \ucwords(\str_replace('_', ' ', $title));
 
             if (isset($columnCollection) and isset($columnCollection[$title])) {
                 $width = $columnCollection[$title]->getWidth();
@@ -149,7 +149,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             }
 
             $write = 'write';
-            if (get_class($cellStyle) === get_class($this->styleIdentity)) {
+            if (\get_class($cellStyle) === \get_class($this->styleIdentity)) {
                 $write = 'writeString';
             }
 
@@ -173,28 +173,28 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         static $sanitizeMap;
 
         if (null === $sanitizeMap) {
-            $sanitizeMap = array(
+            $sanitizeMap = [
                 '&amp;'     => '&',
                 '&lt;'      => '<',
                 '&gt;'      => '>',
                 '&apos;'    => "'",
                 '&quot;'    => '"',
-            );
+            ];
         }
 
-        $value = str_replace(
-            array_keys($sanitizeMap),
-            array_values($sanitizeMap),
+        $value = \str_replace(
+            \array_keys($sanitizeMap),
+            \array_values($sanitizeMap),
             $value
         );
-        $value = mb_convert_encoding($value, 'Windows-1252');
+        $value = \mb_convert_encoding($value, 'Windows-1252');
 
         return $value;
     }
 
     private function generateFormats(Table $table, array $titles, ColumnCollectionInterface $columnCollection = null)
     {
-        $this->formats = array();
+        $this->formats = [];
         foreach ($titles as $key) {
             $header = $this->addFormat();
             $header->setColor('black');
@@ -222,12 +222,12 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
                 $zebraDark->setAlign('top');
             }
 
-            $this->formats[$key] = array(
+            $this->formats[$key] = [
                 'cell_style'    => null,
                 'title'         => $header,
                 'zebra_dark'    => $zebraLight,
                 'zebra_light'   => $zebraDark,
-            );
+            ];
 
             $cellStyle = $this->styleIdentity;
             if (isset($columnCollection) and isset($columnCollection[$key])) {

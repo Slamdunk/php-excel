@@ -8,7 +8,7 @@ use Slam\Excel\Exception;
 
 final class ColumnCollection implements ColumnCollectionInterface
 {
-    private $columns = array();
+    private $columns = [];
 
     public function __construct(array $columns)
     {

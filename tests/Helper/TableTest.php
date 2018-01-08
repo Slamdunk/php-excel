@@ -12,10 +12,10 @@ final class TableTest extends TestCase
 {
     protected function setUp()
     {
-        $this->phpExcel = new Excel\Pear\Writer\Workbook(uniqid());
+        $this->phpExcel = new Excel\Pear\Writer\Workbook(\uniqid());
         $this->activeSheet = $this->phpExcel->addWorksheet('sheet');
 
-        $this->data = new ArrayIterator(array('a', 'b'));
+        $this->data = new ArrayIterator(['a', 'b']);
 
         $this->table = new Excel\Helper\Table($this->activeSheet, 3, 12, 'My Heading', $this->data);
     }
@@ -90,15 +90,15 @@ final class TableTest extends TestCase
     public function testFontRowAttributes()
     {
         $this->assertSame(8, $this->table->getFontSize());
-        $this->assertSame(null, $this->table->getRowHeight());
-        $this->assertSame(false, $this->table->getTextWrap());
+        $this->assertNull($this->table->getRowHeight());
+        $this->assertFalse($this->table->getTextWrap());
 
-        $this->table->setFontSize($fontSize = mt_rand(10, 100));
-        $this->table->setRowHeight($rowHeight = mt_rand(10, 100));
+        $this->table->setFontSize($fontSize = \mt_rand(10, 100));
+        $this->table->setRowHeight($rowHeight = \mt_rand(10, 100));
         $this->table->setTextWrap(true);
 
         $this->assertSame($fontSize, $this->table->getFontSize());
         $this->assertSame($rowHeight, $this->table->getRowHeight());
-        $this->assertSame(true, $this->table->getTextWrap());
+        $this->assertTrue($this->table->getTextWrap());
     }
 }

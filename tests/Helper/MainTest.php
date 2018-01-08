@@ -12,7 +12,7 @@ final class MainTest extends TestCase
 {
     protected function setUp()
     {
-        Excel\Pear\OLE::$gmmktime = gmmktime(1, 1, 1, 1, 1, 2000);
+        Excel\Pear\OLE::$gmmktime = \gmmktime(1, 1, 1, 1, 1, 2000);
 
         $this->vfs = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test.xls');
@@ -24,9 +24,9 @@ final class MainTest extends TestCase
 
     public function testBaseCreation()
     {
-        $this->xls->setCustomColor(60, hexdec('7f'), hexdec('7f'), hexdec('7f'));
-        $this->xls->setCustomColor(61, hexdec('e8'), hexdec('e8'), hexdec('e8'));
-        $this->xls->setCustomColor(62, hexdec('cc'), hexdec('cc'), hexdec('cc'));
+        $this->xls->setCustomColor(60, \hexdec('7f'), \hexdec('7f'), \hexdec('7f'));
+        $this->xls->setCustomColor(61, \hexdec('e8'), \hexdec('e8'), \hexdec('e8'));
+        $this->xls->setCustomColor(62, \hexdec('cc'), \hexdec('cc'), \hexdec('cc'));
 
         $sheet = $this->xls->addWorksheet('CustomSheet');
         $sheet->setLandscape();
@@ -43,7 +43,7 @@ final class MainTest extends TestCase
 
         $sheet->write(1, 1, 'LCR', $header);
 
-        $sheet->freezePanes(array(2, 0));
+        $sheet->freezePanes([2, 0]);
 
         $sheet->writeString(2, 1, '0123');
 
@@ -60,12 +60,12 @@ final class MainTest extends TestCase
 
         $sheet->write(7, 3, 1.1);
         $sheet->write(8, 3, 2);
-        $sheet->writeFormula(9, 3, sprintf('=SUM(%s:%s)', $this->xls->rowcolToCell(7, 3), $this->xls->rowcolToCell(8, 3)));
+        $sheet->writeFormula(9, 3, \sprintf('=SUM(%s:%s)', $this->xls->rowcolToCell(7, 3), $this->xls->rowcolToCell(8, 3)));
 
         $this->xls->close();
 
-        $this->assertLessThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
-        $this->assertSame('9ab414a26fdb4bfb5a6d65c9c214ddc70b5a5464', hash_file('sha1', $this->filename));
+        $this->assertLessThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
+        $this->assertSame('9ab414a26fdb4bfb5a6d65c9c214ddc70b5a5464', \hash_file('sha1', $this->filename));
     }
 
     public function testBigFiles()
@@ -78,8 +78,8 @@ final class MainTest extends TestCase
 
         $this->xls->close();
 
-        $this->assertGreaterThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, filesize($this->filename));
-        $this->assertSame('f95f7ff2fb1ffb98cef820ecd73312c9a43b9662', hash_file('sha1', $this->filename));
+        $this->assertGreaterThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
+        $this->assertSame('f95f7ff2fb1ffb98cef820ecd73312c9a43b9662', \hash_file('sha1', $this->filename));
     }
 
     /**
@@ -96,10 +96,10 @@ final class MainTest extends TestCase
 
     public function dataProviderTestColumnIndexInInumber()
     {
-        return array(
-            array(0, 'A'),
-            array(30, 'AE'),
-            array(231, 'HX'),
-        );
+        return [
+            [0, 'A'],
+            [30, 'AE'],
+            [231, 'HX'],
+        ];
     }
 }

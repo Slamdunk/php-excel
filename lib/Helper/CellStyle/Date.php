@@ -15,7 +15,7 @@ final class Date implements CellStyleInterface
             return $value;
         }
 
-        return implode('/', array_reverse(explode('-', $value)));
+        return \implode('/', \array_reverse(\explode('-', $value)));
     }
 
     public function styleCell(Format $format)
