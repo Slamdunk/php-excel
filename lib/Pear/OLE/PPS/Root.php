@@ -5,7 +5,7 @@ namespace Slam\Excel\Pear\OLE\PPS;
 use Slam\Excel;
 
 /**
- * Class for creating Root PPS's for Excel_OLE containers
+ * Class for creating Root PPS's for Excel_OLE containers.
  *
  * @author   Xavier Noguer <xnoguer@php.net>
  *
@@ -18,7 +18,7 @@ class Root extends Excel\Pear\OLE\PPS
     protected $_SMALL_BLOCK_SIZE;
 
     /**
-     * Constructor
+     * Constructor.
      *
      *
      * @param int $time_1st A timestamp
@@ -51,11 +51,11 @@ class Root extends Excel\Pear\OLE\PPS
      */
     public function save($filename)
     {
-        $this->_FILEH_ = fopen($filename, 'wb');
+        $this->_FILEH_ = \fopen($filename, 'wb');
 
         // Initial Setting for saving
-        $this->_BIG_BLOCK_SIZE  = pow(2, ((isset($this->_BIG_BLOCK_SIZE)) ? $this->_adjust2($this->_BIG_BLOCK_SIZE) : 9));
-        $this->_SMALL_BLOCK_SIZE = pow(2, ((isset($this->_SMALL_BLOCK_SIZE)) ? $this->_adjust2($this->_SMALL_BLOCK_SIZE) : 6));
+        $this->_BIG_BLOCK_SIZE  = \pow(2, ((isset($this->_BIG_BLOCK_SIZE)) ? $this->_adjust2($this->_BIG_BLOCK_SIZE) : 9));
+        $this->_SMALL_BLOCK_SIZE = \pow(2, ((isset($this->_SMALL_BLOCK_SIZE)) ? $this->_adjust2($this->_SMALL_BLOCK_SIZE) : 6));
 
         // Make an array of PPS's (for Save)
         $aList = array();
@@ -76,13 +76,13 @@ class Root extends Excel\Pear\OLE\PPS
         $this->_saveBbd($iSBDcnt, $iBBcnt, $iPPScnt);
 
         // Close File, send it to stdout if necessary
-        fclose($this->_FILEH_);
+        \fclose($this->_FILEH_);
 
         return true;
     }
 
     /**
-     * Calculate some numbers
+     * Calculate some numbers.
      *
      *
      * @param array $raList Reference to an array of PPS's
@@ -95,31 +95,31 @@ class Root extends Excel\Pear\OLE\PPS
         $iSBcnt = 0;
         $iBBcnt = 0;
         foreach ($raList as $pps) {
-            if ($pps->Type == Excel\Pear\OLE::Excel_OLE_PPS_TYPE_FILE) {
+            if (Excel\Pear\OLE::Excel_OLE_PPS_TYPE_FILE == $pps->Type) {
                 $pps->Size = $pps->_DataLen();
                 if ($pps->Size < Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL) {
-                    $iSBcnt += floor($pps->Size / $this->_SMALL_BLOCK_SIZE)
+                    $iSBcnt += \floor($pps->Size / $this->_SMALL_BLOCK_SIZE)
                                   + (($pps->Size % $this->_SMALL_BLOCK_SIZE) ? 1 : 0);
                 } else {
-                    $iBBcnt += (floor($pps->Size / $this->_BIG_BLOCK_SIZE) +
+                    $iBBcnt += (\floor($pps->Size / $this->_BIG_BLOCK_SIZE) +
                         (($pps->Size % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
                 }
             }
         }
         $iSmallLen = $iSBcnt * $this->_SMALL_BLOCK_SIZE;
-        $iSlCnt = floor($this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE);
-        $iSBDcnt = floor($iSBcnt / $iSlCnt) + (($iSBcnt % $iSlCnt) ? 1 : 0);
-        $iBBcnt +=  (floor($iSmallLen / $this->_BIG_BLOCK_SIZE) +
+        $iSlCnt = \floor($this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE);
+        $iSBDcnt = \floor($iSBcnt / $iSlCnt) + (($iSBcnt % $iSlCnt) ? 1 : 0);
+        $iBBcnt +=  (\floor($iSmallLen / $this->_BIG_BLOCK_SIZE) +
                       (($iSmallLen % $this->_BIG_BLOCK_SIZE) ? 1 : 0));
-        $iCnt = count($raList);
+        $iCnt = \count($raList);
         $iBdCnt = $this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_PPS_SIZE;
-        $iPPScnt = (floor($iCnt / $iBdCnt) + (($iCnt % $iBdCnt) ? 1 : 0));
+        $iPPScnt = (\floor($iCnt / $iBdCnt) + (($iCnt % $iBdCnt) ? 1 : 0));
 
         return array($iSBDcnt, $iBBcnt, $iPPScnt);
     }
 
     /**
-     * Helper function for caculating a magic value for block sizes
+     * Helper function for caculating a magic value for block sizes.
      *
      *
      * @param int $i2 The argument
@@ -130,13 +130,13 @@ class Root extends Excel\Pear\OLE\PPS
      */
     private function _adjust2($i2)
     {
-        $iWk = log($i2) / log(2);
+        $iWk = \log($i2) / \log(2);
 
-        return ($iWk > floor($iWk)) ? floor($iWk) + 1 : $iWk;
+        return ($iWk > \floor($iWk)) ? \floor($iWk) + 1 : $iWk;
     }
 
     /**
-     * Save Excel_OLE header
+     * Save Excel_OLE header.
      *
      *
      * @param int $iSBDcnt
@@ -149,7 +149,7 @@ class Root extends Excel\Pear\OLE\PPS
     }
 
     /**
-     * Saving big data (PPS's with data bigger than Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL)
+     * Saving big data (PPS's with data bigger than Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL).
      *
      *
      * @param int   $iStBlk
@@ -161,33 +161,33 @@ class Root extends Excel\Pear\OLE\PPS
 
         // cycle through PPS's
         foreach ($raList as $pps) {
-            if ($pps->Type == Excel\Pear\OLE::Excel_OLE_PPS_TYPE_DIR) {
+            if (Excel\Pear\OLE::Excel_OLE_PPS_TYPE_DIR == $pps->Type) {
                 continue;
             }
             $pps->Size = $pps->_DataLen();
             if (
                     $pps->Size >= Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL
-                or  ($pps->Type == Excel\Pear\OLE::Excel_OLE_PPS_TYPE_ROOT and isset($pps->_data))
+                or  (Excel\Pear\OLE::Excel_OLE_PPS_TYPE_ROOT == $pps->Type and isset($pps->_data))
             ) {
                 // Write Data
                 if (isset($pps->_PPS_FILE)) {
-                    fseek($pps->_PPS_FILE, 0); // To The Top
-                    while ($sBuff = fread($pps->_PPS_FILE, 4096)) {
-                        fwrite($FILE, $sBuff);
+                    \fseek($pps->_PPS_FILE, 0); // To The Top
+                    while ($sBuff = \fread($pps->_PPS_FILE, 4096)) {
+                        \fwrite($FILE, $sBuff);
                     }
                 } else {
-                    fwrite($FILE, $pps->_data);
+                    \fwrite($FILE, $pps->_data);
                 }
 
                 if ($pps->Size % $this->_BIG_BLOCK_SIZE) {
                     for ($j = 0; $j < ($this->_BIG_BLOCK_SIZE - ($pps->Size % $this->_BIG_BLOCK_SIZE)); ++$j) {
-                        fwrite($FILE, "\x00");
+                        \fwrite($FILE, "\x00");
                     }
                 }
                 // Set For PPS
                 $pps->_StartBlock = $iStBlk;
                 $iStBlk += (
-                        floor($pps->Size / $this->_BIG_BLOCK_SIZE)
+                        \floor($pps->Size / $this->_BIG_BLOCK_SIZE)
                     +   (($pps->Size % $this->_BIG_BLOCK_SIZE) ? 1 : 0)
                 );
             }
@@ -195,7 +195,7 @@ class Root extends Excel\Pear\OLE\PPS
     }
 
     /**
-     * get small data (PPS's with data smaller than Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL)
+     * get small data (PPS's with data smaller than Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL).
      *
      *
      * @param array $raList Reference to array of PPS's
@@ -209,7 +209,7 @@ class Root extends Excel\Pear\OLE\PPS
         foreach ($raList as $pps) {
             // Make SBD, small data string
             if (
-                    $pps->Type != Excel\Pear\OLE::Excel_OLE_PPS_TYPE_FILE
+                    Excel\Pear\OLE::Excel_OLE_PPS_TYPE_FILE != $pps->Type
                 or  $pps->Size <= 0
                 or  $pps->Size >= Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL
             ) {
@@ -217,19 +217,19 @@ class Root extends Excel\Pear\OLE\PPS
             }
 
             $iSmbCnt = (
-                    floor($pps->Size / $this->_SMALL_BLOCK_SIZE)
+                    \floor($pps->Size / $this->_SMALL_BLOCK_SIZE)
                 +   (($pps->Size % $this->_SMALL_BLOCK_SIZE) ? 1 : 0)
             );
 
             // Add to SBD
             for ($j = 0; $j < ($iSmbCnt - 1); ++$j) {
-                fwrite($FILE, pack('V', $j + $iSmBlk + 1));
+                \fwrite($FILE, \pack('V', $j + $iSmBlk + 1));
             }
-            fwrite($FILE, pack('V', -2));
+            \fwrite($FILE, \pack('V', -2));
 
             // Add to Data String(this will be written for RootEntry)
-            fseek($pps->_PPS_FILE, 0); // To The Top
-            while ($sBuff = fread($pps->_PPS_FILE, 4096)) {
+            \fseek($pps->_PPS_FILE, 0); // To The Top
+            while ($sBuff = \fread($pps->_PPS_FILE, 4096)) {
                 $sRes .= $sBuff;
             }
 
@@ -243,10 +243,10 @@ class Root extends Excel\Pear\OLE\PPS
             $iSmBlk += $iSmbCnt;
         }
 
-        $iSbCnt = floor($this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE);
+        $iSbCnt = \floor($this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE);
         if ($iSmBlk % $iSbCnt) {
             for ($i = 0; $i < ($iSbCnt - ($iSmBlk % $iSbCnt)); ++$i) {
-                fwrite($FILE, pack('V', -1));
+                \fwrite($FILE, \pack('V', -1));
             }
         }
 
@@ -254,7 +254,7 @@ class Root extends Excel\Pear\OLE\PPS
     }
 
     /**
-     * Saves all the PPS's WKs
+     * Saves all the PPS's WKs.
      *
      *
      * @param array $raList Reference to an array with all PPS's
@@ -263,20 +263,20 @@ class Root extends Excel\Pear\OLE\PPS
     {
         // Save each PPS WK
         foreach ($raList as $pps) {
-            fwrite($this->_FILEH_, $pps->_getPpsWk());
+            \fwrite($this->_FILEH_, $pps->_getPpsWk());
         }
         // Adjust for Block
-        $iCnt = count($raList);
+        $iCnt = \count($raList);
         $iBCnt = $this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_PPS_SIZE;
         if ($iCnt % $iBCnt) {
             for ($i = 0; $i < (($iBCnt - ($iCnt % $iBCnt)) * Excel\Pear\OLE::Excel_OLE_PPS_SIZE); ++$i) {
-                fwrite($this->_FILEH_, "\x00");
+                \fwrite($this->_FILEH_, "\x00");
             }
         }
     }
 
     /**
-     * Saving Big Block Depot
+     * Saving Big Block Depot.
      *
      *
      * @param int $iSbdSize
@@ -289,7 +289,7 @@ class Root extends Excel\Pear\OLE\PPS
     }
 
     /**
-     * New method to store Bigblock chain
+     * New method to store Bigblock chain.
      *
      *
      * @param int $num_sb_blocks  - number of Smallblock depot blocks
@@ -306,27 +306,27 @@ class Root extends Excel\Pear\OLE\PPS
 
         if ($num_sb_blocks > 0) {
             for ($i = 0; $i < ($num_sb_blocks - 1); ++$i) {
-                $data .= pack('V', $i + 1);
+                $data .= \pack('V', $i + 1);
             }
-            $data .= pack('V', -2);
+            $data .= \pack('V', -2);
         }
 
         for ($i = 0; $i < ($num_bb_blocks - 1); ++$i) {
-            $data .= pack('V', $i + $num_sb_blocks + 1);
+            $data .= \pack('V', $i + $num_sb_blocks + 1);
         }
-        $data .= pack('V', -2);
+        $data .= \pack('V', -2);
 
         for ($i = 0; $i < ($num_pps_blocks - 1); ++$i) {
-            $data .= pack('V', $i + $num_sb_blocks + $num_bb_blocks + 1);
+            $data .= \pack('V', $i + $num_sb_blocks + $num_bb_blocks + 1);
         }
-        $data .= pack('V', -2);
+        $data .= \pack('V', -2);
 
         for ($i = 0; $i < $bbd_info['0xFFFFFFFD_blockchain_entries']; ++$i) {
-            $data .= pack('V', 0xFFFFFFFD);
+            $data .= \pack('V', 0xFFFFFFFD);
         }
 
         for ($i = 0; $i < $bbd_info['0xFFFFFFFC_blockchain_entries']; ++$i) {
-            $data .= pack('V', 0xFFFFFFFC);
+            $data .= \pack('V', 0xFFFFFFFC);
         }
 
         // Adjust for Block
@@ -334,7 +334,7 @@ class Root extends Excel\Pear\OLE\PPS
         if ($all_entries % $bbd_info['entries_per_block']) {
             $rest = $bbd_info['entries_per_block'] - ($all_entries % $bbd_info['entries_per_block']);
             for ($i = 0; $i < $rest; ++$i) {
-                $data .= pack('V', -1);
+                $data .= \pack('V', -1);
             }
         }
 
@@ -346,28 +346,28 @@ class Root extends Excel\Pear\OLE\PPS
                 if ($iN >= ($bbd_info['entries_per_block'] - 1)) {
                     $iN = 0;
                     ++$iNb;
-                    $data .= pack('V', $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info['0xFFFFFFFD_blockchain_entries'] + $iNb);
+                    $data .= \pack('V', $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info['0xFFFFFFFD_blockchain_entries'] + $iNb);
                 }
 
-                $data .= pack('V', $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i);
+                $data .= \pack('V', $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i);
             }
 
             $all_entries = $bbd_info['blockchain_list_entries'] - $bbd_info['header_blockchain_list_entries'];
             if (($all_entries % ($bbd_info['entries_per_block'] - 1))) {
                 $rest = ($bbd_info['entries_per_block'] - 1) - ($all_entries % ($bbd_info['entries_per_block'] - 1));
                 for ($i = 0; $i < $rest; ++$i) {
-                    $data .= pack('V', -1);
+                    $data .= \pack('V', -1);
                 }
             }
 
-            $data .= pack('V', -2);
+            $data .= \pack('V', -2);
         }
 
-        fwrite($FILE, $data);
+        \fwrite($FILE, $data);
     }
 
     /**
-     * New method to store Header
+     * New method to store Header.
      *
      *
      * @param int $num_sb_blocks  - number of Smallblock depot blocks
@@ -381,59 +381,59 @@ class Root extends Excel\Pear\OLE\PPS
         $bbd_info = $this->_calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks);
 
         // Save Header
-        fwrite($FILE,
+        \fwrite($FILE,
             "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1"
             . "\x00\x00\x00\x00"
             . "\x00\x00\x00\x00"
             . "\x00\x00\x00\x00"
             . "\x00\x00\x00\x00"
-            . pack('v', 0x3b)
-            . pack('v', 0x03)
-            . pack('v', -2)
-            . pack('v', 9)
-            . pack('v', 6)
-            . pack('v', 0)
+            . \pack('v', 0x3b)
+            . \pack('v', 0x03)
+            . \pack('v', -2)
+            . \pack('v', 9)
+            . \pack('v', 6)
+            . \pack('v', 0)
             . "\x00\x00\x00\x00"
             . "\x00\x00\x00\x00"
-            . pack('V', $bbd_info['blockchain_list_entries'])
-            . pack('V', $num_sb_blocks + $num_bb_blocks) // ROOT START
-            . pack('V', 0)
-            . pack('V', 0x1000)
+            . \pack('V', $bbd_info['blockchain_list_entries'])
+            . \pack('V', $num_sb_blocks + $num_bb_blocks) // ROOT START
+            . \pack('V', 0)
+            . \pack('V', 0x1000)
          );
 
         // Small Block Depot
         if ($num_sb_blocks > 0) {
-            fwrite($FILE, pack('V', 0));
+            \fwrite($FILE, \pack('V', 0));
         } else {
-            fwrite($FILE, pack('V', -2));
+            \fwrite($FILE, \pack('V', -2));
         }
 
-        fwrite($FILE, pack('V', $num_sb_blocks));
+        \fwrite($FILE, \pack('V', $num_sb_blocks));
 
         // Extra BDList Start, Count
         if ($bbd_info['blockchain_list_entries'] < $bbd_info['header_blockchain_list_entries']) {
-            fwrite($FILE,
-                pack('V', -2) .      // Extra BDList Start
-                pack('V', 0)        // Extra BDList Count
+            \fwrite($FILE,
+                \pack('V', -2) .      // Extra BDList Start
+                \pack('V', 0)        // Extra BDList Count
             );
         } else {
-            fwrite($FILE, pack('V', $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info['0xFFFFFFFD_blockchain_entries']) . pack('V', $bbd_info['0xFFFFFFFC_blockchain_entries']));
+            \fwrite($FILE, \pack('V', $num_sb_blocks + $num_bb_blocks + $num_pps_blocks + $bbd_info['0xFFFFFFFD_blockchain_entries']) . \pack('V', $bbd_info['0xFFFFFFFC_blockchain_entries']));
         }
 
         // BDList
         for ($i = 0; $i < $bbd_info['header_blockchain_list_entries'] and $i < $bbd_info['blockchain_list_entries']; ++$i) {
-            fwrite($FILE, pack('V', $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i));
+            \fwrite($FILE, \pack('V', $num_bb_blocks + $num_sb_blocks + $num_pps_blocks + $i));
         }
 
         if ($i < $bbd_info['header_blockchain_list_entries']) {
             for ($j = 0; $j < ($bbd_info['header_blockchain_list_entries'] - $i); ++$j) {
-                fwrite($FILE, (pack('V', -1)));
+                \fwrite($FILE, (\pack('V', -1)));
             }
         }
     }
 
     /**
-     * New method to calculate Bigblock chain
+     * New method to calculate Bigblock chain.
      *
      *
      * @param int $num_sb_blocks  - number of Smallblock depot blocks
@@ -465,7 +465,7 @@ class Root extends Excel\Pear\OLE\PPS
     }
 
     /**
-     * Calculates number of pointer blocks
+     * Calculates number of pointer blocks.
      *
      *
      * @param int $num_pointers - number of pointers
@@ -474,6 +474,6 @@ class Root extends Excel\Pear\OLE\PPS
     {
         $pointers_per_block = $this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE;
 
-        return floor($num_pointers / $pointers_per_block) + (($num_pointers % $pointers_per_block) ? 1 : 0);
+        return \floor($num_pointers / $pointers_per_block) + (($num_pointers % $pointers_per_block) ? 1 : 0);
     }
 }

@@ -5,7 +5,7 @@ namespace Slam\Excel\Pear\OLE\PPS;
 use Slam\Excel;
 
 /**
- * Class for creating File PPS's for Excel_OLE containers
+ * Class for creating File PPS's for Excel_OLE containers.
  *
  * @author   Xavier Noguer <xnoguer@php.net>
  *
@@ -14,7 +14,7 @@ use Slam\Excel;
 class File extends Excel\Pear\OLE\PPS
 {
     /**
-     * The constructor
+     * The constructor.
      *
      *
      * @param string $name The name of the file (in Unicode)
@@ -40,13 +40,13 @@ class File extends Excel\Pear\OLE\PPS
     }
 
     /**
-     * Append data to PPS
+     * Append data to PPS.
      *
      *
      * @param string $data The data to append
      */
     public function append($data)
     {
-        fwrite($this->_PPS_FILE, $data);
+        \fwrite($this->_PPS_FILE, $data);
     }
 }
