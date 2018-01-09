@@ -10,6 +10,10 @@ use Slam\Excel;
 
 final class MainTest extends TestCase
 {
+    private $vfs;
+    private $filename;
+    private $xls;
+
     protected function setUp()
     {
         Excel\Pear\OLE::$gmmktime = \gmmktime(1, 1, 1, 1, 1, 2000);

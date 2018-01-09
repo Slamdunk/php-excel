@@ -15,10 +15,14 @@
     "require-dev": {
         "mikey179/vfsStream": "^1.6",
         "phpoffice/phpexcel": "^1.8",
+        "phpstan/phpstan": "^0.9.1",
+        "phpstan/phpstan-phpunit": "^0.9.3",
         "phpunit/phpunit": "^6.5",
         "roave/security-advisories": "dev-master",
         "slam/php-cs-fixer-extensions": "^1.12",
-        "slam/php-debug-r": "^1.2"
+        "slam/php-debug-r": "^1.2",
+        "slam/phpstan-extensions": "^1.0",
+        "thecodingmachine/phpstan-strict-rules": "^0.9.0"
     },
     "autoload": {
         "psr-4": { "Slam\\Excel\\": "lib/" }

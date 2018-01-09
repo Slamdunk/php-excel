@@ -64,7 +64,6 @@ class BIFFwriter
      */
     public function __construct()
     {
-        $this->_byte_order = '';
         $this->_data       = '';
         $this->_datasize   = 0;
         $this->_limit      = 2080;

@@ -18,7 +18,7 @@ class PPS
     /**
      * The PPS index
      *
-     * @var int
+     * @var null|int
      */
     protected $No;
 
@@ -39,35 +39,35 @@ class PPS
     /**
      * The index of the previous PPS
      *
-     * @var int
+     * @var null|int
      */
     protected $PrevPps;
 
     /**
      * The index of the next PPS
      *
-     * @var int
+     * @var null|int
      */
     protected $NextPps;
 
     /**
      * The index of it's first child if this is a Dir or Root PPS
      *
-     * @var int
+     * @var null|int
      */
     protected $DirPps;
 
     /**
      * A timestamp
      *
-     * @var int
+     * @var null|int
      */
     protected $Time1st;
 
     /**
      * A timestamp
      *
-     * @var int
+     * @var null|int
      */
     protected $Time2nd;
 
@@ -88,7 +88,7 @@ class PPS
     /**
      * The PPS's data (only used if it's not using a temporary file)
      *
-     * @var string
+     * @var null|string
      */
     protected $_data;
 
@@ -102,7 +102,7 @@ class PPS
     /**
      * Pointer to Excel_OLE container
      *
-     * @var Excel_OLE
+     * @var \Slam\Excel\Pear\OLE
      */
     protected $ole;
 
@@ -110,15 +110,15 @@ class PPS
      * The constructor
      *
      *
-     * @param int    $No       The PPS index
+     * @param null|int    $No       The PPS index
      * @param string $name     The PPS name
      * @param int    $type     The PPS type. Dir, Root or File
-     * @param int    $prev     The index of the previous PPS
-     * @param int    $next     The index of the next PPS
-     * @param int    $dir      The index of it's first child if this is a Dir or Root PPS
-     * @param int    $time_1st A timestamp
-     * @param int    $time_2nd A timestamp
-     * @param string $data     The (usually binary) source data of the PPS
+     * @param null|int    $prev     The index of the previous PPS
+     * @param null|int    $next     The index of the next PPS
+     * @param null|int    $dir      The index of it's first child if this is a Dir or Root PPS
+     * @param null|int    $time_1st A timestamp
+     * @param null|int    $time_2nd A timestamp
+     * @param null|string $data     The (usually binary) source data of the PPS
      * @param array  $children Array containing children PPS for this PPS
      */
     public function __construct($No, $name, $type, $prev, $next, $dir, $time_1st, $time_2nd, $data, $children)
@@ -201,11 +201,7 @@ class PPS
      * Updates index and pointers to previous, next and children PPS's for this
      * PPS. I don't think it'll work with Dir PPS's.
      *
-     *
-     * @param array &$pps_array Reference to the array of PPS's for the whole Excel_OLE
-     *                          container
-     *
-     * @return int The index for this PPS
+     * @return int|float The index for this PPS
      */
     protected static function _savePpsSetPnt(array & $raList, array $to_save, $depth = 0)
     {

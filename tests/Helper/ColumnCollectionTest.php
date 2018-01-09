@@ -10,6 +10,9 @@ use Slam\Excel\Helper;
 
 final class ColumnCollectionTest extends TestCase
 {
+    private $column;
+    private $collection;
+
     protected function setUp()
     {
         $this->column = new Helper\Column('foo', 'Foo', 10, new Helper\CellStyle\Text());

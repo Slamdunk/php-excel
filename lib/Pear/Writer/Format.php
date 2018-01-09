@@ -114,7 +114,7 @@ class Format
     /**
      * An index (2 bytes) to a FORMAT record (number format).
      *
-     * @var int
+     * @var string|int
      */
     private $_num_format;
 
@@ -475,11 +475,11 @@ class Format
      * to 8..63 to comply with Gnumeric. Colors 0..7 are repeated in 8..15.
      *
      *
-     * @param string $name_color name of the color (i.e.: 'blue', 'red', etc..). Optional.
+     * @param mixed $name_color name of the color (i.e.: 'blue', 'red', etc..). Optional.
      *
      * @return int The color index
      */
-    private function _getColor($name_color = '')
+    private function _getColor($name_color = null)
     {
         $colors = array(
             'aqua'    => 0x07,
@@ -503,7 +503,7 @@ class Format
         );
 
         // Return the default color, 0x7FFF, if undef,
-        if ($name_color === '') {
+        if ($name_color === null) {
             return(0x7FFF);
         }
 
@@ -542,7 +542,7 @@ class Format
      * Set cell horizontal alignment.
      *
      *
-     * @param string $location alignment for the cell ('left', 'right', etc...).
+     * @param mixed $location alignment for the cell ('left', 'right', etc...).
      */
     public function setHAlign($location)
     {
@@ -567,7 +567,7 @@ class Format
      * Set cell vertical alignment.
      *
      *
-     * @param string $location alignment for the cell ('top', 'vleft', 'vright', etc...).
+     * @param mixed $location alignment for the cell ('top', 'vleft', 'vright', etc...).
      */
     public function setVAlign($location)
     {
@@ -869,7 +869,7 @@ class Format
      * It can be date, time, currency, etc...
      *
      *
-     * @param int $num_format the numeric format
+     * @param string|int $num_format the numeric format
      */
     public function setNumFormat($num_format)
     {

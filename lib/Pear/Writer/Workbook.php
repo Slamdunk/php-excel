@@ -23,7 +23,7 @@ class Workbook extends BIFFwriter
     /**
      * Formula parser
      *
-     * @var object Parser
+     * @var Parser
      */
     protected $_parser;
 
@@ -90,7 +90,7 @@ class Workbook extends BIFFwriter
     /**
      * The default XF format.
      *
-     * @var object Format
+     * @var Format
      */
     protected $_tmp_format;
 
@@ -125,7 +125,7 @@ class Workbook extends BIFFwriter
     /**
      * The default format for URLs.
      *
-     * @var object Format
+     * @var Format
      */
     protected $_url_format;
 
@@ -151,7 +151,7 @@ class Workbook extends BIFFwriter
     /**
      * Class constructor
      *
-     * @param string filename for storing the workbook. "-" for writing to stdout.
+     * @param string $filename for storing the workbook. "-" for writing to stdout.
      */
     public function __construct($filename)
     {
@@ -300,7 +300,7 @@ class Workbook extends BIFFwriter
      *
      * @param array $properties array with properties for initializing the format
      *
-     * @return Excel_Writer_Format reference to an Excel Format
+     * @return Format reference to an Excel Format
      */
     public function addFormat($properties = array())
     {
@@ -814,6 +814,7 @@ class Workbook extends BIFFwriter
      * Writes the Excel BIFF EXTERNSHEET record. These references are used by
      * formulas.
      */
+    /*
     protected function _storeExternsheetBiff8()
     {
         $total_references = count($this->_parser->_references);
@@ -827,6 +828,7 @@ class Workbook extends BIFFwriter
         }
         $this->_append($header . $data);
     }
+     */
 
     /**
      * Write Excel BIFF STYLE records.

@@ -13,6 +13,9 @@ use Slam\Excel;
 
 final class TableWorkbookTest extends TestCase
 {
+    private $vfs;
+    private $filename;
+
     protected function setUp()
     {
         $this->vfs = vfs\vfsStream::setup('root', 0770);

@@ -153,7 +153,7 @@ class Root extends Excel\Pear\OLE\PPS
      *
      *
      * @param int   $iStBlk
-     * @param array &$raList Reference to array of PPS's
+     * @param array $raList Reference to array of PPS's
      */
     private function _saveBigData($iStBlk, & $raList)
     {
@@ -198,7 +198,7 @@ class Root extends Excel\Pear\OLE\PPS
      * get small data (PPS's with data smaller than Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL)
      *
      *
-     * @param array &$raList Reference to array of PPS's
+     * @param array $raList Reference to array of PPS's
      */
     private function _makeSmallData(& $raList)
     {

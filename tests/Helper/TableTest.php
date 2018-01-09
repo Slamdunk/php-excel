@@ -10,6 +10,11 @@ use Slam\Excel;
 
 final class TableTest extends TestCase
 {
+    private $phpExcel;
+    private $activeSheet;
+    private $data;
+    private $table;
+
     protected function setUp()
     {
         $this->phpExcel = new Excel\Pear\Writer\Workbook(\uniqid());

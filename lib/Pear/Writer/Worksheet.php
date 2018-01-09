@@ -30,14 +30,14 @@ class Worksheet extends BIFFwriter
     /**
      * Reference to the (default) Format object for URLs
      *
-     * @var object Format
+     * @var Format
      */
     protected $_url_format;
 
     /**
      * Reference to the parser used for parsing formulas
      *
-     * @var object Format
+     * @var Parser
      */
     protected $_parser;
 
@@ -234,56 +234,56 @@ class Worksheet extends BIFFwriter
     /**
      * First row to reapeat on each printed page
      *
-     * @var int
+     * @var null|int
      */
     public $title_rowmin;
 
     /**
      * Last row to reapeat on each printed page
      *
-     * @var int
+     * @var null|int
      */
     public $title_rowmax;
 
     /**
      * First column to reapeat on each printed page
      *
-     * @var int
+     * @var null|int
      */
     public $title_colmin;
 
     /**
      * Last column to reapeat on each printed page
      *
-     * @var int
+     * @var null|int
      */
     public $title_colmax;
 
     /**
      * First row of the area to print
      *
-     * @var int
+     * @var null|int
      */
     public $print_rowmin;
 
     /**
      * Last row to of the area to print
      *
-     * @var int
+     * @var null|int
      */
     public $print_rowmax;
 
     /**
      * First column of the area to print
      *
-     * @var int
+     * @var null|int
      */
     public $print_colmin;
 
     /**
      * Last column of the area to print
      *
-     * @var int
+     * @var null|int
      */
     public $print_colmax;
 
@@ -297,42 +297,42 @@ class Worksheet extends BIFFwriter
     /**
      * Whether to use outline.
      *
-     * @var int
+     * @var int|bool
      */
     protected $_outline_on;
 
     /**
      * Auto outline styles.
      *
-     * @var bool
+     * @var int|bool
      */
     protected $_outline_style;
 
     /**
      * Whether to have outline summary below.
      *
-     * @var bool
+     * @var int|bool
      */
     protected $_outline_below;
 
     /**
      * Whether to have outline summary at the right.
      *
-     * @var bool
+     * @var int|bool
      */
     protected $_outline_right;
 
     /**
      * Outline row level.
      *
-     * @var int
+     * @var int|bool
      */
     protected $_outline_row_level;
 
     /**
      * Whether to fit to page when printing or not.
      *
-     * @var bool
+     * @var int
      */
     protected $_fit_page;
 
@@ -417,18 +417,18 @@ class Worksheet extends BIFFwriter
     /**
      * Constructor
      *
-     * @param string $name         The name of the new worksheet
-     * @param int    $index        The index of the new worksheet
-     * @param mixed  &$activesheet The current activesheet of the workbook we belong to
-     * @param mixed  &$firstsheet  The first worksheet in the workbook we belong to
-     * @param mixed  &$url_format  The default format for hyperlinks
-     * @param mixed  &$parser      The formula parser created for the Workbook
+     * @param string $name        The name of the new worksheet
+     * @param int    $index       The index of the new worksheet
+     * @param mixed  $activesheet The current activesheet of the workbook we belong to
+     * @param mixed  $firstsheet  The first worksheet in the workbook we belong to
+     * @param Format $url_format  The default format for hyperlinks
+     * @param Parser $parser      The formula parser created for the Workbook
      */
     public function __construct($name,
         $index, & $activesheet,
         & $firstsheet, & $str_total,
         & $str_unique, & $str_table,
-        & $url_format, & $parser
+        Format $url_format, Parser $parser
     ) {
         parent::__construct();
 
@@ -442,8 +442,8 @@ class Worksheet extends BIFFwriter
         $this->_str_total      = &$str_total;
         $this->_str_unique     = &$str_unique;
         $this->_str_table      = &$str_table;
-        $this->_url_format     = &$url_format;
-        $this->_parser         = &$parser;
+        $this->_url_format     = $url_format;
+        $this->_parser         = $parser;
 
         // $this->ext_sheets      = array();
         $this->_filehandle     = Excel\Pear\OLE::getTmpfile();
@@ -1253,7 +1253,7 @@ class Worksheet extends BIFFwriter
      * Returns an index to the XF record in the workbook
      *
      *
-     * @param mixed $format The optional XF format
+     * @param Format $format The optional XF format
      *
      * @return int The XF record index
      */
@@ -1847,7 +1847,7 @@ class Worksheet extends BIFFwriter
      * @param string $string Alternative label
      * @param mixed  $format The cell format
      *
-     * @return int
+     * @return int|null
      */
     public function writeUrl($row, $col, $url, $string = '', $format = null)
     {
@@ -1872,7 +1872,7 @@ class Worksheet extends BIFFwriter
      * @param string $string Alternative label
      * @param mixed  $format The cell format
      *
-     * @return int
+     * @return int|null
      */
     protected function _writeUrlRange($row1, $col1, $row2, $col2, $url, $string = '', $format = null)
     {
@@ -1918,7 +1918,10 @@ class Worksheet extends BIFFwriter
         if ($str == '') {
             $str = $url;
         }
-        $str_error = is_numeric($str) ? $this->writeNumber($row1, $col1, $str, $format) : $this->writeString($row1, $col1, $str, $format);
+        $str_error = is_numeric($str)
+            ? $this->writeNumber($row1, $col1, (float) $str, $format)
+            : $this->writeString($row1, $col1, $str, $format)
+        ;
         if (($str_error == -2) || ($str_error == -3)) {
             return $str_error;
         }
@@ -1983,7 +1986,10 @@ class Worksheet extends BIFFwriter
         if ($str == '') {
             $str = $url;
         }
-        $str_error = is_numeric($str) ? $this->writeNumber($row1, $col1, $str, $format) : $this->writeString($row1, $col1, $str, $format);
+        $str_error = is_numeric($str)
+            ? $this->writeNumber($row1, $col1, (float) $str, $format)
+            : $this->writeString($row1, $col1, $str, $format)
+        ;
         if (($str_error == -2) || ($str_error == -3)) {
             return $str_error;
         }
@@ -2034,14 +2040,14 @@ class Worksheet extends BIFFwriter
      * @param string $str    Alternative label
      * @param mixed  $format The cell format
      *
-     * @return int
+     * @return int|null
      */
     protected function _writeUrlExternal($row1, $col1, $row2, $col2, $url, $str, $format = null)
     {
         // Network drives are different. We will handle them separately
         // MS/Novell network drives and shares start with \\
         if (preg_match('[^external:\\\\]', $url)) {
-            return; // ($this->_writeUrlExternal_net($row1, $col1, $row2, $col2, $url, $str, $format));
+            return null; // ($this->_writeUrlExternal_net($row1, $col1, $row2, $col2, $url, $str, $format));
         }
 
         $record      = 0x01B8;                       // Record identifier
@@ -2059,7 +2065,10 @@ class Worksheet extends BIFFwriter
         if ($str == '') {
             $str = preg_replace('/\#/', ' - ', $url);
         }
-        $str_error = is_numeric($str) ? $this->writeNumber($row1, $col1, $str, $format) : $this->writeString($row1, $col1, $str, $format);
+        $str_error = is_numeric($str)
+            ? $this->writeNumber($row1, $col1, (float) $str, $format)
+            : $this->writeString($row1, $col1, $str, $format)
+        ;
         if (($str_error == -2) or ($str_error == -3)) {
             return $str_error;
         }
@@ -2307,9 +2316,11 @@ class Worksheet extends BIFFwriter
      */
     protected function _storeColinfo($col_array)
     {
+        $colFirst = null;
         if (isset($col_array[0])) {
             $colFirst = $col_array[0];
         }
+        $colLast = null;
         if (isset($col_array[1])) {
             $colLast = $col_array[1];
         }
@@ -2412,7 +2423,7 @@ class Worksheet extends BIFFwriter
                 $data .= pack('vvvv', $range[0], $range[2], $range[1], $range[3]);
             }
             $string = $header . $data;
-            $this->_append($string, true);
+            $this->_append($string);
         }
     }
 
@@ -3163,9 +3174,9 @@ class Worksheet extends BIFFwriter
         $y2 = $height / $this->_sizeRow($row_end)     *  256; // Distance to bottom of object
 
         $this->_storeObjPicture($col_start, $x1,
-                                 $row_start, $y1,
-                                 $col_end, $x2,
-                                 $row_end, $y2);
+                                $row_start, $y1,
+                                $col_end, $x2,
+                                $row_end, $y2);
     }
 
     /**
@@ -3223,13 +3234,13 @@ class Worksheet extends BIFFwriter
      *
      *
      * @param int $colL Column containing upper left corner of object
-     * @param int $dxL  Distance from left side of cell
+     * @param int|float $dxL  Distance from left side of cell
      * @param int $rwT  Row containing top left corner of object
-     * @param int $dyT  Distance from top of cell
+     * @param int|float $dyT  Distance from top of cell
      * @param int $colR Column containing lower right corner of object
-     * @param int $dxR  Distance from right of cell
+     * @param int|float $dxR  Distance from right of cell
      * @param int $rwB  Row containing bottom right corner of object
-     * @param int $dyB  Distance from bottom of cell
+     * @param int|float $dyB  Distance from bottom of cell
      */
     protected function _storeObjPicture($colL, $dxL, $rwT, $dyT, $colR, $dxR, $rwB, $dyB)
     {
