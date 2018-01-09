@@ -254,7 +254,7 @@ class Format
      * @param int   $index      the XF index for the format
      * @param array $properties array with properties to be set on initialization
      */
-    public function __construct($index = 0, $properties =  array())
+    public function __construct($index = 0, $properties =  [])
     {
         $this->_xf_index       = $index;
         $this->font_index      = 0;
@@ -481,7 +481,7 @@ class Format
      */
     private function _getColor($name_color = null)
     {
-        $colors = array(
+        $colors = [
             'aqua'    => 0x07,
             'cyan'    => 0x07,
             'black'   => 0x00,
@@ -500,7 +500,7 @@ class Format
             'silver'  => 0x16,
             'white'   => 0x01,
             'yellow'  => 0x05,
-        );
+        ];
 
         // Return the default color, 0x7FFF, if undef,
         if (null === $name_color) {
@@ -548,7 +548,7 @@ class Format
     {
         $location = \strtolower((string) $location);
 
-        $map = array(
+        $map = [
             'left'          => 1,
             'centre'        => 2,
             'center'        => 2,
@@ -557,7 +557,7 @@ class Format
             'justify'       => 5,
             'merge'         => 6,
             'equal_space'   => 7,
-        );
+        ];
         if (isset($map[$location])) {
             $this->_text_h_align = $map[$location];
         }
@@ -573,14 +573,14 @@ class Format
     {
         $location = \strtolower((string) $location);
 
-        $map = array(
+        $map = [
             'top'           => 0,
             'vcentre'       => 1,
             'vcenter'       => 1,
             'bottom'        => 2,
             'vjustify'      => 3,
             'vequal_space'  => 4,
-        );
+        ];
         if (isset($map[$location])) {
             $this->_text_v_align = $map[$location];
         }

@@ -97,7 +97,7 @@ class PPS
      *
      * @var array
      */
-    protected $children = array();
+    protected $children = [];
 
     /**
      * Pointer to Excel_OLE container.

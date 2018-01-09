@@ -33,7 +33,7 @@ class File extends Excel\Pear\OLE\PPS
             null,
             null,
             '',
-            array()
+            []
         );
 
         $this->_PPS_FILE = Excel\Pear\OLE::getTmpfile();

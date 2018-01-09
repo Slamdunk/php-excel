@@ -168,18 +168,18 @@ class Workbook extends BIFFwriter
         $this->_biffsize            = 0;
         $this->_sheetname           = 'Sheet';
         $this->_tmp_format          = new Format();
-        $this->_worksheets          = array();
-        $this->_sheetnames          = array();
-        $this->_formats             = array();
-        $this->_palette             = array();
+        $this->_worksheets          = [];
+        $this->_sheetnames          = [];
+        $this->_formats             = [];
+        $this->_palette             = [];
         $this->_codepage            = 0x04E4; // FIXME: should change for BIFF8
         $this->_country_code        = -1;
 
         // Add the default format for hyperlinks
-        $this->_url_format          = $this->addFormat(array('color' => 'blue', 'underline' => 1));
+        $this->_url_format          = $this->addFormat(['color' => 'blue', 'underline' => 1]);
         $this->_str_total           = 0;
         $this->_str_unique          = 0;
-        $this->_str_table           = array();
+        $this->_str_table           = [];
         $this->_setPaletteXl97();
     }
 
@@ -302,7 +302,7 @@ class Workbook extends BIFFwriter
      *
      * @return Format reference to an Excel Format
      */
-    public function addFormat($properties = array())
+    public function addFormat($properties = [])
     {
         $format = new Format($this->_xf_index, $properties);
         $this->_xf_index += 1;
@@ -345,7 +345,7 @@ class Workbook extends BIFFwriter
         $index -= 8; // Adjust colour index (wingless dragonfly)
 
         // Set the RGB value
-        $this->_palette[$index] = array($red, $green, $blue, 0);
+        $this->_palette[$index] = [$red, $green, $blue, 0];
 
         return $index + 8;
     }
@@ -355,64 +355,64 @@ class Workbook extends BIFFwriter
      */
     protected function _setPaletteXl97()
     {
-        $this->_palette = array(
-            array(0x00, 0x00, 0x00, 0x00),   // 8
-            array(0xff, 0xff, 0xff, 0x00),   // 9
-            array(0xff, 0x00, 0x00, 0x00),   // 10
-            array(0x00, 0xff, 0x00, 0x00),   // 11
-            array(0x00, 0x00, 0xff, 0x00),   // 12
-            array(0xff, 0xff, 0x00, 0x00),   // 13
-            array(0xff, 0x00, 0xff, 0x00),   // 14
-            array(0x00, 0xff, 0xff, 0x00),   // 15
-            array(0x80, 0x00, 0x00, 0x00),   // 16
-            array(0x00, 0x80, 0x00, 0x00),   // 17
-            array(0x00, 0x00, 0x80, 0x00),   // 18
-            array(0x80, 0x80, 0x00, 0x00),   // 19
-            array(0x80, 0x00, 0x80, 0x00),   // 20
-            array(0x00, 0x80, 0x80, 0x00),   // 21
-            array(0xc0, 0xc0, 0xc0, 0x00),   // 22
-            array(0x80, 0x80, 0x80, 0x00),   // 23
-            array(0x99, 0x99, 0xff, 0x00),   // 24
-            array(0x99, 0x33, 0x66, 0x00),   // 25
-            array(0xff, 0xff, 0xcc, 0x00),   // 26
-            array(0xcc, 0xff, 0xff, 0x00),   // 27
-            array(0x66, 0x00, 0x66, 0x00),   // 28
-            array(0xff, 0x80, 0x80, 0x00),   // 29
-            array(0x00, 0x66, 0xcc, 0x00),   // 30
-            array(0xcc, 0xcc, 0xff, 0x00),   // 31
-            array(0x00, 0x00, 0x80, 0x00),   // 32
-            array(0xff, 0x00, 0xff, 0x00),   // 33
-            array(0xff, 0xff, 0x00, 0x00),   // 34
-            array(0x00, 0xff, 0xff, 0x00),   // 35
-            array(0x80, 0x00, 0x80, 0x00),   // 36
-            array(0x80, 0x00, 0x00, 0x00),   // 37
-            array(0x00, 0x80, 0x80, 0x00),   // 38
-            array(0x00, 0x00, 0xff, 0x00),   // 39
-            array(0x00, 0xcc, 0xff, 0x00),   // 40
-            array(0xcc, 0xff, 0xff, 0x00),   // 41
-            array(0xcc, 0xff, 0xcc, 0x00),   // 42
-            array(0xff, 0xff, 0x99, 0x00),   // 43
-            array(0x99, 0xcc, 0xff, 0x00),   // 44
-            array(0xff, 0x99, 0xcc, 0x00),   // 45
-            array(0xcc, 0x99, 0xff, 0x00),   // 46
-            array(0xff, 0xcc, 0x99, 0x00),   // 47
-            array(0x33, 0x66, 0xff, 0x00),   // 48
-            array(0x33, 0xcc, 0xcc, 0x00),   // 49
-            array(0x99, 0xcc, 0x00, 0x00),   // 50
-            array(0xff, 0xcc, 0x00, 0x00),   // 51
-            array(0xff, 0x99, 0x00, 0x00),   // 52
-            array(0xff, 0x66, 0x00, 0x00),   // 53
-            array(0x66, 0x66, 0x99, 0x00),   // 54
-            array(0x96, 0x96, 0x96, 0x00),   // 55
-            array(0x00, 0x33, 0x66, 0x00),   // 56
-            array(0x33, 0x99, 0x66, 0x00),   // 57
-            array(0x00, 0x33, 0x00, 0x00),   // 58
-            array(0x33, 0x33, 0x00, 0x00),   // 59
-            array(0x99, 0x33, 0x00, 0x00),   // 60
-            array(0x99, 0x33, 0x66, 0x00),   // 61
-            array(0x33, 0x33, 0x99, 0x00),   // 62
-            array(0x33, 0x33, 0x33, 0x00),   // 63
-         );
+        $this->_palette = [
+            [0x00, 0x00, 0x00, 0x00],   // 8
+            [0xff, 0xff, 0xff, 0x00],   // 9
+            [0xff, 0x00, 0x00, 0x00],   // 10
+            [0x00, 0xff, 0x00, 0x00],   // 11
+            [0x00, 0x00, 0xff, 0x00],   // 12
+            [0xff, 0xff, 0x00, 0x00],   // 13
+            [0xff, 0x00, 0xff, 0x00],   // 14
+            [0x00, 0xff, 0xff, 0x00],   // 15
+            [0x80, 0x00, 0x00, 0x00],   // 16
+            [0x00, 0x80, 0x00, 0x00],   // 17
+            [0x00, 0x00, 0x80, 0x00],   // 18
+            [0x80, 0x80, 0x00, 0x00],   // 19
+            [0x80, 0x00, 0x80, 0x00],   // 20
+            [0x00, 0x80, 0x80, 0x00],   // 21
+            [0xc0, 0xc0, 0xc0, 0x00],   // 22
+            [0x80, 0x80, 0x80, 0x00],   // 23
+            [0x99, 0x99, 0xff, 0x00],   // 24
+            [0x99, 0x33, 0x66, 0x00],   // 25
+            [0xff, 0xff, 0xcc, 0x00],   // 26
+            [0xcc, 0xff, 0xff, 0x00],   // 27
+            [0x66, 0x00, 0x66, 0x00],   // 28
+            [0xff, 0x80, 0x80, 0x00],   // 29
+            [0x00, 0x66, 0xcc, 0x00],   // 30
+            [0xcc, 0xcc, 0xff, 0x00],   // 31
+            [0x00, 0x00, 0x80, 0x00],   // 32
+            [0xff, 0x00, 0xff, 0x00],   // 33
+            [0xff, 0xff, 0x00, 0x00],   // 34
+            [0x00, 0xff, 0xff, 0x00],   // 35
+            [0x80, 0x00, 0x80, 0x00],   // 36
+            [0x80, 0x00, 0x00, 0x00],   // 37
+            [0x00, 0x80, 0x80, 0x00],   // 38
+            [0x00, 0x00, 0xff, 0x00],   // 39
+            [0x00, 0xcc, 0xff, 0x00],   // 40
+            [0xcc, 0xff, 0xff, 0x00],   // 41
+            [0xcc, 0xff, 0xcc, 0x00],   // 42
+            [0xff, 0xff, 0x99, 0x00],   // 43
+            [0x99, 0xcc, 0xff, 0x00],   // 44
+            [0xff, 0x99, 0xcc, 0x00],   // 45
+            [0xcc, 0x99, 0xff, 0x00],   // 46
+            [0xff, 0xcc, 0x99, 0x00],   // 47
+            [0x33, 0x66, 0xff, 0x00],   // 48
+            [0x33, 0xcc, 0xcc, 0x00],   // 49
+            [0x99, 0xcc, 0x00, 0x00],   // 50
+            [0xff, 0xcc, 0x00, 0x00],   // 51
+            [0xff, 0x99, 0x00, 0x00],   // 52
+            [0xff, 0x66, 0x00, 0x00],   // 53
+            [0x66, 0x66, 0x99, 0x00],   // 54
+            [0x96, 0x96, 0x96, 0x00],   // 55
+            [0x00, 0x33, 0x66, 0x00],   // 56
+            [0x33, 0x99, 0x66, 0x00],   // 57
+            [0x00, 0x33, 0x00, 0x00],   // 58
+            [0x33, 0x33, 0x00, 0x00],   // 59
+            [0x99, 0x33, 0x00, 0x00],   // 60
+            [0x99, 0x33, 0x66, 0x00],   // 61
+            [0x33, 0x33, 0x99, 0x00],   // 62
+            [0x33, 0x33, 0x33, 0x00],   // 63
+         ];
     }
 
     /**
@@ -493,7 +493,7 @@ class Workbook extends BIFFwriter
             }
         }
 
-        $root = new Excel\Pear\OLE\PPS\Root(\time(), \time(), array($Excel_OLE));
+        $root = new Excel\Pear\OLE\PPS\Root(\time(), \time(), [$Excel_OLE]);
         $root->save($this->_filename);
 
         return true;
@@ -541,7 +541,7 @@ class Workbook extends BIFFwriter
         // Iterate through the XF objects and write a FONT record if it isn't the
         // same as the default FONT and if it hasn't already been used.
         //
-        $fonts = array();
+        $fonts = [];
         $index = 6;                  // The first user defined FONT
 
         $key = $format->getFontKey(); // The default font from _tmp_format
@@ -570,8 +570,8 @@ class Workbook extends BIFFwriter
     protected function _storeAllNumFormats()
     {
         // Leaning num_format syndrome
-        $hash_num_formats = array();
-        $num_formats      = array();
+        $hash_num_formats = [];
+        $num_formats      = [];
         $index = 164;
 
         // Iterate through the XF objects and write a FORMAT record if it isn't a
@@ -1122,7 +1122,7 @@ class Workbook extends BIFFwriter
         $continue_limit     = 8208;
         $block_length       = 0;
         $written            = 0;
-        $this->_block_sizes = array();
+        $this->_block_sizes = [];
         $continue           = 0;
 
         foreach (\array_keys($this->_str_table) as $string) {

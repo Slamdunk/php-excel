@@ -58,8 +58,8 @@ class Root extends Excel\Pear\OLE\PPS
         $this->_SMALL_BLOCK_SIZE = \pow(2, ((isset($this->_SMALL_BLOCK_SIZE)) ? $this->_adjust2($this->_SMALL_BLOCK_SIZE) : 6));
 
         // Make an array of PPS's (for Save)
-        $aList = array();
-        Excel\Pear\OLE\PPS\Root::_savePpsSetPnt($aList, array($this));
+        $aList = [];
+        Excel\Pear\OLE\PPS\Root::_savePpsSetPnt($aList, [$this]);
         // calculate values for header
         list($iSBDcnt, $iBBcnt, $iPPScnt) = $this->_calcSize($aList); // , $rhInfo);
         // Save Header
@@ -115,7 +115,7 @@ class Root extends Excel\Pear\OLE\PPS
         $iBdCnt = $this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_PPS_SIZE;
         $iPPScnt = (\floor($iCnt / $iBdCnt) + (($iCnt % $iBdCnt) ? 1 : 0));
 
-        return array($iSBDcnt, $iBBcnt, $iPPScnt);
+        return [$iSBDcnt, $iBBcnt, $iPPScnt];
     }
 
     /**
@@ -442,7 +442,7 @@ class Root extends Excel\Pear\OLE\PPS
      */
     private function _calculate_big_block_chain($num_sb_blocks, $num_bb_blocks, $num_pps_blocks)
     {
-        $bbd_info = array();
+        $bbd_info = [];
         $bbd_info['entries_per_block'] = $this->_BIG_BLOCK_SIZE / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE;
         $bbd_info['header_blockchain_list_entries'] = ($this->_BIG_BLOCK_SIZE - 0x4C) / Excel\Pear\OLE::Excel_OLE_LONG_INT_SIZE;
         $bbd_info['blockchain_entries'] = $num_sb_blocks + $num_bb_blocks + $num_pps_blocks;
