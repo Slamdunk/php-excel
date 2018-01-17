@@ -26,17 +26,43 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $this->setCustomColor(self::GREY_MEDIUM,    0xCC, 0xCC, 0xCC);
         $this->setCustomColor(self::GREY_LIGHT,     0xE8, 0xE8, 0xE8);
 
-        $this->styleIdentity = new Excel\Helper\CellStyle\Text();
+        $this->styleIdentity = new CellStyle\Text();
     }
 
-    public function setRowsPerSheet(int $rowsPerSheet)
+    public function setRowsPerSheet(int $rowsPerSheet): void
     {
         $this->rowsPerSheet = $rowsPerSheet;
     }
 
-    public function setEmptyTableMessage(string $emptyTableMessage)
+    public function setEmptyTableMessage(string $emptyTableMessage): void
     {
         $this->emptyTableMessage = $emptyTableMessage;
+    }
+
+    public static function getColumnStringFromIndex(int $index)
+    {
+        if ($index < 0) {
+            throw new Excel\Exception\InvalidArgumentException('Column index must be equal or greater than zero');
+        }
+
+        static $indexCache = [];
+
+        if (! isset($indexCache[$index])) {
+            if ($index < 26) {
+                $indexCache[$index] = \chr(65 + $index);
+            } elseif ($index < 702) {
+                $indexCache[$index] = \chr(64 + (int) ($index / 26))
+                    . \chr(65 + $index % 26)
+                ;
+            } else {
+                $indexCache[$index] = \chr(64 + (int) (($index - 26) / 676))
+                    . \chr(65 + (int) ((($index - 26) % 676) / 26))
+                    . \chr(65 + $index % 26)
+                ;
+            }
+        }
+
+        return $indexCache[$index];
     }
 
     public function writeTable(Table $table): Table
@@ -96,14 +122,14 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         return \end($tables);
     }
 
-    private function writeTableHeading(Table $table)
+    private function writeTableHeading(Table $table): void
     {
         $table->resetColumn();
         $table->getActiveSheet()->writeString($table->getRowCurrent(), $table->getColumnCurrent(), $this->sanitize($table->getHeading()));
         $table->incrementRow();
     }
 
-    private function writeColumnsHeading(Table $table, array $row)
+    private function writeColumnsHeading(Table $table, array $row): void
     {
         $columnCollection = $table->getColumnCollection();
         $columnKeys = \array_keys($row);
@@ -127,9 +153,12 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         }
 
         $this->writeRow($table, $titles, 'title');
+
+        $table->setWrittenColumnTitles($titles);
+        $table->flagDataRowStart();
     }
 
-    private function writeRow(Table $table, array $row, string $type = null)
+    private function writeRow(Table $table, array $row, string $type = null): void
     {
         $table->resetColumn();
         $sheet = $table->getActiveSheet();
@@ -168,19 +197,15 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $table->incrementRow();
     }
 
-    private function sanitize($value)
+    private function sanitize($value): string
     {
-        static $sanitizeMap;
-
-        if (null === $sanitizeMap) {
-            $sanitizeMap = [
-                '&amp;'     => '&',
-                '&lt;'      => '<',
-                '&gt;'      => '>',
-                '&apos;'    => "'",
-                '&quot;'    => '"',
-            ];
-        }
+        static $sanitizeMap = [
+            '&amp;'     => '&',
+            '&lt;'      => '<',
+            '&gt;'      => '>',
+            '&apos;'    => "'",
+            '&quot;'    => '"',
+        ];
 
         $value = \str_replace(
             \array_keys($sanitizeMap),
@@ -192,7 +217,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         return $value;
     }
 
-    private function generateFormats(Table $table, array $titles, ColumnCollectionInterface $columnCollection = null)
+    private function generateFormats(Table $table, array $titles, ColumnCollectionInterface $columnCollection = null): void
     {
         $this->formats = [];
         foreach ($titles as $key) {

@@ -14,7 +14,7 @@ final class Text implements CellStyleInterface
         return $value;
     }
 
-    public function styleCell(Format $format)
+    public function styleCell(Format $format): void
     {
         $format->setAlign('left');
     }

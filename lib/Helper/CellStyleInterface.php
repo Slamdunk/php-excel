@@ -10,5 +10,5 @@ interface CellStyleInterface
 {
     public function decorateValue($value);
 
-    public function styleCell(Format $format);
+    public function styleCell(Format $format): void;
 }

@@ -4,8 +4,6 @@ includes:
     - vendor/slam/phpstan-extensions/conf/slam-rules.neon
     - vendor/slam/phpstan-extensions/conf/thecodingmachine-rules.neon
 
-#parameters:
-#    ignoreErrors:
-#        - '#Call to an undefined method PhpCsFixer\\Fixer\\FixerInterface#'
-#        - '#Calling method .+ on possibly null value of type#'
-#        - '#Parameter .+ given#'
+parameters:
+    ignoreErrors:
+        - '#Parameter .+ given#'

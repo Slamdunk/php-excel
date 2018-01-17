@@ -18,7 +18,7 @@ final class Date implements CellStyleInterface
         return \implode('/', \array_reverse(\explode('-', $value)));
     }
 
-    public function styleCell(Format $format)
+    public function styleCell(Format $format): void
     {
         $format->setAlign('center');
     }

@@ -22,6 +22,30 @@ final class TableWorkbookTest extends TestCase
         $this->filename = vfs\vfsStream::url('root/test-encoding.xls');
     }
 
+    public function testPostGenerationDetails()
+    {
+        $phpExcel = new Excel\Helper\TableWorkbook($this->filename);
+        $activeSheet = $phpExcel->addWorksheet(\uniqid('Sheet_'));
+        $table = new Excel\Helper\Table($activeSheet, 3, 4, \uniqid('Heading_'), new ArrayIterator([
+            ['description' => 'AAA'],
+            ['description' => 'BBB'],
+        ]));
+
+        $phpExcel->writeTable($table);
+        $phpExcel->close();
+
+        $this->assertSame(3, $table->getRowStart());
+        $this->assertSame(7, $table->getRowEnd());
+
+        $this->assertSame(5, $table->getDataRowStart());
+
+        $this->assertSame(4, $table->getColumnStart());
+        $this->assertSame(5, $table->getColumnEnd());
+
+        $this->assertCount(2, $table);
+        $this->assertSame(['description' => 'Description'], $table->getWrittenColumnTitles());
+    }
+
     public function testHandleEncoding()
     {
         $textWithSpecialCharacters = \implode(' # ', [
@@ -241,6 +265,34 @@ final class TableWorkbookTest extends TestCase
         $this->assertSame(12, $style->getFont()->getSize());
         $this->assertSame(33, $firstSheet->getRowDimension($cell->getRow())->getRowHeight());
         $this->assertTrue($style->getAlignment()->getWrapText());
+    }
+
+    /**
+     * @dataProvider provideColumnStringFromIndexCases
+     */
+    public function testColumnStringFromIndex(int $index, string $columnString)
+    {
+        $this->assertSame($columnString, Excel\Helper\TableWorkbook::getColumnStringFromIndex($index));
+    }
+
+    public function provideColumnStringFromIndexCases()
+    {
+        return [
+            [2, 'C'],
+            [3, 'D'],
+            [25, 'Z'],
+            [26, 'AA'],
+            [33, 'AH'],
+            [701, 'ZZ'],
+            [703, 'AAB'],
+        ];
+    }
+
+    public function testColumnStringFromIndexExpectsPositiveValues()
+    {
+        $this->expectException(Excel\Exception\InvalidArgumentException::class);
+
+        Excel\Helper\TableWorkbook::getColumnStringFromIndex(-1);
     }
 
     private function getPhpExcelFromFile(string $filename): PHPExcel

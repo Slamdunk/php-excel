@@ -31,10 +31,14 @@ final class TableTest extends TestCase
         $this->assertSame('My Heading', $this->table->getHeading());
         $this->assertSame($this->data, $this->table->getData());
 
+        $this->assertNull($this->table->getDataRowStart());
+
         $this->table->incrementRow();
+        $this->table->flagDataRowStart();
         $this->table->incrementRow();
 
         $this->assertSame(3, $this->table->getRowStart());
+        $this->assertSame(4, $this->table->getDataRowStart());
         $this->assertSame(5, $this->table->getRowEnd());
         $this->assertSame(5, $this->table->getRowCurrent());
 
@@ -62,6 +66,14 @@ final class TableTest extends TestCase
         $this->assertTrue($this->table->getFreezePanes());
         $this->table->setFreezePanes(false);
         $this->assertFalse($this->table->getFreezePanes());
+
+        $this->assertNull($this->table->getWrittenColumnTitles());
+        $columns = [
+            'column_1' => 'Name',
+            'column_2' => 'Surname',
+        ];
+        $this->table->setWrittenColumnTitles($columns);
+        $this->assertSame($columns, $this->table->getWrittenColumnTitles());
     }
 
     public function testTableCountMustBeSet()

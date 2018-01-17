@@ -14,7 +14,7 @@ final class Integer implements CellStyleInterface
         return $value;
     }
 
-    public function styleCell(Format $format)
+    public function styleCell(Format $format): void
     {
         $format->setNumFormat('#,##0');
         $format->setAlign('center');

@@ -13,6 +13,8 @@ final class Table implements Countable
 {
     private $activeSheet;
 
+    private $dataRowStart;
+
     private $rowStart;
     private $rowEnd;
     private $rowCurrent;
@@ -31,6 +33,7 @@ final class Table implements Countable
     private $fontSize = 8;
     private $rowHeight;
     private $textWrap = false;
+    private $writtenColumnTitles;
 
     private $count;
 
@@ -60,6 +63,16 @@ final class Table implements Countable
         return $this->activeSheet;
     }
 
+    public function getDataRowStart(): ?int
+    {
+        return $this->dataRowStart;
+    }
+
+    public function flagDataRowStart(): void
+    {
+        $this->dataRowStart = $this->rowCurrent;
+    }
+
     public function getRowStart(): int
     {
         return $this->rowStart;
@@ -75,7 +88,7 @@ final class Table implements Countable
         return $this->rowCurrent;
     }
 
-    public function incrementRow()
+    public function incrementRow(): void
     {
         ++$this->rowCurrent;
 
@@ -97,14 +110,14 @@ final class Table implements Countable
         return $this->columnCurrent;
     }
 
-    public function incrementColumn()
+    public function incrementColumn(): void
     {
         ++$this->columnCurrent;
 
         $this->columnEnd = \max($this->columnEnd, $this->columnCurrent);
     }
 
-    public function resetColumn()
+    public function resetColumn(): void
     {
         $this->columnCurrent = $this->columnStart;
     }
@@ -119,23 +132,19 @@ final class Table implements Countable
         return $this->data;
     }
 
-    public function setColumnCollection(ColumnCollectionInterface $columnCollection = null)
+    public function setColumnCollection(?ColumnCollectionInterface $columnCollection): void
     {
         $this->columnCollection = $columnCollection;
-
-        return $this;
     }
 
-    public function getColumnCollection()
+    public function getColumnCollection(): ?ColumnCollectionInterface
     {
         return $this->columnCollection;
     }
 
-    public function setFreezePanes(bool $freezePanes)
+    public function setFreezePanes(bool $freezePanes): void
     {
         $this->freezePanes = $freezePanes;
-
-        return $this;
     }
 
     public function getFreezePanes(): bool
@@ -143,11 +152,9 @@ final class Table implements Countable
         return $this->freezePanes;
     }
 
-    public function setFontSize(int $fontSize)
+    public function setFontSize(int $fontSize): void
     {
         $this->fontSize = $fontSize;
-
-        return $this;
     }
 
     public function getFontSize(): int
@@ -155,23 +162,19 @@ final class Table implements Countable
         return $this->fontSize;
     }
 
-    public function setRowHeight(int $rowHeight = null)
+    public function setRowHeight(?int $rowHeight): void
     {
         $this->rowHeight = $rowHeight;
-
-        return $this;
     }
 
-    public function getRowHeight()
+    public function getRowHeight(): ?int
     {
         return $this->rowHeight;
     }
 
-    public function setTextWrap(bool $textWrap)
+    public function setTextWrap(bool $textWrap): void
     {
         $this->textWrap = $textWrap;
-
-        return $this;
     }
 
     public function getTextWrap(): bool
@@ -179,7 +182,17 @@ final class Table implements Countable
         return $this->textWrap;
     }
 
-    public function setCount(int $count)
+    public function setWrittenColumnTitles(?array $writtenColumnTitles): void
+    {
+        $this->writtenColumnTitles = $writtenColumnTitles;
+    }
+
+    public function getWrittenColumnTitles(): ?array
+    {
+        return $this->writtenColumnTitles;
+    }
+
+    public function setCount(int $count): void
     {
         $this->count = $count;
     }
