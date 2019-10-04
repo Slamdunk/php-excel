@@ -11,6 +11,9 @@ use Slam\Excel\Pear\Writer\Worksheet;
 
 final class Table implements Countable
 {
+    /**
+     * @var Worksheet
+     */
     private $activeSheet;
 
     private $dataRowStart;
@@ -30,7 +33,7 @@ final class Table implements Countable
     private $columnCollection;
 
     private $freezePanes = true;
-    private $fontSize = 8;
+    private $fontSize    = 8;
     private $rowHeight;
     private $textWrap = false;
     private $writtenColumnTitles;
@@ -41,14 +44,14 @@ final class Table implements Countable
     {
         $this->activeSheet = $activeSheet;
 
-        $this->rowStart =
-        $this->rowEnd =
+        $this->rowStart   =
+        $this->rowEnd     =
         $this->rowCurrent =
             $row
         ;
 
-        $this->columnStart =
-        $this->columnEnd =
+        $this->columnStart   =
+        $this->columnEnd     =
         $this->columnCurrent =
             $column
         ;

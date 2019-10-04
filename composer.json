@@ -13,21 +13,25 @@
         "php": "^7.1"
     },
     "require-dev": {
-        "mikey179/vfsStream": "^1.6",
+        "mikey179/vfsstream": "^1.6",
         "phpoffice/phpexcel": "^1.8",
-        "phpstan/phpstan": "^0.9.1",
-        "phpstan/phpstan-phpunit": "^0.9.3",
-        "phpunit/phpunit": "^7.0",
+        "phpstan/phpstan": "^0.11",
+        "phpstan/phpstan-phpunit": "^0.11",
+        "phpunit/phpunit": "^7.5",
         "roave/security-advisories": "dev-master",
-        "slam/php-cs-fixer-extensions": "^1.13",
-        "slam/php-debug-r": "^1.2",
-        "slam/phpstan-extensions": "^1.1",
-        "thecodingmachine/phpstan-strict-rules": "^0.9.0"
+        "slam/php-cs-fixer-extensions": "^1.18",
+        "slam/php-debug-r": "^1.6",
+        "slam/phpstan-extensions": "^3.6",
+        "thecodingmachine/phpstan-strict-rules": "^0.11"
     },
     "autoload": {
-        "psr-4": { "Slam\\Excel\\": "lib/" }
+        "psr-4": {
+            "Slam\\Excel\\": "lib/"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "Slam\\Excel\\Tests\\": "tests/" }
+        "psr-4": {
+            "Slam\\Excel\\Tests\\": "tests/"
+        }
     }
 }

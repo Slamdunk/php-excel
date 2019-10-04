@@ -5,5 +5,19 @@ includes:
     - vendor/slam/phpstan-extensions/conf/thecodingmachine-rules.neon
 
 parameters:
+    paths:
+        - lib/
+        - tests/
+    excludes_analyse:
+        - %currentWorkingDirectory%/lib/Pear/*
     ignoreErrors:
-        - '#Parameter .+ given#'
+        -
+            message: '#Call to static method PHPUnit\\Framework\\Assert::assertSame\(\) with \d+ and float will always evaluate to false#'
+            path: %currentWorkingDirectory%/tests/Helper/TableWorkbookTest.php
+        -
+            message: '#Cannot call method \w+\(\) on PHPExcel_Cell\|null#'
+            path: %currentWorkingDirectory%/tests/Helper/TableWorkbookTest.php
+        -
+            message: '#Call to static method PHPUnit\\Framework\\Assert::assertSame\(\) with .+ and null will always evaluate to false#'
+            path: %currentWorkingDirectory%/tests/Helper/TableTest.php
+

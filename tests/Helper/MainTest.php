@@ -18,7 +18,7 @@ final class MainTest extends TestCase
     {
         Excel\Pear\OLE::$gmmktime = \gmmktime(1, 1, 1, 1, 1, 2000);
 
-        $this->vfs = vfs\vfsStream::setup('root', 0770);
+        $this->vfs      = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test.xls');
 
         // $this->filename = __DIR__ . '/stock.xls';
@@ -68,8 +68,8 @@ final class MainTest extends TestCase
 
         $this->xls->close();
 
-        $this->assertLessThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
-        $this->assertSame('9ab414a26fdb4bfb5a6d65c9c214ddc70b5a5464', \hash_file('sha1', $this->filename));
+        static::assertLessThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
+        static::assertSame('9ab414a26fdb4bfb5a6d65c9c214ddc70b5a5464', \hash_file('sha1', $this->filename));
     }
 
     public function testBigFiles()
@@ -82,8 +82,8 @@ final class MainTest extends TestCase
 
         $this->xls->close();
 
-        $this->assertGreaterThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
-        $this->assertSame('f95f7ff2fb1ffb98cef820ecd73312c9a43b9662', \hash_file('sha1', $this->filename));
+        static::assertGreaterThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
+        static::assertSame('f95f7ff2fb1ffb98cef820ecd73312c9a43b9662', \hash_file('sha1', $this->filename));
     }
 
     /**
@@ -91,7 +91,7 @@ final class MainTest extends TestCase
      */
     public function testColumnIndexInInumber(int $index, string $letter)
     {
-        $this->assertSame($letter . '2', $this->xls->rowcolToCell(1, $index));
+        static::assertSame($letter . '2', $this->xls->rowcolToCell(1, $index));
 
         $this->expectException(Excel\Exception\InvalidArgumentException::class);
 
