@@ -24,8 +24,8 @@ final class ColumnCollectionTest extends TestCase
 
     public function testBaseFunctionalities()
     {
-        $this->assertArrayHasKey('foo', $this->collection);
-        $this->assertSame($this->column, $this->collection['foo']);
+        static::assertArrayHasKey('foo', $this->collection);
+        static::assertSame($this->column, $this->collection['foo']);
     }
 
     public function testNotEditableOnSet()

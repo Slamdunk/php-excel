@@ -8,15 +8,27 @@ use Slam\Excel;
 
 final class TableWorkbook extends Excel\Pear\Writer\Workbook
 {
-    const GREY_MEDIUM   = 43;
-    const GREY_LIGHT    = 42;
+    public const GREY_MEDIUM   = 43;
+    public const GREY_LIGHT    = 42;
 
+    /**
+     * @var int
+     */
     private $rowsPerSheet = 60000;
 
+    /**
+     * @var string
+     */
     private $emptyTableMessage = '';
 
+    /**
+     * @var CellStyle\Text
+     */
     private $styleIdentity;
 
+    /**
+     * @var null|array
+     */
     private $formats;
 
     public function __construct(string $filename)
@@ -70,13 +82,13 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $this->writeTableHeading($table);
         $tables = [$table];
 
-        $count = 0;
+        $count      = 0;
         $headingRow = true;
         foreach ($table->getData() as $row) {
             ++$count;
 
             if ($table->getRowCurrent() >= $this->rowsPerSheet) {
-                $table = $table->splitTableOnNewWorksheet($this->addWorksheet(\uniqid()));
+                $table    = $table->splitTableOnNewWorksheet($this->addWorksheet(\uniqid()));
                 $tables[] = $table;
                 $this->writeTableHeading($table);
                 $headingRow = true;
@@ -92,13 +104,14 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         }
 
         if (\count($tables) > 1) {
-            $table = \reset($tables);
+            \reset($tables);
+            $table      = \current($tables);
             $firstSheet = $table->getActiveSheet();
             // In Excel the maximum length for a sheet name is 30
             $originalName = \mb_substr($firstSheet->name, 0, 21);
 
             $sheetCounter = 0;
-            $sheetTotal = \count($tables);
+            $sheetTotal   = \count($tables);
             foreach ($tables as $table) {
                 ++$sheetCounter;
                 $table->getActiveSheet()->name = \sprintf('%s (%s|%s)', $originalName, $sheetCounter, $sheetTotal);
@@ -119,7 +132,9 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
 
         $table->setCount($count);
 
-        return \end($tables);
+        \end($tables);
+
+        return \current($tables);
     }
 
     private function writeTableHeading(Table $table): void
@@ -132,17 +147,17 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
     private function writeColumnsHeading(Table $table, array $row): void
     {
         $columnCollection = $table->getColumnCollection();
-        $columnKeys = \array_keys($row);
+        $columnKeys       = \array_keys($row);
         $this->generateFormats($table, $columnKeys, $columnCollection);
 
         $table->resetColumn();
         $titles = [];
         foreach ($columnKeys as $title) {
-            $width = 10;
+            $width    = 10;
             $newTitle = \ucwords(\str_replace('_', ' ', $title));
 
-            if (isset($columnCollection) and isset($columnCollection[$title])) {
-                $width = $columnCollection[$title]->getWidth();
+            if (isset($columnCollection) && isset($columnCollection[$title])) {
+                $width    = $columnCollection[$title]->getWidth();
                 $newTitle = $columnCollection[$title]->getHeading();
             }
 
@@ -165,7 +180,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
 
         foreach ($row as $key => $content) {
             $cellStyle = $this->styleIdentity;
-            $format = null;
+            $format    = null;
             if (isset($this->formats[$key])) {
                 if (null === $type) {
                     $type = (($table->getRowCurrent() % 2)
@@ -174,7 +189,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
                     );
                 }
                 $cellStyle = $this->formats[$key]['cell_style'];
-                $format = $this->formats[$key][$type];
+                $format    = $this->formats[$key][$type];
             }
 
             $write = 'write';
@@ -203,7 +218,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             '&amp;'     => '&',
             '&lt;'      => '<',
             '&gt;'      => '>',
-            '&apos;'    => "'",
+            '&apos;'    => '\'',
             '&quot;'    => '"',
         ];
 
@@ -255,7 +270,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             ];
 
             $cellStyle = $this->styleIdentity;
-            if (isset($columnCollection) and isset($columnCollection[$key])) {
+            if (isset($columnCollection) && isset($columnCollection[$key])) {
                 $cellStyle = $columnCollection[$key]->getCellStyle();
             }
 

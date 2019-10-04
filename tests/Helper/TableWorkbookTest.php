@@ -13,20 +13,27 @@ use Slam\Excel;
 
 final class TableWorkbookTest extends TestCase
 {
+    /**
+     * @var vfs\vfsStreamDirectory
+     */
     private $vfs;
+
+    /**
+     * @var string
+     */
     private $filename;
 
     protected function setUp()
     {
-        $this->vfs = vfs\vfsStream::setup('root', 0770);
+        $this->vfs      = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test-encoding.xls');
     }
 
     public function testPostGenerationDetails()
     {
-        $phpExcel = new Excel\Helper\TableWorkbook($this->filename);
+        $phpExcel    = new Excel\Helper\TableWorkbook($this->filename);
         $activeSheet = $phpExcel->addWorksheet(\uniqid('Sheet_'));
-        $table = new Excel\Helper\Table($activeSheet, 3, 4, \uniqid('Heading_'), new ArrayIterator([
+        $table       = new Excel\Helper\Table($activeSheet, 3, 4, \uniqid('Heading_'), new ArrayIterator([
             ['description' => 'AAA'],
             ['description' => 'BBB'],
         ]));
@@ -34,16 +41,16 @@ final class TableWorkbookTest extends TestCase
         $phpExcel->writeTable($table);
         $phpExcel->close();
 
-        $this->assertSame(3, $table->getRowStart());
-        $this->assertSame(7, $table->getRowEnd());
+        static::assertSame(3, $table->getRowStart());
+        static::assertSame(7, $table->getRowEnd());
 
-        $this->assertSame(5, $table->getDataRowStart());
+        static::assertSame(5, $table->getDataRowStart());
 
-        $this->assertSame(4, $table->getColumnStart());
-        $this->assertSame(5, $table->getColumnEnd());
+        static::assertSame(4, $table->getColumnStart());
+        static::assertSame(5, $table->getColumnEnd());
 
-        $this->assertCount(2, $table);
-        $this->assertSame(['description' => 'Description'], $table->getWrittenColumnTitles());
+        static::assertCount(2, $table);
+        static::assertSame(['description' => 'Description'], $table->getWrittenColumnTitles());
     }
 
     public function testHandleEncoding()
@@ -60,11 +67,11 @@ final class TableWorkbookTest extends TestCase
             'A \'\\|!"£$%&/()=?^àèìòùáéíóúÀÈÌÒÙÁÉÍÓÚ<>*ç°§[]@#{},.-;:_~` Z',
         ]);
         $heading = \sprintf('%s: %s', \uniqid('Heading_'), $textWithSpecialCharacters);
-        $data = \sprintf('%s: %s', \uniqid('Data_'), $textWithSpecialCharacters);
+        $data    = \sprintf('%s: %s', \uniqid('Data_'), $textWithSpecialCharacters);
 
-        $phpExcel = new Excel\Helper\TableWorkbook($this->filename);
+        $phpExcel    = new Excel\Helper\TableWorkbook($this->filename);
         $activeSheet = $phpExcel->addWorksheet(\uniqid());
-        $table = new Excel\Helper\Table($activeSheet, 0, 0, $heading, new ArrayIterator([
+        $table       = new Excel\Helper\Table($activeSheet, 0, 0, $heading, new ArrayIterator([
             [
                 'description' => $data,
             ],
@@ -75,17 +82,17 @@ final class TableWorkbookTest extends TestCase
 
         unset($phpExcel);
 
-        $phpExcel = $this->getPhpExcelFromFile($this->filename);
+        $phpExcel   = $this->getPhpExcelFromFile($this->filename);
         $firstSheet = $phpExcel->getActiveSheet();
-        $this->assertSame($activeSheet->getName(), $firstSheet->getTitle());
+        static::assertSame($activeSheet->getName(), $firstSheet->getTitle());
 
         // Heading
         $value = $firstSheet->getCell('A1')->getValue();
-        $this->assertSame($heading, $value);
+        static::assertSame($heading, $value);
 
         // Data
         $value = $firstSheet->getCell('A3')->getValue();
-        $this->assertSame($data, $value);
+        static::assertSame($data, $value);
     }
 
     public function testCellStyles()
@@ -103,7 +110,7 @@ final class TableWorkbookTest extends TestCase
         ]);
 
         $activeSheet = $phpExcel->addWorksheet('names');
-        $table = new Excel\Helper\Table($activeSheet, 1, 0, \uniqid('Heading_'), new ArrayIterator([
+        $table       = new Excel\Helper\Table($activeSheet, 1, 0, \uniqid('Heading_'), new ArrayIterator([
             [
                 'my_text' => 'text',
                 'my_perc' => 3.45,
@@ -124,7 +131,7 @@ final class TableWorkbookTest extends TestCase
         $phpExcel = $this->getPhpExcelFromFile($this->filename);
 
         $firstSheet = $phpExcel->getSheet(0);
-        $expected = [
+        $expected   = [
             'A1' => null,
             'A2' => $table->getHeading(),
 
@@ -144,7 +151,7 @@ final class TableWorkbookTest extends TestCase
         ];
 
         foreach ($expected as $cell => $content) {
-            $this->assertSame($content, $firstSheet->getCell($cell)->getValue(), $cell);
+            static::assertSame($content, $firstSheet->getCell($cell)->getValue(), $cell);
         }
     }
 
@@ -154,7 +161,7 @@ final class TableWorkbookTest extends TestCase
         $phpExcel->setRowsPerSheet(6);
 
         $activeSheet = $phpExcel->addWorksheet('names');
-        $table = new Excel\Helper\Table($activeSheet, 1, 2, \uniqid(), new ArrayIterator([
+        $table       = new Excel\Helper\Table($activeSheet, 1, 2, \uniqid(), new ArrayIterator([
             ['description' => 'AAA'],
             ['description' => 'BBB'],
             ['description' => 'CCC'],
@@ -170,7 +177,7 @@ final class TableWorkbookTest extends TestCase
         $phpExcel = $this->getPhpExcelFromFile($this->filename);
 
         $firstSheet = $phpExcel->getSheet(0);
-        $expected = [
+        $expected   = [
             'C1' => null,
             'C2' => $table->getHeading(),
             'C3' => 'Description',
@@ -181,11 +188,11 @@ final class TableWorkbookTest extends TestCase
         ];
 
         foreach ($expected as $cell => $content) {
-            $this->assertSame($content, $firstSheet->getCell($cell)->getValue());
+            static::assertSame($content, $firstSheet->getCell($cell)->getValue());
         }
 
         $secondSheet = $phpExcel->getSheet(1);
-        $expected = [
+        $expected    = [
             'C1' => $returnTable->getHeading(),
             'C2' => 'Description',
             'C3' => 'DDD',
@@ -194,11 +201,11 @@ final class TableWorkbookTest extends TestCase
         ];
 
         foreach ($expected as $cell => $content) {
-            $this->assertSame($content, $secondSheet->getCell($cell)->getValue());
+            static::assertSame($content, $secondSheet->getCell($cell)->getValue());
         }
 
-        $this->assertContains('names (', $firstSheet->getTitle());
-        $this->assertContains('names (', $secondSheet->getTitle());
+        static::assertContains('names (', $firstSheet->getTitle());
+        static::assertContains('names (', $secondSheet->getTitle());
     }
 
     public function testEmptyTable()
@@ -209,7 +216,7 @@ final class TableWorkbookTest extends TestCase
         $phpExcel->setEmptyTableMessage($emptyTableMessage);
 
         $activeSheet = $phpExcel->addWorksheet(\uniqid());
-        $table = new Excel\Helper\Table($activeSheet, 0, 0, \uniqid(), new ArrayIterator([]));
+        $table       = new Excel\Helper\Table($activeSheet, 0, 0, \uniqid(), new ArrayIterator([]));
 
         $phpExcel->writeTable($table);
         $phpExcel->close();
@@ -219,7 +226,7 @@ final class TableWorkbookTest extends TestCase
         $phpExcel = $this->getPhpExcelFromFile($this->filename);
 
         $firstSheet = $phpExcel->getSheet(0);
-        $expected = [
+        $expected   = [
             'A1' => $table->getHeading(),
             'A2' => null,
             'A3' => $emptyTableMessage,
@@ -227,21 +234,21 @@ final class TableWorkbookTest extends TestCase
         ];
 
         foreach ($expected as $cell => $content) {
-            $this->assertSame($content, $firstSheet->getCell($cell)->getValue());
+            static::assertSame($content, $firstSheet->getCell($cell)->getValue());
         }
     }
 
     public function testFontRowAttributesUsage()
     {
-        $phpExcel = new Excel\Helper\TableWorkbook($this->filename);
+        $phpExcel    = new Excel\Helper\TableWorkbook($this->filename);
         $activeSheet = $phpExcel->addWorksheet(\uniqid());
-        $table = new Excel\Helper\Table($activeSheet, 0, 0, \uniqid(), new ArrayIterator([
+        $table       = new Excel\Helper\Table($activeSheet, 0, 0, \uniqid(), new ArrayIterator([
             [
-                'name' => 'Foo',
+                'name'    => 'Foo',
                 'surname' => 'Bar',
             ],
             [
-                'name' => 'Baz',
+                'name'    => 'Baz',
                 'surname' => 'Xxx',
             ],
         ]));
@@ -258,13 +265,13 @@ final class TableWorkbookTest extends TestCase
         $phpExcel = $this->getPhpExcelFromFile($this->filename);
 
         $firstSheet = $phpExcel->getSheet(0);
-        $cell = $firstSheet->getCell('A3');
-        $style = $cell->getStyle();
+        $cell       = $firstSheet->getCell('A3');
+        $style      = $cell->getStyle();
 
-        $this->assertSame('Foo', $cell->getValue());
-        $this->assertSame(12, $style->getFont()->getSize());
-        $this->assertSame(33, $firstSheet->getRowDimension($cell->getRow())->getRowHeight());
-        $this->assertTrue($style->getAlignment()->getWrapText());
+        static::assertSame('Foo', $cell->getValue());
+        static::assertSame(12, $style->getFont()->getSize());
+        static::assertSame(33, $firstSheet->getRowDimension($cell->getRow())->getRowHeight());
+        static::assertTrue($style->getAlignment()->getWrapText());
     }
 
     /**
@@ -272,7 +279,7 @@ final class TableWorkbookTest extends TestCase
      */
     public function testColumnStringFromIndex(int $index, string $columnString)
     {
-        $this->assertSame($columnString, Excel\Helper\TableWorkbook::getColumnStringFromIndex($index));
+        static::assertSame($columnString, Excel\Helper\TableWorkbook::getColumnStringFromIndex($index));
     }
 
     public function provideColumnStringFromIndexCases()
