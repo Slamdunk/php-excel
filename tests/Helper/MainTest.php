@@ -10,8 +10,19 @@ use Slam\Excel;
 
 final class MainTest extends TestCase
 {
+    /**
+     * @var vfs\vfsStreamDirectory
+     */
     private $vfs;
+
+    /**
+     * @var string
+     */
     private $filename;
+
+    /**
+     * @var Excel\Pear\Writer\Workbook
+     */
     private $xls;
 
     protected function setUp(): void
@@ -28,9 +39,9 @@ final class MainTest extends TestCase
 
     public function testBaseCreation(): void
     {
-        $this->xls->setCustomColor(60, \hexdec('7f'), \hexdec('7f'), \hexdec('7f'));
-        $this->xls->setCustomColor(61, \hexdec('e8'), \hexdec('e8'), \hexdec('e8'));
-        $this->xls->setCustomColor(62, \hexdec('cc'), \hexdec('cc'), \hexdec('cc'));
+        $this->xls->setCustomColor(60, (int) \hexdec('7f'), (int) \hexdec('7f'), (int) \hexdec('7f'));
+        $this->xls->setCustomColor(61, (int) \hexdec('e8'), (int) \hexdec('e8'), (int) \hexdec('e8'));
+        $this->xls->setCustomColor(62, (int) \hexdec('cc'), (int) \hexdec('cc'), (int) \hexdec('cc'));
 
         $sheet = $this->xls->addWorksheet('CustomSheet');
         $sheet->setLandscape();
@@ -98,7 +109,7 @@ final class MainTest extends TestCase
         $this->xls->rowcolToCell(1, 50000);
     }
 
-    public function dataProviderTestColumnIndexInInumber()
+    public function dataProviderTestColumnIndexInInumber(): array
     {
         return [
             [0, 'A'],

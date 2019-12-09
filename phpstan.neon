@@ -1,10 +1,12 @@
 includes:
-    - vendor/phpstan/phpstan/conf/config.levelmax.neon
+    - phar://phpstan.phar/conf/config.levelmax.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/slam/phpstan-extensions/conf/slam-rules.neon
     - vendor/slam/phpstan-extensions/conf/thecodingmachine-rules.neon
 
 parameters:
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
     paths:
         - lib/
         - tests/
@@ -12,12 +14,8 @@ parameters:
         - %currentWorkingDirectory%/lib/Pear/*
     ignoreErrors:
         -
-            message: '#Call to static method PHPUnit\\Framework\\Assert::assertSame\(\) with \d+ and float will always evaluate to false#'
-            path: %currentWorkingDirectory%/tests/Helper/TableWorkbookTest.php
+            message: '#Method Slam\\Excel\\Helper\\ColumnCollection::offset.+ has no return typehint specified#'
+            path: %currentWorkingDirectory%/lib/Helper/ColumnCollection.php
         -
             message: '#Cannot call method \w+\(\) on PHPExcel_Cell\|null#'
             path: %currentWorkingDirectory%/tests/Helper/TableWorkbookTest.php
-        -
-            message: '#Call to static method PHPUnit\\Framework\\Assert::assertSame\(\) with .+ and null will always evaluate to false#'
-            path: %currentWorkingDirectory%/tests/Helper/TableTest.php
-

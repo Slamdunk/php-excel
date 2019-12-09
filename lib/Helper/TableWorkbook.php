@@ -51,7 +51,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $this->emptyTableMessage = $emptyTableMessage;
     }
 
-    public static function getColumnStringFromIndex(int $index)
+    public static function getColumnStringFromIndex(int $index): string
     {
         if ($index < 0) {
             throw new Excel\Exception\InvalidArgumentException('Column index must be equal or greater than zero');
@@ -212,6 +212,9 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $table->incrementRow();
     }
 
+    /**
+     * @param mixed $value
+     */
     private function sanitize($value): string
     {
         static $sanitizeMap = [
@@ -225,7 +228,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $value = \str_replace(
             \array_keys($sanitizeMap),
             \array_values($sanitizeMap),
-            $value
+            (string) $value
         );
         $value = \mb_convert_encoding($value, 'Windows-1252');
 

@@ -269,8 +269,8 @@ final class TableWorkbookTest extends TestCase
         $style      = $cell->getStyle();
 
         self::assertSame('Foo', $cell->getValue());
-        self::assertSame(12, $style->getFont()->getSize());
-        self::assertSame(33, $firstSheet->getRowDimension($cell->getRow())->getRowHeight());
+        self::assertSame(12, (int) $style->getFont()->getSize());
+        self::assertSame(33, (int) $firstSheet->getRowDimension($cell->getRow())->getRowHeight());
         self::assertTrue($style->getAlignment()->getWrapText());
     }
 
@@ -282,7 +282,7 @@ final class TableWorkbookTest extends TestCase
         self::assertSame($columnString, Excel\Helper\TableWorkbook::getColumnStringFromIndex($index));
     }
 
-    public function provideColumnStringFromIndexCases()
+    public function provideColumnStringFromIndexCases(): array
     {
         return [
             [2, 'C'],
