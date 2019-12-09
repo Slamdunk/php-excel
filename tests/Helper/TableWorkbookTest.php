@@ -6,8 +6,7 @@ namespace Slam\Excel\Tests\Helper;
 
 use ArrayIterator;
 use org\bovigo\vfs;
-use PHPExcel;
-use PHPExcel_IOFactory;
+use PhpOffice\PhpSpreadsheet;
 use PHPUnit\Framework\TestCase;
 use Slam\Excel;
 
@@ -302,8 +301,8 @@ final class TableWorkbookTest extends TestCase
         Excel\Helper\TableWorkbook::getColumnStringFromIndex(-1);
     }
 
-    private function getPhpExcelFromFile(string $filename): PHPExcel
+    private function getPhpExcelFromFile(string $filename): PhpSpreadsheet\Spreadsheet
     {
-        return PHPExcel_IOFactory::load($filename);
+        return PhpSpreadsheet\IOFactory::load($filename);
     }
 }

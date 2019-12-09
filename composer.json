@@ -14,7 +14,7 @@
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6",
-        "phpoffice/phpexcel": "^1.8",
+        "phpoffice/phpspreadsheet": "^1.10",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12",
         "phpunit/phpunit": "^8.5",
