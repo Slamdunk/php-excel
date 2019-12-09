@@ -173,7 +173,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $table->flagDataRowStart();
     }
 
-    private function writeRow(Table $table, array $row, string $type = null): void
+    private function writeRow(Table $table, array $row, ?string $type = null): void
     {
         $table->resetColumn();
         $sheet = $table->getActiveSheet();
@@ -232,7 +232,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         return $value;
     }
 
-    private function generateFormats(Table $table, array $titles, ColumnCollectionInterface $columnCollection = null): void
+    private function generateFormats(Table $table, array $titles, ?ColumnCollectionInterface $columnCollection = null): void
     {
         $this->formats = [];
         foreach ($titles as $key) {

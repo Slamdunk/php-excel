@@ -10,19 +10,19 @@
         }
     ],
     "require": {
-        "php": "^7.1"
+        "php": "^7.3"
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6",
         "phpoffice/phpexcel": "^1.8",
-        "phpstan/phpstan": "^0.11",
-        "phpstan/phpstan-phpunit": "^0.11",
-        "phpunit/phpunit": "^7.5",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
+        "phpunit/phpunit": "^8.5",
         "roave/security-advisories": "dev-master",
-        "slam/php-cs-fixer-extensions": "^1.18",
+        "slam/php-cs-fixer-extensions": "^1.19",
         "slam/php-debug-r": "^1.6",
-        "slam/phpstan-extensions": "^3.6",
-        "thecodingmachine/phpstan-strict-rules": "^0.11"
+        "slam/phpstan-extensions": "^4.0",
+        "thecodingmachine/phpstan-strict-rules": "^0.12"
     },
     "autoload": {
         "psr-4": {
