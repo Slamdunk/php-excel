@@ -6,8 +6,7 @@ namespace Slam\Excel\Tests\Helper;
 
 use ArrayIterator;
 use org\bovigo\vfs;
-use PHPExcel;
-use PHPExcel_IOFactory;
+use PhpOffice\PhpSpreadsheet;
 use PHPUnit\Framework\TestCase;
 use Slam\Excel;
 
@@ -23,13 +22,13 @@ final class TableWorkbookTest extends TestCase
      */
     private $filename;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->vfs      = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test-encoding.xls');
     }
 
-    public function testPostGenerationDetails()
+    public function testPostGenerationDetails(): void
     {
         $phpExcel    = new Excel\Helper\TableWorkbook($this->filename);
         $activeSheet = $phpExcel->addWorksheet(\uniqid('Sheet_'));
@@ -41,19 +40,19 @@ final class TableWorkbookTest extends TestCase
         $phpExcel->writeTable($table);
         $phpExcel->close();
 
-        static::assertSame(3, $table->getRowStart());
-        static::assertSame(7, $table->getRowEnd());
+        self::assertSame(3, $table->getRowStart());
+        self::assertSame(7, $table->getRowEnd());
 
-        static::assertSame(5, $table->getDataRowStart());
+        self::assertSame(5, $table->getDataRowStart());
 
-        static::assertSame(4, $table->getColumnStart());
-        static::assertSame(5, $table->getColumnEnd());
+        self::assertSame(4, $table->getColumnStart());
+        self::assertSame(5, $table->getColumnEnd());
 
-        static::assertCount(2, $table);
-        static::assertSame(['description' => 'Description'], $table->getWrittenColumnTitles());
+        self::assertCount(2, $table);
+        self::assertSame(['description' => 'Description'], $table->getWrittenColumnTitles());
     }
 
-    public function testHandleEncoding()
+    public function testHandleEncoding(): void
     {
         $textWithSpecialCharacters = \implode(' # ', [
             '€',
@@ -84,18 +83,18 @@ final class TableWorkbookTest extends TestCase
 
         $phpExcel   = $this->getPhpExcelFromFile($this->filename);
         $firstSheet = $phpExcel->getActiveSheet();
-        static::assertSame($activeSheet->getName(), $firstSheet->getTitle());
+        self::assertSame($activeSheet->getName(), $firstSheet->getTitle());
 
         // Heading
         $value = $firstSheet->getCell('A1')->getValue();
-        static::assertSame($heading, $value);
+        self::assertSame($heading, $value);
 
         // Data
         $value = $firstSheet->getCell('A3')->getValue();
-        static::assertSame($data, $value);
+        self::assertSame($data, $value);
     }
 
-    public function testCellStyles()
+    public function testCellStyles(): void
     {
         $phpExcel = new Excel\Helper\TableWorkbook($this->filename);
 
@@ -151,11 +150,11 @@ final class TableWorkbookTest extends TestCase
         ];
 
         foreach ($expected as $cell => $content) {
-            static::assertSame($content, $firstSheet->getCell($cell)->getValue(), $cell);
+            self::assertSame($content, $firstSheet->getCell($cell)->getValue(), $cell);
         }
     }
 
-    public function testTablePagination()
+    public function testTablePagination(): void
     {
         $phpExcel = new Excel\Helper\TableWorkbook($this->filename);
         $phpExcel->setRowsPerSheet(6);
@@ -188,7 +187,7 @@ final class TableWorkbookTest extends TestCase
         ];
 
         foreach ($expected as $cell => $content) {
-            static::assertSame($content, $firstSheet->getCell($cell)->getValue());
+            self::assertSame($content, $firstSheet->getCell($cell)->getValue());
         }
 
         $secondSheet = $phpExcel->getSheet(1);
@@ -201,14 +200,14 @@ final class TableWorkbookTest extends TestCase
         ];
 
         foreach ($expected as $cell => $content) {
-            static::assertSame($content, $secondSheet->getCell($cell)->getValue());
+            self::assertSame($content, $secondSheet->getCell($cell)->getValue());
         }
 
-        static::assertContains('names (', $firstSheet->getTitle());
-        static::assertContains('names (', $secondSheet->getTitle());
+        self::assertStringContainsString('names (', $firstSheet->getTitle());
+        self::assertStringContainsString('names (', $secondSheet->getTitle());
     }
 
-    public function testEmptyTable()
+    public function testEmptyTable(): void
     {
         $emptyTableMessage = \uniqid('no_data_');
 
@@ -234,11 +233,11 @@ final class TableWorkbookTest extends TestCase
         ];
 
         foreach ($expected as $cell => $content) {
-            static::assertSame($content, $firstSheet->getCell($cell)->getValue());
+            self::assertSame($content, $firstSheet->getCell($cell)->getValue());
         }
     }
 
-    public function testFontRowAttributesUsage()
+    public function testFontRowAttributesUsage(): void
     {
         $phpExcel    = new Excel\Helper\TableWorkbook($this->filename);
         $activeSheet = $phpExcel->addWorksheet(\uniqid());
@@ -268,21 +267,21 @@ final class TableWorkbookTest extends TestCase
         $cell       = $firstSheet->getCell('A3');
         $style      = $cell->getStyle();
 
-        static::assertSame('Foo', $cell->getValue());
-        static::assertSame(12, $style->getFont()->getSize());
-        static::assertSame(33, $firstSheet->getRowDimension($cell->getRow())->getRowHeight());
-        static::assertTrue($style->getAlignment()->getWrapText());
+        self::assertSame('Foo', $cell->getValue());
+        self::assertSame(12, (int) $style->getFont()->getSize());
+        self::assertSame(33, (int) $firstSheet->getRowDimension($cell->getRow())->getRowHeight());
+        self::assertTrue($style->getAlignment()->getWrapText());
     }
 
     /**
      * @dataProvider provideColumnStringFromIndexCases
      */
-    public function testColumnStringFromIndex(int $index, string $columnString)
+    public function testColumnStringFromIndex(int $index, string $columnString): void
     {
-        static::assertSame($columnString, Excel\Helper\TableWorkbook::getColumnStringFromIndex($index));
+        self::assertSame($columnString, Excel\Helper\TableWorkbook::getColumnStringFromIndex($index));
     }
 
-    public function provideColumnStringFromIndexCases()
+    public function provideColumnStringFromIndexCases(): array
     {
         return [
             [2, 'C'],
@@ -295,15 +294,15 @@ final class TableWorkbookTest extends TestCase
         ];
     }
 
-    public function testColumnStringFromIndexExpectsPositiveValues()
+    public function testColumnStringFromIndexExpectsPositiveValues(): void
     {
         $this->expectException(Excel\Exception\InvalidArgumentException::class);
 
         Excel\Helper\TableWorkbook::getColumnStringFromIndex(-1);
     }
 
-    private function getPhpExcelFromFile(string $filename): PHPExcel
+    private function getPhpExcelFromFile(string $filename): PhpSpreadsheet\Spreadsheet
     {
-        return PHPExcel_IOFactory::load($filename);
+        return PhpSpreadsheet\IOFactory::load($filename);
     }
 }

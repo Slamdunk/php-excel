@@ -10,10 +10,17 @@ use Slam\Excel\Helper;
 
 final class ColumnCollectionTest extends TestCase
 {
+    /**
+     * @var Helper\Column
+     */
     private $column;
+
+    /**
+     * @var Helper\ColumnCollection
+     */
     private $collection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->column = new Helper\Column('foo', 'Foo', 10, new Helper\CellStyle\Text());
 
@@ -22,20 +29,20 @@ final class ColumnCollectionTest extends TestCase
         ]);
     }
 
-    public function testBaseFunctionalities()
+    public function testBaseFunctionalities(): void
     {
-        static::assertArrayHasKey('foo', $this->collection);
-        static::assertSame($this->column, $this->collection['foo']);
+        self::assertArrayHasKey('foo', $this->collection);
+        self::assertSame($this->column, $this->collection['foo']);
     }
 
-    public function testNotEditableOnSet()
+    public function testNotEditableOnSet(): void
     {
         $this->expectException(Exception\RuntimeException::class);
 
         $this->collection['foo'] = 1;
     }
 
-    public function testNotEditableOnUnset()
+    public function testNotEditableOnUnset(): void
     {
         $this->expectException(Exception\RuntimeException::class);
 

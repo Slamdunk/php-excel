@@ -51,7 +51,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $this->emptyTableMessage = $emptyTableMessage;
     }
 
-    public static function getColumnStringFromIndex(int $index)
+    public static function getColumnStringFromIndex(int $index): string
     {
         if ($index < 0) {
             throw new Excel\Exception\InvalidArgumentException('Column index must be equal or greater than zero');
@@ -173,7 +173,7 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $table->flagDataRowStart();
     }
 
-    private function writeRow(Table $table, array $row, string $type = null): void
+    private function writeRow(Table $table, array $row, ?string $type = null): void
     {
         $table->resetColumn();
         $sheet = $table->getActiveSheet();
@@ -212,6 +212,9 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $table->incrementRow();
     }
 
+    /**
+     * @param mixed $value
+     */
     private function sanitize($value): string
     {
         static $sanitizeMap = [
@@ -225,14 +228,14 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $value = \str_replace(
             \array_keys($sanitizeMap),
             \array_values($sanitizeMap),
-            $value
+            (string) $value
         );
         $value = \mb_convert_encoding($value, 'Windows-1252');
 
         return $value;
     }
 
-    private function generateFormats(Table $table, array $titles, ColumnCollectionInterface $columnCollection = null): void
+    private function generateFormats(Table $table, array $titles, ?ColumnCollectionInterface $columnCollection = null): void
     {
         $this->formats = [];
         foreach ($titles as $key) {

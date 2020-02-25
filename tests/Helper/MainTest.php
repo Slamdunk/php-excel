@@ -10,11 +10,22 @@ use Slam\Excel;
 
 final class MainTest extends TestCase
 {
+    /**
+     * @var vfs\vfsStreamDirectory
+     */
     private $vfs;
+
+    /**
+     * @var string
+     */
     private $filename;
+
+    /**
+     * @var Excel\Pear\Writer\Workbook
+     */
     private $xls;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         Excel\Pear\OLE::$gmmktime = \gmmktime(1, 1, 1, 1, 1, 2000);
 
@@ -26,11 +37,11 @@ final class MainTest extends TestCase
         $this->xls = new Excel\Pear\Writer\Workbook($this->filename);
     }
 
-    public function testBaseCreation()
+    public function testBaseCreation(): void
     {
-        $this->xls->setCustomColor(60, \hexdec('7f'), \hexdec('7f'), \hexdec('7f'));
-        $this->xls->setCustomColor(61, \hexdec('e8'), \hexdec('e8'), \hexdec('e8'));
-        $this->xls->setCustomColor(62, \hexdec('cc'), \hexdec('cc'), \hexdec('cc'));
+        $this->xls->setCustomColor(60, (int) \hexdec('7f'), (int) \hexdec('7f'), (int) \hexdec('7f'));
+        $this->xls->setCustomColor(61, (int) \hexdec('e8'), (int) \hexdec('e8'), (int) \hexdec('e8'));
+        $this->xls->setCustomColor(62, (int) \hexdec('cc'), (int) \hexdec('cc'), (int) \hexdec('cc'));
 
         $sheet = $this->xls->addWorksheet('CustomSheet');
         $sheet->setLandscape();
@@ -68,11 +79,11 @@ final class MainTest extends TestCase
 
         $this->xls->close();
 
-        static::assertLessThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
-        static::assertSame('9ab414a26fdb4bfb5a6d65c9c214ddc70b5a5464', \hash_file('sha1', $this->filename));
+        self::assertLessThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
+        self::assertSame('9ab414a26fdb4bfb5a6d65c9c214ddc70b5a5464', \hash_file('sha1', $this->filename));
     }
 
-    public function testBigFiles()
+    public function testBigFiles(): void
     {
         $sheet = $this->xls->addWorksheet('CustomSheet');
 
@@ -82,23 +93,23 @@ final class MainTest extends TestCase
 
         $this->xls->close();
 
-        static::assertGreaterThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
-        static::assertSame('f95f7ff2fb1ffb98cef820ecd73312c9a43b9662', \hash_file('sha1', $this->filename));
+        self::assertGreaterThan(Excel\Pear\OLE::Excel_OLE_DATA_SIZE_SMALL, \filesize($this->filename));
+        self::assertSame('f95f7ff2fb1ffb98cef820ecd73312c9a43b9662', \hash_file('sha1', $this->filename));
     }
 
     /**
      * @dataProvider dataProviderTestColumnIndexInInumber
      */
-    public function testColumnIndexInInumber(int $index, string $letter)
+    public function testColumnIndexInInumber(int $index, string $letter): void
     {
-        static::assertSame($letter . '2', $this->xls->rowcolToCell(1, $index));
+        self::assertSame($letter . '2', $this->xls->rowcolToCell(1, $index));
 
         $this->expectException(Excel\Exception\InvalidArgumentException::class);
 
         $this->xls->rowcolToCell(1, 50000);
     }
 
-    public function dataProviderTestColumnIndexInInumber()
+    public function dataProviderTestColumnIndexInInumber(): array
     {
         return [
             [0, 'A'],

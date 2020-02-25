@@ -16,28 +16,84 @@ final class Table implements Countable
      */
     private $activeSheet;
 
+    /**
+     * @var null|int
+     */
     private $dataRowStart;
 
+    /**
+     * @var int
+     */
     private $rowStart;
+
+    /**
+     * @var int
+     */
     private $rowEnd;
+
+    /**
+     * @var int
+     */
     private $rowCurrent;
 
+    /**
+     * @var int
+     */
     private $columnStart;
+
+    /**
+     * @var int
+     */
     private $columnEnd;
+
+    /**
+     * @var int
+     */
     private $columnCurrent;
 
+    /**
+     * @var string
+     */
     private $heading;
 
+    /**
+     * @var Iterator
+     */
     private $data;
 
+    /**
+     * @var null|ColumnCollectionInterface
+     */
     private $columnCollection;
 
+    /**
+     * @var bool
+     */
     private $freezePanes = true;
-    private $fontSize    = 8;
+
+    /**
+     * @var int
+     */
+    private $fontSize = 8;
+
+    /**
+     * @var null|int
+     */
     private $rowHeight;
+
+    /**
+     * @var bool
+     */
     private $textWrap = false;
+
+    /**
+     * @var null|array
+     */
     private $writtenColumnTitles;
 
+    /**
+     * @var null|int
+     */
     private $count;
 
     public function __construct(Worksheet $activeSheet, int $row, int $column, string $heading, Iterator $data)
@@ -200,6 +256,9 @@ final class Table implements Countable
         $this->count = $count;
     }
 
+    /**
+     * @return null|int
+     */
     public function count()
     {
         if (null === $this->count) {
