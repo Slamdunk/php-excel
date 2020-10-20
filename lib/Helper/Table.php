@@ -11,90 +11,23 @@ use Slam\Excel\Pear\Writer\Worksheet;
 
 final class Table implements Countable
 {
-    /**
-     * @var Worksheet
-     */
-    private $activeSheet;
-
-    /**
-     * @var null|int
-     */
-    private $dataRowStart;
-
-    /**
-     * @var int
-     */
-    private $rowStart;
-
-    /**
-     * @var int
-     */
-    private $rowEnd;
-
-    /**
-     * @var int
-     */
-    private $rowCurrent;
-
-    /**
-     * @var int
-     */
-    private $columnStart;
-
-    /**
-     * @var int
-     */
-    private $columnEnd;
-
-    /**
-     * @var int
-     */
-    private $columnCurrent;
-
-    /**
-     * @var string
-     */
-    private $heading;
-
-    /**
-     * @var Iterator
-     */
-    private $data;
-
-    /**
-     * @var null|ColumnCollectionInterface
-     */
-    private $columnCollection;
-
-    /**
-     * @var bool
-     */
-    private $freezePanes = true;
-
-    /**
-     * @var int
-     */
-    private $fontSize = 8;
-
-    /**
-     * @var null|int
-     */
-    private $rowHeight;
-
-    /**
-     * @var bool
-     */
-    private $textWrap = false;
-
-    /**
-     * @var null|array
-     */
-    private $writtenColumnTitles;
-
-    /**
-     * @var null|int
-     */
-    private $count;
+    private Worksheet $activeSheet;
+    private ?int $dataRowStart = null;
+    private int $rowStart;
+    private int $rowEnd;
+    private int $rowCurrent;
+    private int $columnStart;
+    private int $columnEnd;
+    private int $columnCurrent;
+    private string $heading;
+    private Iterator $data;
+    private ?ColumnCollectionInterface $columnCollection = null;
+    private bool $freezePanes                            = true;
+    private int $fontSize                                = 8;
+    private ?int $rowHeight                              = null;
+    private bool $textWrap                               = false;
+    private ?array $writtenColumnTitles                  = null;
+    private ?int $count                                  = null;
 
     public function __construct(Worksheet $activeSheet, int $row, int $column, string $heading, Iterator $data)
     {

@@ -1,6 +1,6 @@
 <?php
 
-$config = new SlamCsFixer\Config(SlamCsFixer\Config::LIB);
+$config = new SlamCsFixer\Config();
 $config->getFinder()
     ->in(__DIR__ . '/lib/Exception')
     ->in(__DIR__ . '/lib/Helper')

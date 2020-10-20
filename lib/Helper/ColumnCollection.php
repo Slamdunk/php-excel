@@ -11,7 +11,7 @@ final class ColumnCollection implements ColumnCollectionInterface
     /**
      * @var array<string, ColumnInterface>
      */
-    private $columns = [];
+    private array $columns = [];
 
     public function __construct(array $columns)
     {
@@ -29,17 +29,15 @@ final class ColumnCollection implements ColumnCollectionInterface
      * @param string $offset
      * @param mixed  $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new Exception\RuntimeException('Collection not editable');
     }
 
     /**
      * @param string $offset
-     *
-     * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->columns[$offset]);
     }
@@ -47,17 +45,15 @@ final class ColumnCollection implements ColumnCollectionInterface
     /**
      * @param string $offset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new Exception\RuntimeException('Collection not editable');
     }
 
     /**
      * @param string $offset
-     *
-     * @return null|mixed
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): ?ColumnInterface
     {
         return $this->columns[$offset] ?? null;
     }

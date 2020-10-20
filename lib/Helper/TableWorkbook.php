@@ -11,25 +11,10 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
     public const GREY_MEDIUM   = 43;
     public const GREY_LIGHT    = 42;
 
-    /**
-     * @var int
-     */
-    private $rowsPerSheet = 60000;
-
-    /**
-     * @var string
-     */
-    private $emptyTableMessage = '';
-
-    /**
-     * @var CellStyle\Text
-     */
-    private $styleIdentity;
-
-    /**
-     * @var null|array
-     */
-    private $formats;
+    private int $rowsPerSheet         = 60000;
+    private string $emptyTableMessage = '';
+    private CellStyle\Text $styleIdentity;
+    private ?array $formats;
 
     public function __construct(string $filename)
     {
@@ -156,9 +141,9 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             $width    = 10;
             $newTitle = \ucwords(\str_replace('_', ' ', $title));
 
-            if (isset($columnCollection) && isset($columnCollection[$title])) {
-                $width    = $columnCollection[$title]->getWidth();
-                $newTitle = $columnCollection[$title]->getHeading();
+            if (null !== $columnCollection && null !== ($column = $columnCollection[$title])) {
+                $width    = $column->getWidth();
+                $newTitle = $column->getHeading();
             }
 
             $table->getActiveSheet()->setColumn($table->getColumnCurrent(), $table->getColumnCurrent(), $width);

@@ -6,25 +6,10 @@ namespace Slam\Excel\Helper;
 
 final class Column implements ColumnInterface
 {
-    /**
-     * @var string
-     */
-    private $key;
-
-    /**
-     * @var string
-     */
-    private $heading;
-
-    /**
-     * @var int
-     */
-    private $width;
-
-    /**
-     * @var CellStyleInterface
-     */
-    private $cellStyle;
+    private string $key;
+    private string $heading;
+    private int $width;
+    private CellStyleInterface $cellStyle;
 
     public function __construct(string $key, string $heading, int $width, CellStyleInterface $cellStyle)
     {
