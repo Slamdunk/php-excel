@@ -21,7 +21,7 @@ final class TableTest extends TestCase
     private $activeSheet;
 
     /**
-     * @var ArrayIterator
+     * @var ArrayIterator<int, string>
      */
     private $data;
 
