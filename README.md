@@ -1,8 +1,9 @@
 # Slam PHPExcel old&faster
 
-[![Build Status](https://travis-ci.org/Slamdunk/php-excel.svg?branch=master)](https://travis-ci.org/Slamdunk/php-excel)
-[![Code Coverage](https://scrutinizer-ci.com/g/Slamdunk/php-excel/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Slamdunk/php-excel/?branch=master)
-[![Packagist](https://img.shields.io/packagist/v/slam/php-excel.svg)](https://packagist.org/packages/slam/php-excel)
+[![Latest Stable Version](https://img.shields.io/packagist/v/slam/php-excel.svg)](https://packagist.org/packages/slam/php-excel)
+[![Downloads](https://img.shields.io/packagist/dt/slam/php-excel.svg)](https://packagist.org/packages/slam/php-excel)
+[![Integrate](https://github.com/Slamdunk/php-excel/workflows/Integrate/badge.svg?branch=master)](https://github.com/Slamdunk/php-excel/actions)
+[![Code Coverage](https://codecov.io/gh/Slamdunk/php-excel/coverage.svg?branch=master)](https://codecov.io/gh/Slamdunk/php-excel?branch=master)
 
 This package is _NOT_ intended to be complete and flexible, but to be *fast*.
 
