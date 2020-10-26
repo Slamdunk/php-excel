@@ -10,7 +10,9 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0"
+        "php": "^7.4 || ^8.0",
+        "ext-iconv": "*",
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "mikey179/vfsstream": "^1.6.8",
