@@ -118,8 +118,10 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
         $table->setCount($count);
 
         \end($tables);
+        $lastTable = \current($tables);
+        \assert($lastTable instanceof Table);
 
-        return \current($tables);
+        return $lastTable;
     }
 
     private function writeTableHeading(Table $table): void
