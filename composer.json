@@ -15,15 +15,20 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
+        "malukenho/mcbumpface": "^1.1.5",
         "mikey179/vfsstream": "^1.6.8",
-        "phpoffice/phpspreadsheet": "^1.15.0",
-        "phpstan/phpstan": "^0.12.50",
-        "phpstan/phpstan-phpunit": "^0.12.16",
-        "phpunit/phpunit": "^9.4.2",
-        "slam/php-cs-fixer-extensions": "^2.0.0",
+        "phpoffice/phpspreadsheet": "^1.16.1",
+        "phpstan/phpstan": "^0.12.64",
+        "phpstan/phpstan-phpunit": "^0.12.17",
+        "phpunit/phpunit": "^9.5.0",
+        "slam/php-cs-fixer-extensions": "^2.1.0",
         "slam/php-debug-r": "^1.6.1",
-        "slam/phpstan-extensions": "^5.0.2",
-        "thecodingmachine/phpstan-strict-rules": "^0.12.1"
+        "slam/phpstan-extensions": "^5.1.0"
+    },
+    "extra": {
+        "mc-bumpface": {
+            "stripVersionPrefixes": true
+        }
     },
     "autoload": {
         "psr-4": {
