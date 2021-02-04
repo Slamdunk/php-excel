@@ -17,12 +17,12 @@
     "require-dev": {
         "malukenho/mcbumpface": "^1.1.5",
         "mikey179/vfsstream": "^1.6.8",
-        "phpoffice/phpspreadsheet": "^1.16.1",
-        "phpstan/phpstan": "^0.12.64",
+        "phpoffice/phpspreadsheet": "^1.16.0",
+        "phpstan/phpstan": "^0.12.71",
         "phpstan/phpstan-phpunit": "^0.12.17",
-        "phpunit/phpunit": "^9.5.0",
-        "slam/php-cs-fixer-extensions": "^2.1.0",
-        "slam/php-debug-r": "^1.6.1",
+        "phpunit/phpunit": "^9.5.2",
+        "slam/php-cs-fixer-extensions": "^2.2.0",
+        "slam/php-debug-r": "^1.7.0",
         "slam/phpstan-extensions": "^5.1.0"
     },
     "extra": {
