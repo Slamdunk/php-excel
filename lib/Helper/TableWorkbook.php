@@ -170,7 +170,8 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
             $format    = null;
             if (isset($this->formats[$key])) {
                 if (null === $type) {
-                    $type = (($table->getRowCurrent() % 2)
+                    $type = (
+                        ($table->getRowCurrent() % 2)
                         ? 'zebra_light'
                         : 'zebra_dark'
                     );
