@@ -12,15 +12,9 @@ use Slam\Excel;
 
 final class TableWorkbookTest extends TestCase
 {
-    /**
-     * @var vfs\vfsStreamDirectory
-     */
-    private $vfs;
+    private vfs\vfsStreamDirectory $vfs;
 
-    /**
-     * @var string
-     */
-    private $filename;
+    private string $filename;
 
     protected function setUp(): void
     {

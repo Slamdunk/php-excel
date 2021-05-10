@@ -10,15 +10,9 @@ use Slam\Excel\Helper;
 
 final class ColumnCollectionTest extends TestCase
 {
-    /**
-     * @var Helper\Column
-     */
-    private $column;
+    private Helper\Column $column;
 
-    /**
-     * @var Helper\ColumnCollection
-     */
-    private $collection;
+    private Helper\ColumnCollection $collection;
 
     protected function setUp(): void
     {

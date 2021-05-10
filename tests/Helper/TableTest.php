@@ -10,25 +10,16 @@ use Slam\Excel;
 
 final class TableTest extends TestCase
 {
-    /**
-     * @var Excel\Pear\Writer\Workbook
-     */
-    private $phpExcel;
+    private Excel\Pear\Writer\Workbook $phpExcel;
 
-    /**
-     * @var Excel\Pear\Writer\Worksheet
-     */
-    private $activeSheet;
+    private Excel\Pear\Writer\Worksheet $activeSheet;
 
     /**
      * @var ArrayIterator<int, string>
      */
-    private $data;
+    private ArrayIterator $data;
 
-    /**
-     * @var Excel\Helper\Table
-     */
-    private $table;
+    private Excel\Helper\Table $table;
 
     protected function setUp(): void
     {

@@ -10,20 +10,11 @@ use Slam\Excel;
 
 final class MainTest extends TestCase
 {
-    /**
-     * @var vfs\vfsStreamDirectory
-     */
-    private $vfs;
+    private vfs\vfsStreamDirectory $vfs;
 
-    /**
-     * @var string
-     */
-    private $filename;
+    private string $filename;
 
-    /**
-     * @var Excel\Pear\Writer\Workbook
-     */
-    private $xls;
+    private Excel\Pear\Writer\Workbook $xls;
 
     protected function setUp(): void
     {
