@@ -20,6 +20,7 @@ final class TableWorkbookTest extends TestCase
     {
         $this->vfs      = vfs\vfsStream::setup('root', 0770);
         $this->filename = vfs\vfsStream::url('root/test-encoding.xls');
+        // $this->filename = __DIR__ . '/test.xls';
     }
 
     public function testPostGenerationDetails(): void
@@ -138,7 +139,7 @@ final class TableWorkbookTest extends TestCase
             'A4' => 'text',
             'B4' => 3.45,
             'C4' => 1234567.8,
-            'D4' => '02/03/2017',
+            'D4' => 42796,
             'E4' => 1234567.89,
             'F4' => 'AABB',
         ];

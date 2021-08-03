@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) with 'foo' and Slam\\\\Excel\\\\Helper\\\\ColumnCollection will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Helper/ColumnCollectionTest.php
+

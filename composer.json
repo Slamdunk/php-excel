@@ -10,17 +10,17 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": ">=8.0",
         "ext-iconv": "*",
         "ext-mbstring": "*"
     },
     "require-dev": {
         "malukenho/mcbumpface": "^1.1.5",
-        "mikey179/vfsstream": "^1.6.8",
-        "phpoffice/phpspreadsheet": "^1.17.1",
-        "phpstan/phpstan": "^0.12.86",
-        "phpstan/phpstan-phpunit": "^0.12.18",
-        "phpunit/phpunit": "^9.5.4",
+        "mikey179/vfsstream": "^1.6.9",
+        "phpoffice/phpspreadsheet": "^1.18.0",
+        "phpstan/phpstan": "^0.12.94",
+        "phpstan/phpstan-phpunit": "^0.12.21",
+        "phpunit/phpunit": "^9.5.8",
         "slam/php-cs-fixer-extensions": "^3.0.1",
         "slam/php-debug-r": "^1.7.0",
         "slam/phpstan-extensions": "^5.1.0"

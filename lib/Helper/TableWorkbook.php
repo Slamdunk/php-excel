@@ -185,7 +185,9 @@ final class TableWorkbook extends Excel\Pear\Writer\Workbook
                 $write = 'writeString';
             }
 
-            $content = $cellStyle->decorateValue($content);
+            if ('title' !== $type) {
+                $content = $cellStyle->decorateValue($content);
+            }
             $content = $this->sanitize($content);
 
             $sheet->{$write}($table->getRowCurrent(), $table->getColumnCurrent(), $content, $format);
