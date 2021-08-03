@@ -1,16 +1,13 @@
 includes:
-    - phar://phpstan.phar/conf/config.levelmax.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/slam/phpstan-extensions/conf/slam-rules.neon
+    - phpstan-baseline.neon
 
 parameters:
+    level: max
     checkMissingIterableValueType: false
     paths:
         - lib/
         - tests/
     excludes_analyse:
         - %currentWorkingDirectory%/lib/Pear/*
-    ignoreErrors:
-        -
-            message: '#Cannot call method \w+\(\) on PhpOffice\\PhpSpreadsheet\\Cell\\Cell\|null#'
-            path: %currentWorkingDirectory%/tests/Helper/TableWorkbookTest.php
