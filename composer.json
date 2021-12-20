@@ -25,11 +25,6 @@
         "slam/php-debug-r": "^1.7.0",
         "slam/phpstan-extensions": "^6.0.0"
     },
-    "extra": {
-        "mc-bumpface": {
-            "stripVersionPrefixes": true
-        }
-    },
     "autoload": {
         "psr-4": {
             "Slam\\Excel\\": "lib/"
@@ -38,6 +33,11 @@
     "autoload-dev": {
         "psr-4": {
             "Slam\\Excel\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "mc-bumpface": {
+            "stripVersionPrefixes": true
         }
     }
 }
