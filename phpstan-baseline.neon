@@ -5,3 +5,13 @@ parameters:
 			count: 1
 			path: tests/Helper/ColumnCollectionTest.php
 
+		-
+			message: "#^Property Slam\\\\Excel\\\\Tests\\\\Helper\\\\MainTest\\:\\:\\$vfs is never read, only written\\.$#"
+			count: 1
+			path: tests/Helper/MainTest.php
+
+		-
+			message: "#^Property Slam\\\\Excel\\\\Tests\\\\Helper\\\\TableWorkbookTest\\:\\:\\$vfs is never read, only written\\.$#"
+			count: 1
+			path: tests/Helper/TableWorkbookTest.php
+

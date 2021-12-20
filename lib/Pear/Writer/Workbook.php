@@ -253,8 +253,8 @@ class Workbook extends BIFFwriter
      *
      * @param string $name the optional name of the worksheet
      *
-     * @return mixed reference to a worksheet object on success, Excel_PEAR_Error
-     *               on failure
+     * @return Worksheet reference to a worksheet object on success, Excel_PEAR_Error
+     *                   on failure
      */
     public function addWorksheet($name = '')
     {

@@ -4,10 +4,11 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: max
+    level: 8
     checkMissingIterableValueType: false
     paths:
         - lib/
         - tests/
-    excludes_analyse:
+    excludePaths:
+        analyseAndScan:
         - %currentWorkingDirectory%/lib/Pear/*

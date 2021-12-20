@@ -189,10 +189,7 @@ final class Table implements Countable
         $this->count = $count;
     }
 
-    /**
-     * @return null|int
-     */
-    public function count()
+    public function count(): int
     {
         if (null === $this->count) {
             throw new Exception\RuntimeException('Workbook must set count on table');
